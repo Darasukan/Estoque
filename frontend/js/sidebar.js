@@ -1,6 +1,6 @@
 ﻿// ==================== CARREGAR NAVBAR COMPARTILHADA ====================
 document.addEventListener('DOMContentLoaded', () => {
-  fetch('navbar.html')
+  fetch('html/navbar.html')
     .then(response => {
       if (!response.ok) {
         throw new Error(`Erro ao carregar navbar.html: ${response.status}`);
