@@ -7,7 +7,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const token = localStorage.getItem('token');
   
   if (!token) {
-    // Mostrar aviso de proteÃ§Ã£o
+    // Mostrar aviso de proteção
     mostrarAvisoProtecaoMovimentos();
     return;
   }
@@ -19,10 +19,10 @@ document.addEventListener('DOMContentLoaded', () => {
 function mostrarAvisoProtecaoMovimentos() {
   const container = document.querySelector('main') || document.body;
   const aviso = document.createElement('div');
-  aviso.innerHTML = '<p><strong>âš ï¸ Recurso Protegido</strong></p><p>VocÃª precisa estar logado para registrar movimentaÃ§Ãµes. FaÃ§a login na barra lateral.</p>';
+  aviso.innerHTML = '<p><strong>⚠️ Recurso Protegido</strong></p><p>Você precisa estar logado para registrar movimentações. Faça login na barra lateral.</p>';
   aviso.style.cssText = 'padding: 15px; background: #fff3cd; border: 1px solid #ffc107; border-radius: 4px; margin: 15px; color: #856404;';
   
-  // Ocultar formulÃ¡rio
+  // Ocultar formulário
   const form = document.getElementById('formMovimento');
   const historico = document.getElementById('historicoMovimentos');
   if (form) form.style.display = 'none';
@@ -40,7 +40,7 @@ async function registrarMovimento(e) {
   const motivoMovimento = document.getElementById('motivoMovimento').value;
 
   if (!tipoMovimento || !skuMovimento || !quantidadeMovimento) {
-    alert('âŒ Preencha os campos obrigatÃ³rios!');
+    alert('❌ Preencha os campos obrigatórios!');
     return;
   }
 
@@ -51,11 +51,11 @@ async function registrarMovimento(e) {
     };
 
     // TODO: Implementar endpoint de movimentos no backend
-    alert('ðŸ”§ FunÃ§Ã£o de movimentaÃ§Ãµes em desenvolvimento no backend');
+    alert('🔧 Função de movimentações em desenvolvimento no backend');
     
   } catch (err) {
     console.error('Erro:', err);
-    alert('âŒ Erro ao registrar movimentaÃ§Ã£o');
+    alert('❌ Erro ao registrar movimentação');
   }
 }
 

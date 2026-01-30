@@ -1,14 +1,14 @@
-﻿// Cache de produtos em memÃ³ria
+﻿// Cache de produtos em memória
 let produtosCache = [];
 let filtrosAtivos = {};
 
-// API URL dinÃ¢mica
+// API URL dinâmica
 const API_URL = `http://${window.location.hostname}:3000/api`;
 
 // Elemento para token
 let token = localStorage.getItem('token');
 
-// ==================== INICIALIZAÃ‡ÃƒO ====================
+// ==================== INICIALIZAÇÃO ====================
 document.addEventListener('DOMContentLoaded', () => {
   carregarProdutos();
 
@@ -36,10 +36,10 @@ function carregarProdutos() {
 
 // ==================== INICIALIZAR CASCATAS ====================
 function inicializarFiltros() {
-  // Extrair famÃ­lias Ãºnicas
+  // Extrair famílias únicas
   const familias = [...new Set(produtosCache.map(p => p.grupo).filter(Boolean))];
   const selectFamilia = document.getElementById('filtroFamilia');
-  selectFamilia.innerHTML = '<option value="">Selecione uma famÃ­lia...</option>';
+  selectFamilia.innerHTML = '<option value="">Selecione uma família...</option>';
   familias.forEach(familia => {
     const option = document.createElement('option');
     option.value = familia;
@@ -51,7 +51,7 @@ function inicializarFiltros() {
 function atualizarSubfamilias() {
   const familia = document.getElementById('filtroFamilia').value;
   const selectSubfamilia = document.getElementById('filtroSubfamilia');
-  selectSubfamilia.innerHTML = '<option value="">Selecione uma subfamÃ­lia...</option>';
+  selectSubfamilia.innerHTML = '<option value="">Selecione uma subfamília...</option>';
 
   if (!familia) {
     document.getElementById('atributosContainer').style.display = 'none';
@@ -59,7 +59,7 @@ function atualizarSubfamilias() {
     return;
   }
 
-  // Filtrar produtos da famÃ­lia selecionada
+  // Filtrar produtos da família selecionada
   const produtosDaFamilia = produtosCache.filter(p => p.grupo === familia);
   const subfamilias = [...new Set(produtosDaFamilia.map(p => p.categoria).filter(Boolean))];
 
@@ -85,12 +85,12 @@ function atualizarAtributos() {
     return;
   }
 
-  // Filtrar produtos da subfamÃ­lia selecionada
+  // Filtrar produtos da subfamília selecionada
   const produtosDaSubfamilia = produtosCache.filter(
     p => p.grupo === familia && p.categoria === subfamilia
   );
 
-  // Extrair todos os atributos Ãºnicos de produtos dessa subfamÃ­lia
+  // Extrair todos os atributos únicos de produtos dessa subfamília
   const atributosMap = new Map();
   produtosDaSubfamilia.forEach(produto => {
     if (produto.atributos) {
@@ -189,20 +189,20 @@ function aplicarFiltros() {
   // Garantir que filtros ativos estejam atualizados
   atualizarFiltrosAtivos();
 
-  // Filtrar produtos com base em todos os critÃ©rios
+  // Filtrar produtos com base em todos os critérios
   const produtosFiltrados = produtosCache.filter(produto => {
-    // CritÃ©rio: FamÃ­lia
+    // Critério: Família
     const matchFamilia = !familia || produto.grupo === familia;
 
-    // CritÃ©rio: SubfamÃ­lia
+    // Critério: Subfamília
     const matchSubfamilia = !subfamilia || produto.categoria === subfamilia;
 
-    // CritÃ©rio: Busca (Nome ou CÃ³digo)
+    // Critério: Busca (Nome ou Código)
     const matchBusca = !busca || 
                        (produto.nome && produto.nome.toLowerCase().includes(busca)) ||
                        (produto.sku && produto.sku.toLowerCase().includes(busca));
 
-    // CritÃ©rio: Atributos
+    // Critério: Atributos
     let matchAtributos = true;
     Object.entries(filtrosAtivos).forEach(([chave, valores]) => {
       if (valores.length > 0) {
@@ -262,7 +262,7 @@ function renderizarTabela(produtos) {
   textoResultado.textContent = `Mostrando ${produtos.length} de ${produtosCache.length} produtos`;
 }
 
-// ==================== AÃ‡Ã•ES ====================
+// ==================== AÇÕES ====================
 function limparFiltros() {
   document.getElementById('filtroFamilia').value = '';
   document.getElementById('filtroSubfamilia').value = '';
@@ -274,13 +274,13 @@ function limparFiltros() {
 
 function logout() {
   localStorage.clear();
-  location.reload(); // Recarrega a pÃ¡gina para limpar o estado
+  location.reload(); // Recarrega a página para limpar o estado
 }
 
 function irPara(pagina) {
-  // Redirecionar para a pÃ¡gina principal e selecionar a seÃ§Ã£o
+  // Redirecionar para a página principal e selecionar a seção
   if (pagina === 'inventario') {
-    // JÃ¡ estÃ¡ nesta pÃ¡gina
+    // Já está nesta página
     return;
   }
   window.location.href = 'index.html?section=' + pagina;

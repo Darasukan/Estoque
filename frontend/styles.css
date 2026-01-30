@@ -85,6 +85,8 @@ body {
   font-weight: 500;
   transition: all 0.3s ease;
   white-space: nowrap;
+  outline: none;
+  text-decoration: none;
 }
 
 .navbar-menu .nav-btn:hover {

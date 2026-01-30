@@ -13,14 +13,14 @@ document.addEventListener('DOMContentLoaded', () => {
       if (!document.querySelector('.navbar')) {
         body.insertAdjacentHTML('afterbegin', html);
         
-        // Carregar dados do usuario
+        // Carregar dados do usuário
         const usuarioLogado = localStorage.getItem('usuario');
         const token = localStorage.getItem('token');
         
-        // Atualizar interface de autenticacao
+        // Atualizar interface de autenticação
         atualizarNavbarAuth(usuarioLogado, token);
         
-        // Marcar a pagina ativa
+        // Marcar a página ativa
         const currentPage = window.location.pathname.split('/').pop() || 'index.html';
         
         if (currentPage === 'index.html' || currentPage === '') {
@@ -41,7 +41,7 @@ document.addEventListener('DOMContentLoaded', () => {
     .catch(err => console.error('Erro ao carregar navbar:', err));
 });
 
-// Atualizar interface de autenticacao na navbar
+// Atualizar interface de autenticação na navbar
 function atualizarNavbarAuth(usuario, token) {
   const loginSection = document.getElementById('loginSection');
   const logoutSection = document.getElementById('logoutSection');
@@ -50,7 +50,7 @@ function atualizarNavbarAuth(usuario, token) {
   
   // Validar se elementos existem
   if (!loginSection || !logoutSection || !adminMenu || !usuarioLogadoEl) {
-    console.error('Elementos da navbar nao encontrados. Verifique se navbar.html foi carregado corretamente.');
+    console.error('Elementos da navbar não encontrados. Verifique se navbar.html foi carregado corretamente.');
     return;
   }
   
@@ -61,19 +61,19 @@ function atualizarNavbarAuth(usuario, token) {
   const loginSenha = document.getElementById('loginSenha');
   
   if (token && usuario) {
-    // Usuario logado
+    // Usuário logado
     loginSection.style.display = 'none';
     logoutSection.style.display = 'block';
     adminMenu.style.display = 'flex';
     usuarioLogadoEl.textContent = usuario;
   } else {
-    // Usuario nao logado
+    // Usuário não logado
     loginSection.style.display = 'block';
     logoutSection.style.display = 'none';
     adminMenu.style.display = 'none';
     usuarioLogadoEl.textContent = 'Visitante';
     
-    // Configurar botao de login
+    // Configurar botão de login
     if (btnLoginToggle) {
       btnLoginToggle.addEventListener('click', (e) => {
         e.preventDefault();
@@ -89,7 +89,7 @@ function atualizarNavbarAuth(usuario, token) {
       });
     }
     
-    // Formulario de login
+    // Formulário de login
     if (loginFormSidebar) {
       loginFormSidebar.addEventListener('submit', async (e) => {
         e.preventDefault();
@@ -99,7 +99,7 @@ function atualizarNavbarAuth(usuario, token) {
   }
 }
 
-// Funcao para fazer login via sidebar
+// Função para fazer login via sidebar
 async function fazerLoginSidebar(usuario, senha) {
   const API_URL = `http://${window.location.hostname}:3000/api`;
   
@@ -115,12 +115,12 @@ async function fazerLoginSidebar(usuario, senha) {
     if (response.ok && data.token) {
       localStorage.setItem('token', data.token);
       localStorage.setItem('usuario', usuario);
-      localStorage.setItem('perfil', data.perfil || 'usuario');
+      localStorage.setItem('perfil', data.perfil || 'usuário');
       
-      // Recarregar a pagina para atualizar interface
+      // Recarregar a página para atualizar interface
       location.reload();
     } else {
-      alert('Usuario ou senha incorretos');
+      alert('Usuário ou senha incorretos');
     }
   } catch (error) {
     console.error('Erro ao fazer login:', error);

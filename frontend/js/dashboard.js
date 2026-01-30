@@ -7,20 +7,20 @@ document.addEventListener('DOMContentLoaded', () => {
   if (token) {
     carregarDados();
   } else {
-    // Mostrar mensagem para usuÃ¡rio nÃ£o autenticado
+    // Mostrar mensagem para usuário não autenticado
     mostrarMensagemPublica();
   }
 });
 
 function mostrarMensagemPublica() {
-  // Esconder cards de estatÃ­sticas
+  // Esconder cards de estatísticas
   document.querySelectorAll('.stat-card').forEach(el => el.style.display = 'none');
   
   // Mostrar mensagem
   const container = document.querySelector('main') || document.body;
   const msg = document.createElement('div');
   msg.className = 'alert alert-info';
-  msg.innerHTML = '<p><strong>Bem-vindo!</strong></p><p>VocÃª estÃ¡ visualizando o inventÃ¡rio. FaÃ§a login na barra lateral para gerenciar os produtos.</p>';
+  msg.innerHTML = '<p><strong>Bem-vindo!</strong></p><p>Você está visualizando o inventário. Faça login na barra lateral para gerenciar os produtos.</p>';
   msg.style.cssText = 'padding: 20px; background: #e7f3ff; border: 1px solid #b3d9ff; border-radius: 4px; margin: 20px; color: #004085;';
   container.insertBefore(msg, container.firstChild);
 }
@@ -47,7 +47,7 @@ async function carregarDados() {
       }
     }
 
-    // Calcular estatÃ­sticas
+    // Calcular estatísticas
     calcularEstatisticas(produtos);
     carregarProdutosRecentes(produtos);
     carregarBaixoEstoque(produtos);
@@ -80,7 +80,7 @@ function carregarProdutosRecentes(produtos) {
     return;
   }
 
-  // Pegar os 5 Ãºltimos produtos
+  // Pegar os 5 últimos produtos
   const recentes = produtos.slice(-5).reverse();
   
   container.innerHTML = recentes.map(p => `
@@ -119,14 +119,14 @@ function carregarFamilias(categorias) {
   const container = document.getElementById('listaFamilias');
   
   if (categorias.length === 0) {
-    container.innerHTML = '<li style="text-align: center; color: #999; padding: 20px;">Nenhuma famÃ­lia cadastrada</li>';
+    container.innerHTML = '<li style="text-align: center; color: #999; padding: 20px;">Nenhuma família cadastrada</li>';
     return;
   }
 
   container.innerHTML = categorias.map(cat => `
     <li>
       <div class="nome">${cat.nome}</div>
-      <small style="color: #2563eb; font-weight: bold;">${cat.descricao || 'Sem descriÃ§Ã£o'}</small>
+      <small style="color: #2563eb; font-weight: bold;">${cat.descricao || 'Sem descrição'}</small>
     </li>
   `).join('');
 }

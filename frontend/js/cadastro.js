@@ -3,12 +3,12 @@
 let token = localStorage.getItem('token');
 let familiasCache = [];
 
-// ==================== INICIALIZAÃ‡ÃƒO ====================
+// ==================== INICIALIZAÇÃO ====================
 document.addEventListener('DOMContentLoaded', () => {
   const token = localStorage.getItem('token');
   
   if (!token) {
-    // Mostrar aviso se nÃ£o estiver logado
+    // Mostrar aviso se não estiver logado
     mostrarAvisoCadastroProtegido();
     return;
   }
@@ -18,7 +18,7 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 function mostrarAvisoCadastroProtegido() {
-  // Desabilitar formulÃ¡rio
+  // Desabilitar formulário
   const form = document.getElementById('formFamilia');
   if (form) {
     form.style.opacity = '0.5';
@@ -29,12 +29,12 @@ function mostrarAvisoCadastroProtegido() {
   const container = document.querySelector('main') || document.body;
   const aviso = document.createElement('div');
   aviso.className = 'alert alert-warning';
-  aviso.innerHTML = '<p><strong>Cadastro Protegido</strong></p><p>VocÃª precisa estar logado para criar grupos e subfamilias. FaÃ§a login na barra lateral.</p>';
+  aviso.innerHTML = '<p><strong>Cadastro Protegido</strong></p><p>Você precisa estar logado para criar grupos e subfamílias. Faça login na barra lateral.</p>';
   aviso.style.cssText = 'padding: 15px; background: #fff3cd; border: 1px solid #ffc107; border-radius: 4px; margin: 15px; color: #856404;';
   container.insertBefore(aviso, container.firstChild);
 }
 
-// ==================== CARREGAR FAMÃLIAS ====================
+// ==================== CARREGAR FAMÍLIAS ====================
 async function carregarFamilias() {
   try {
     const headers = { 'Authorization': `Bearer ${token}` };
@@ -55,7 +55,7 @@ async function carregarFamilias() {
     const resTag = await fetch(`${API_URL}/tags`, { headers });
     const tags = await resTag.json();
 
-    // Montar estrutura de famÃ­lias
+    // Montar estrutura de famílias
     familiasCache = categorias.map(cat => ({
       ...cat,
       subcategorias: subcategorias
@@ -72,12 +72,12 @@ async function carregarFamilias() {
   }
 }
 
-// ==================== RENDERIZAR FAMÃLIAS ====================
+// ==================== RENDERIZAR FAMÍLIAS ====================
 function renderizarFamilias() {
   const container = document.getElementById('listaFamilias');
   
   if (familiasCache.length === 0) {
-    container.innerHTML = '<p style="color: #999; text-align: center; padding: 20px;">Nenhuma famÃ­lia cadastrada</p>';
+    container.innerHTML = '<p style="color: #999; text-align: center; padding: 20px;">Nenhuma família cadastrada</p>';
     return;
   }
 
@@ -104,10 +104,10 @@ function renderizarFamilias() {
           </div>
           <div style="display: flex; gap: 10px;">
             <button class="btn btn-primary btn-small" onclick="editarFamilia(${familia.id}, ${sub.id})" style="font-size: 12px;">
-              âœï¸ Editar
+              ✏️ Editar
             </button>
             <button class="btn btn-danger btn-small" onclick="deletarFamilia(${familia.id}, ${sub.id})" style="font-size: 12px;">
-              ðŸ—‘ï¸ Excluir
+              🗑️ Excluir
             </button>
           </div>
         </div>
@@ -116,7 +116,7 @@ function renderizarFamilias() {
   }).join('');
 }
 
-// ==================== CRIAR FAMÃLIA ====================
+// ==================== CRIAR FAMÍLIA ====================
 async function criarFamilia(e) {
   e.preventDefault();
 
@@ -126,7 +126,7 @@ async function criarFamilia(e) {
   const camposExtras = document.getElementById('camposExtras').value.trim();
 
   if (!grupo || !subfamilia) {
-    alert('âŒ Grupo Principal e SubfamÃ­lia sÃ£o obrigatÃ³rios!');
+    alert('❌ Grupo Principal e Subfamília são obrigatórios!');
     return;
   }
 
@@ -164,7 +164,7 @@ async function criarFamilia(e) {
     const dataSubcat = await resSubcat.json();
     const subcategoriaId = dataSubcat.id;
 
-    // 3. Criar tags obrigatÃ³rias
+    // 3. Criar tags obrigatórias
     if (camposObrigatorios) {
       const tags = camposObrigatorios.split(',').map(t => t.trim()).filter(t => t);
       for (const tag of tags) {
@@ -196,20 +196,20 @@ async function criarFamilia(e) {
 
     document.getElementById('formFamilia').reset();
     await carregarFamilias();
-    alert('âœ… FamÃ­lia criada com sucesso!');
+    alert('✅ Família criada com sucesso!');
   } catch (err) {
     console.error('Erro:', err);
-    alert('âŒ Erro ao criar famÃ­lia');
+    alert('❌ Erro ao criar família');
   }
 }
 
 // ==================== EDITAR/DELETAR ====================
 function editarFamilia(catId, subcatId) {
-  alert('ðŸ”§ FunÃ§Ã£o de ediÃ§Ã£o em desenvolvimento');
+  alert('🔧 Função de edição em desenvolvimento');
 }
 
 async function deletarFamilia(catId, subcatId) {
-  if (!confirm('Tem certeza que deseja deletar essa famÃ­lia e todas as suas tags?')) {
+  if (!confirm('Tem certeza que deseja deletar essa família e todas as suas tags?')) {
     return;
   }
 
@@ -222,14 +222,14 @@ async function deletarFamilia(catId, subcatId) {
     });
 
     await carregarFamilias();
-    alert('âœ… FamÃ­lia deletada com sucesso!');
+    alert('✅ Família deletada com sucesso!');
   } catch (err) {
     console.error('Erro:', err);
-    alert('âŒ Erro ao deletar famÃ­lia');
+    alert('❌ Erro ao deletar família');
   }
 }
 
-// ==================== UTILITÃRIOS ====================
+// ==================== UTILITÁRIOS ====================
 function logout() {
   localStorage.clear();
   location.reload();

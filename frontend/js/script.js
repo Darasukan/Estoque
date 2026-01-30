@@ -1,9 +1,9 @@
-﻿// API URL dinÃ¢mica - funciona tanto em localhost quanto em LAN
+﻿// API URL dinâmica - funciona tanto em localhost quanto em LAN
 const API_URL = `http://${window.location.hostname}:3000/api`;
 
-// ==================== VERIFICAÃ‡ÃƒO DE AUTENTICAÃ‡ÃƒO ====================
+// ==================== VERIFICAÇÃO DE AUTENTICAÇÃO ====================
 
-// Verificar se estÃ¡ logado ao carregar a pÃ¡gina
+// Verificar se está logado ao carregar a página
 document.addEventListener('DOMContentLoaded', () => {
   const token = localStorage.getItem('token');
   
@@ -14,10 +14,10 @@ document.addEventListener('DOMContentLoaded', () => {
     carregarMovimentos();
     atualizarNomeUsuario();
   }
-  // Se nÃ£o estiver logado, nada acontece - a pÃ¡gina carrega normalmente
+  // Se não estiver logado, nada acontece - a página carrega normalmente
 });
 
-// FunÃ§Ã£o para obter headers com autenticaÃ§Ã£o
+// Função para obter headers com autenticação
 function getHeaders() {
   const token = localStorage.getItem('token');
   return {
@@ -26,19 +26,19 @@ function getHeaders() {
   };
 }
 
-// Atualizar nome do usuÃ¡rio na interface
+// Atualizar nome do usuário na interface
 function atualizarNomeUsuario() {
   const usuario = localStorage.getItem('usuario');
   const perfil = localStorage.getItem('perfil');
   
-  // Se existir um elemento para mostrar o usuÃ¡rio
+  // Se existir um elemento para mostrar o usuário
   const usuarioEl = document.getElementById('usuarioLogado');
   if (usuarioEl) {
     usuarioEl.textContent = `${usuario} (${perfil})`;
   }
 }
 
-// FunÃ§Ã£o de logout
+// Função de logout
 function logout() {
   if (confirm('Deseja realmente sair?')) {
     localStorage.removeItem('token');
@@ -48,7 +48,7 @@ function logout() {
   }
 }
 
-// ==================== NAVEGAÃ‡ÃƒO ====================
+// ==================== NAVEGAÇÃO ====================
 document.querySelectorAll('.nav-btn').forEach(btn => {
   btn.addEventListener('click', () => {
     document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
@@ -72,7 +72,7 @@ document.querySelectorAll('.nav-btn').forEach(btn => {
 
 // ==================== PRODUTOS ====================
 
-// Cache de produtos para ediÃ§Ã£o
+// Cache de produtos para edição
 let produtosCache_Produtos = [];
 
 // Carregar lista de produtos
@@ -105,8 +105,8 @@ async function carregarProdutos() {
         <td>R$ ${p.preco.toFixed(2)}</td>
         <td>${p.categoria || '-'}</td>
         <td>
-          <button class="btn btn-edit" onclick="abrirEditar(${p.id})">âœï¸ Editar</button>
-          <button class="btn btn-danger" onclick="deletarProduto(${p.id})">ðŸ—‘ï¸ Deletar</button>
+          <button class="btn btn-edit" onclick="abrirEditar(${p.id})">✏️ Editar</button>
+          <button class="btn btn-danger" onclick="deletarProduto(${p.id})">🗑️ Deletar</button>
         </td>
       </tr>
     `).join('');
@@ -119,33 +119,33 @@ async function carregarProdutos() {
 document.getElementById('formProduto').addEventListener('submit', async (e) => {
   e.preventDefault();
 
-  // Validar campos obrigatÃ³rios
+  // Validar campos obrigatórios
   const nome = document.getElementById('nomeProduto').value.trim();
   const sku = document.getElementById('skuProduto').value.trim();
   const quantidade = parseInt(document.getElementById('qtdProduto').value);
   const preco = parseFloat(document.getElementById('precoProduto').value) || 0;
 
   if (!nome) {
-    mostrarNotificacao('âš ï¸ Nome do produto Ã© obrigatÃ³rio!', 'warning');
+    mostrarNotificacao('⚠️ Nome do produto é obrigatório!', 'warning');
     return;
   }
 
   if (!sku) {
-    mostrarNotificacao('âš ï¸ SKU Ã© obrigatÃ³rio!', 'warning');
+    mostrarNotificacao('⚠️ SKU é obrigatório!', 'warning');
     return;
   }
 
   if (isNaN(quantidade) || quantidade < 0) {
-    mostrarNotificacao('âš ï¸ Quantidade deve ser um nÃºmero maior ou igual a 0!', 'warning');
+    mostrarNotificacao('⚠️ Quantidade deve ser um número maior ou igual a 0!', 'warning');
     return;
   }
 
   if (preco < 0) {
-    mostrarNotificacao('âš ï¸ PreÃ§o nÃ£o pode ser negativo!', 'warning');
+    mostrarNotificacao('⚠️ Preço não pode ser negativo!', 'warning');
     return;
   }
 
-  // Coletar atributos do formulÃ¡rio
+  // Coletar atributos do formulário
   const atributos = {};
   document.querySelectorAll('#listaAtributos .atributo-campo').forEach(div => {
     const chave = div.querySelector('.atributo-chave').value.trim();
@@ -225,13 +225,13 @@ async function deletarProduto(id) {
   }
 }
 
-// ==================== MODAIS (LÃ³gica Corrigida) ====================
+// ==================== MODAIS (Lógica Corrigida) ====================
 
-// 1. Abrir modal de ediÃ§Ã£o de PRODUTO (Usa o modal antigo)
+// 1. Abrir modal de edição de PRODUTO (Usa o modal antigo)
 function abrirEditar(id) {
   const produto = produtosCache_Produtos.find(p => p.id == id);
   if (!produto) {
-    console.error('Produto nÃ£o encontrado');
+    console.error('Produto não encontrado');
     return;
   }
 
@@ -264,7 +264,7 @@ function abrirEditar(id) {
       const btnRemover = document.createElement('button');
       btnRemover.type = 'button';
       btnRemover.className = 'btn btn-danger btn-small';
-      btnRemover.textContent = 'âœ•';
+      btnRemover.textContent = '✕';
       btnRemover.onclick = () => div.remove();
       
       div.appendChild(inputChave);
@@ -277,7 +277,7 @@ function abrirEditar(id) {
   document.getElementById('modalEditar').classList.add('show');
 }
 
-// 2. Abrir modal de ediÃ§Ã£o de MOVIMENTAÃ‡ÃƒO (Usa o modal novo e IDs novos)
+// 2. Abrir modal de edição de MOVIMENTAÇÃO (Usa o modal novo e IDs novos)
 function abrirEditarMov(data, nome, tipo, quantidade, motivo) {
   // Note os IDs com prefixo 'mov' que criamos no HTML
   document.getElementById('movData').value = data;
@@ -289,7 +289,7 @@ function abrirEditarMov(data, nome, tipo, quantidade, motivo) {
   document.getElementById('modalMovimentacao').classList.add('show');
 }
 
-// Fechar Modais (GenÃ©rico para os botÃµes 'X')
+// Fechar Modais (Genérico para os botões 'X')
 document.querySelectorAll('.close').forEach(btn => {
   btn.addEventListener('click', () => {
     document.getElementById('modalEditar').classList.remove('show');
@@ -312,37 +312,37 @@ window.onclick = function(event) {
   }
 }
 
-// Salvar ediÃ§Ã£o de PRODUTO
+// Salvar edição de PRODUTO
 document.getElementById('formEditarProduto').addEventListener('submit', async (e) => {
   e.preventDefault();
 
-  // Validar campos obrigatÃ³rios
+  // Validar campos obrigatórios
   const nome = document.getElementById('nomeEditar').value.trim();
   const sku = document.getElementById('skuEditar').value.trim();
   const quantidade = parseInt(document.getElementById('qtdEditar').value);
   const preco = parseFloat(document.getElementById('precoEditar').value) || 0;
 
   if (!nome) {
-    mostrarNotificacao('âš ï¸ Nome do produto Ã© obrigatÃ³rio!', 'warning');
+    mostrarNotificacao('⚠️ Nome do produto é obrigatório!', 'warning');
     return;
   }
 
   if (!sku) {
-    mostrarNotificacao('âš ï¸ SKU Ã© obrigatÃ³rio!', 'warning');
+    mostrarNotificacao('⚠️ SKU é obrigatório!', 'warning');
     return;
   }
 
   if (isNaN(quantidade) || quantidade < 0) {
-    mostrarNotificacao('âš ï¸ Quantidade deve ser um nÃºmero maior ou igual a 0!', 'warning');
+    mostrarNotificacao('⚠️ Quantidade deve ser um número maior ou igual a 0!', 'warning');
     return;
   }
 
   if (preco < 0) {
-    mostrarNotificacao('âš ï¸ PreÃ§o nÃ£o pode ser negativo!', 'warning');
+    mostrarNotificacao('⚠️ Preço não pode ser negativo!', 'warning');
     return;
   }
 
-  // Coletar atributos do formulÃ¡rio
+  // Coletar atributos do formulário
   const atributos = {};
   document.querySelectorAll('#listaAtributosEditar .atributo-campo').forEach(div => {
     const chave = div.querySelector('.atributo-chave').value.trim();
@@ -415,7 +415,7 @@ async function carregarProdutosSelect() {
   }
 }
 
-// Mostrar/ocultar campos dinÃ¢micos no formulÃ¡rio de criaÃ§Ã£o
+// Mostrar/ocultar campos dinâmicos no formulário de criação
 function mostrarCamposDinamicos() {
   const tipo = document.getElementById('tipoMovimento').value;
   const camposSaida = document.getElementById('camposSaida');
@@ -435,7 +435,7 @@ function mostrarCamposDinamicos() {
   }
 }
 
-// Mostrar/ocultar campos dinÃ¢micos no modal de ediÃ§Ã£o
+// Mostrar/ocultar campos dinâmicos no modal de edição
 function mostrarCamposDinamicosModal() {
   const tipo = document.getElementById('movTipo').value;
   const camposSaida = document.getElementById('camposSaidaModal');
@@ -467,23 +467,23 @@ async function carregarMovimentos() {
     const movimentos = await response.json();
     const tbody = document.getElementById('bodyMovimentos');
 
-    // Se nÃ£o houver movimentos, exibe mensagem vazia
+    // Se não houver movimentos, exibe mensagem vazia
     if (movimentos.length === 0) {
-      tbody.innerHTML = '<tr><td colspan="8" style="text-align: center;">Nenhuma movimentaÃ§Ã£o registrada</td></tr>';
+      tbody.innerHTML = '<tr><td colspan="8" style="text-align: center;">Nenhuma movimentação registrada</td></tr>';
       return;
     }
 
     tbody.innerHTML = movimentos.map(m => {
       const tipoVisual = m.tipo === 'entrada' 
-        ? '<span style="color: var(--success);">ðŸ“¥ Entrada</span>' 
-        : '<span style="color: var(--danger);">ðŸ“¤ SaÃ­da</span>';
+        ? '<span style="color: var(--success);">📥 Entrada</span>' 
+        : '<span style="color: var(--danger);">📤 Saída</span>';
   
       const dataFormatada = new Date(m.data_movimento).toLocaleString('pt-BR');
       
-      // Detalhe dinÃ¢mico baseado no tipo
+      // Detalhe dinâmico baseado no tipo
       let detalhes = '-';
       if (m.tipo === 'saida') {
-        detalhes = `${m.requisitante || '-'} â†’ ${m.local_aplicacao || '-'}`;
+        detalhes = `${m.requisitante || '-'} → ${m.local_aplicacao || '-'}`;
       } else if (m.tipo === 'entrada') {
         detalhes = `R$ ${parseFloat(m.preco_unitario || 0).toFixed(2)} | NF: ${m.numero_nf || '-'} | ${m.fornecedor || '-'}`;
       }
@@ -500,10 +500,10 @@ async function carregarMovimentos() {
           <td>
             <button class="btn btn-edit" 
               onclick="abrirEditarMov(${m.id}, '${dataFormatada}', '${m.produto_nome}', ${m.produto_id}, '${m.tipo}', ${m.quantidade}, '${m.motivo || ''}', '${m.operador || ''}', '${m.requisitante || ''}', '${m.local_aplicacao || ''}', ${m.preco_unitario || 'null'}, '${m.numero_nf || ''}', '${m.fornecedor || ''}')">
-              âœï¸ Editar
+              ✏️ Editar
             </button>
             <button class="btn btn-danger" onclick="deletarMovimentacao(${m.id})">
-              ðŸ—‘ï¸ Deletar
+              🗑️ Deletar
             </button>
           </td>
         </tr>
@@ -513,7 +513,8 @@ async function carregarMovimentos() {
     console.error('Erro ao carregar movimentos:', error);
   }
 }
-// Registrar movimentaÃ§Ã£o
+
+// Registrar movimentação
 document.getElementById('formMovimento').addEventListener('submit', async (e) => {
   e.preventDefault();
 
@@ -548,7 +549,7 @@ document.getElementById('formMovimento').addEventListener('submit', async (e) =>
     }
 
     if (response.ok) {
-      mostrarNotificacao('MovimentaÃ§Ã£o registrada com sucesso!', 'success');
+      mostrarNotificacao('Movimentação registrada com sucesso!', 'success');
       document.getElementById('formMovimento').reset();
       document.getElementById('camposSaida').style.display = 'none';
       document.getElementById('camposEntrada').style.display = 'none';
@@ -560,12 +561,12 @@ document.getElementById('formMovimento').addEventListener('submit', async (e) =>
       mostrarNotificacao(`Erro: ${erro.error}`, 'danger');
     }
   } catch (error) {
-    mostrarNotificacao('Erro ao registrar movimentaÃ§Ã£o', 'danger');
+    mostrarNotificacao('Erro ao registrar movimentação', 'danger');
     console.error('Erro:', error);
   }
 });
 
-// ==================== RELATÃ“RIOS ====================
+// ==================== RELATÓRIOS ====================
 
 // Estoque baixo
 async function carregarEstoqueBaixo() {
@@ -632,7 +633,7 @@ async function carregarResumoEstoque() {
 
 // ==================== UTILIDADES ====================
 
-// Abrir modal para editar movimentaÃ§Ã£o
+// Abrir modal para editar movimentação
 function abrirEditarMov(id, data, produtoNome, produtoId, tipo, quantidade, motivo, operador, requisitante, localAplicacao, precoUnitario, numeroNF, fornecedor) {
   document.getElementById('movData').value = data;
   document.getElementById('movNome').value = produtoNome;
@@ -641,7 +642,7 @@ function abrirEditarMov(id, data, produtoNome, produtoId, tipo, quantidade, moti
   document.getElementById('movQtd').value = quantidade;
   document.getElementById('movMotivo').value = motivo || '';
   
-  // Preencher campos dinÃ¢micos baseado no tipo
+  // Preencher campos dinâmicos baseado no tipo
   if (tipo === 'saida') {
     document.getElementById('movRequisitante').value = requisitante || '';
     document.getElementById('movLocalAplicacao').value = localAplicacao || '';
@@ -655,14 +656,14 @@ function abrirEditarMov(id, data, produtoNome, produtoId, tipo, quantidade, moti
     document.getElementById('camposEntradaModal').style.display = 'block';
   }
   
-  // Armazenar ID e produto_id para uso na submissÃ£o
+  // Armazenar ID e produto_id para uso na submissão
   document.getElementById('formEditarMovimento').dataset.id = id;
   document.getElementById('formEditarMovimento').dataset.produtoId = produtoId;
   
   document.getElementById('modalMovimentacao').classList.add('show');
 }
 
-// Salvar ediÃ§Ã£o de movimentaÃ§Ã£o - aguarda o DOM estar pronto
+// Salvar edição de movimentação - aguarda o DOM estar pronto
 function inicializarFormEditarMovimento() {
   const form = document.getElementById('formEditarMovimento');
   if (!form) {
@@ -709,7 +710,7 @@ function inicializarFormEditarMovimento() {
       }
 
       if (response.ok) {
-        mostrarNotificacao('MovimentaÃ§Ã£o atualizada com sucesso!', 'success');
+        mostrarNotificacao('Movimentação atualizada com sucesso!', 'success');
         document.getElementById('modalMovimentacao').classList.remove('show');
         carregarMovimentos();
         carregarProdutos();
@@ -719,7 +720,7 @@ function inicializarFormEditarMovimento() {
         mostrarNotificacao(`Erro: ${erro.error}`, 'danger');
       }
     } catch (error) {
-      mostrarNotificacao('Erro ao atualizar movimentaÃ§Ã£o', 'danger');
+      mostrarNotificacao('Erro ao atualizar movimentação', 'danger');
       console.error('Erro:', error);
     }
   });
@@ -732,9 +733,9 @@ if (document.readyState === 'loading') {
   inicializarFormEditarMovimento();
 }
 
-// Deletar movimentaÃ§Ã£o
+// Deletar movimentação
 async function deletarMovimentacao(id) {
-  if (!confirm('Tem certeza que deseja deletar esta movimentaÃ§Ã£o?')) return;
+  if (!confirm('Tem certeza que deseja deletar esta movimentação?')) return;
 
   try {
     const response = await fetch(`${API_URL}/movimentos/${id}`, {
@@ -748,15 +749,15 @@ async function deletarMovimentacao(id) {
     }
 
     if (response.ok) {
-      mostrarNotificacao('MovimentaÃ§Ã£o deletada com sucesso!', 'success');
+      mostrarNotificacao('Movimentação deletada com sucesso!', 'success');
       carregarMovimentos();
       carregarProdutos();
       carregarResumoEstoque();
     } else {
-      mostrarNotificacao('Erro ao deletar movimentaÃ§Ã£o', 'danger');
+      mostrarNotificacao('Erro ao deletar movimentação', 'danger');
     }
   } catch (error) {
-    mostrarNotificacao('Erro ao deletar movimentaÃ§Ã£o', 'danger');
+    mostrarNotificacao('Erro ao deletar movimentação', 'danger');
     console.error('Erro:', error);
   }
 }
@@ -781,7 +782,7 @@ function adicionarCampoAtributo() {
   const btnRemover = document.createElement('button');
   btnRemover.type = 'button';
   btnRemover.className = 'btn btn-danger btn-small';
-  btnRemover.textContent = 'âœ•';
+  btnRemover.textContent = '✕';
   btnRemover.onclick = () => div.remove();
   
   div.appendChild(inputChave);
@@ -808,7 +809,7 @@ function adicionarCampoAtributoEditar() {
   const btnRemover = document.createElement('button');
   btnRemover.type = 'button';
   btnRemover.className = 'btn btn-danger btn-small';
-  btnRemover.textContent = 'âœ•';
+  btnRemover.textContent = '✕';
   btnRemover.onclick = () => div.remove();
   
   div.appendChild(inputChave);

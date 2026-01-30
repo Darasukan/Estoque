@@ -7,7 +7,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const token = localStorage.getItem('token');
   
   if (!token) {
-    // Mostrar aviso de proteÃ§Ã£o
+    // Mostrar aviso de proteção
     mostrarAvisoProtecaoRelatorios();
     return;
   }
@@ -19,10 +19,10 @@ document.addEventListener('DOMContentLoaded', () => {
 function mostrarAvisoProtecaoRelatorios() {
   const container = document.querySelector('main') || document.body;
   const aviso = document.createElement('div');
-  aviso.innerHTML = '<p><strong>âš ï¸ Recurso Protegido</strong></p><p>VocÃª precisa estar logado para acessar os relatÃ³rios. FaÃ§a login na barra lateral.</p>';
+  aviso.innerHTML = '<p><strong>⚠️ Recurso Protegido</strong></p><p>Você precisa estar logado para acessar os relatórios. Faça login na barra lateral.</p>';
   aviso.style.cssText = 'padding: 15px; background: #fff3cd; border: 1px solid #ffc107; border-radius: 4px; margin: 15px; color: #856404;';
   
-  // Ocultar seÃ§Ãµes de relatÃ³rio
+  // Ocultar seções de relatório
   document.querySelectorAll('section').forEach(s => s.style.display = 'none');
   
   container.insertBefore(aviso, container.firstChild);
@@ -40,7 +40,7 @@ async function carregarResumoGeral() {
     
     produtos = await res.json();
 
-    // Calcular estatÃ­sticas
+    // Calcular estatísticas
     const totalProdutos = produtos.length;
     const quantidadeTotal = produtos.reduce((sum, p) => sum + p.quantidade, 0);
     const valorTotal = produtos.reduce((sum, p) => sum + (p.quantidade * p.preco), 0);
@@ -124,7 +124,7 @@ function carregarMovimentosRelatorio() {
 }
 
 function selecionarRelatorio(tipo) {
-  // Scroll para a seÃ§Ã£o correspondente
+  // Scroll para a seção correspondente
   const sectionId = `relatorio${tipo.charAt(0).toUpperCase() + tipo.slice(1)}`;
   const section = document.getElementById(sectionId);
   if (section) {
@@ -133,11 +133,11 @@ function selecionarRelatorio(tipo) {
 }
 
 function exportarCSV() {
-  alert('ðŸ“¥ FunÃ§Ã£o de exportar CSV em desenvolvimento');
+  alert('📥 Função de exportar CSV em desenvolvimento');
 }
 
 function exportarPDF() {
-  alert('ðŸ“„ FunÃ§Ã£o de exportar PDF em desenvolvimento');
+  alert('📄 Função de exportar PDF em desenvolvimento');
 }
 
 function logout() {
