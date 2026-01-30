@@ -19,6 +19,8 @@ document.addEventListener('DOMContentLoaded', () => {
     
     // Carregar dados iniciais
     carregarProdutos();
+    carregarProdutosSelect();
+    carregarMovimentos();
     atualizarNomeUsuario();
   }
 });
@@ -302,6 +304,44 @@ async function carregarProdutosSelect() {
   }
 }
 
+// Mostrar/ocultar campos dinâmicos no formulário de criação
+function mostrarCamposDinamicos() {
+  const tipo = document.getElementById('tipoMovimento').value;
+  const camposSaida = document.getElementById('camposSaida');
+  const camposEntrada = document.getElementById('camposEntrada');
+  
+  if (tipo === 'saida') {
+    camposSaida.style.display = 'block';
+    camposEntrada.style.display = 'none';
+    document.getElementById('requisiante').required = true;
+    document.getElementById('localAplicacao').required = true;
+  } else if (tipo === 'entrada') {
+    camposSaida.style.display = 'none';
+    camposEntrada.style.display = 'block';
+  } else {
+    camposSaida.style.display = 'none';
+    camposEntrada.style.display = 'none';
+  }
+}
+
+// Mostrar/ocultar campos dinâmicos no modal de edição
+function mostrarCamposDinamicosModal() {
+  const tipo = document.getElementById('movTipo').value;
+  const camposSaida = document.getElementById('camposSaidaModal');
+  const camposEntrada = document.getElementById('camposEntradaModal');
+  
+  if (tipo === 'saida') {
+    camposSaida.style.display = 'block';
+    camposEntrada.style.display = 'none';
+  } else if (tipo === 'entrada') {
+    camposSaida.style.display = 'none';
+    camposEntrada.style.display = 'block';
+  } else {
+    camposSaida.style.display = 'none';
+    camposEntrada.style.display = 'none';
+  }
+}
+
 async function carregarMovimentos() {
   try {
     const response = await fetch(`${API_URL}/movimentos`, {
@@ -318,7 +358,7 @@ async function carregarMovimentos() {
 
     // Se não houver movimentos, exibe mensagem vazia
     if (movimentos.length === 0) {
-      tbody.innerHTML = '<tr><td colspan="7" style="text-align: center;">Nenhuma movimentação registrada</td></tr>';
+      tbody.innerHTML = '<tr><td colspan="8" style="text-align: center;">Nenhuma movimentação registrada</td></tr>';
       return;
     }
 
@@ -328,8 +368,15 @@ async function carregarMovimentos() {
         : '<span style="color: var(--danger);">📤 Saída</span>';
   
       const dataFormatada = new Date(m.data_movimento).toLocaleString('pt-BR');
-      const motivoTexto = m.motivo || '-';
-      const motivoParam = m.motivo || ''; 
+      
+      // Detalhe dinâmico baseado no tipo
+      let detalhes = '-';
+      if (m.tipo === 'saida') {
+        detalhes = `${m.requisitante || '-'} → ${m.local_aplicacao || '-'}`;
+      } else if (m.tipo === 'entrada') {
+        detalhes = `R$ ${parseFloat(m.preco_unitario || 0).toFixed(2)} | NF: ${m.numero_nf || '-'} | ${m.fornecedor || '-'}`;
+      }
+      
       return `
         <tr>
           <td>${dataFormatada}</td>
@@ -337,10 +384,11 @@ async function carregarMovimentos() {
           <td>${m.sku}</td>
           <td>${tipoVisual}</td>
           <td>${m.quantidade}</td>
-          <td>${motivoTexto}</td>
+          <td>${detalhes}</td>
+          <td>${m.operador || '-'}</td>
           <td>
             <button class="btn btn-edit" 
-              onclick="abrirEditarMov(${m.id}, '${dataFormatada}', '${m.produto_nome}', ${m.produto_id}, '${m.tipo}', ${m.quantidade}, '${motivoParam}')">
+              onclick="abrirEditarMov(${m.id}, '${dataFormatada}', '${m.produto_nome}', ${m.produto_id}, '${m.tipo}', ${m.quantidade}, '${m.motivo || ''}', '${m.operador || ''}', '${m.requisitante || ''}', '${m.local_aplicacao || ''}', ${m.preco_unitario || 'null'}, '${m.numero_nf || ''}', '${m.fornecedor || ''}')">
               ✏️ Editar
             </button>
             <button class="btn btn-danger" onclick="deletarMovimentacao(${m.id})">
@@ -358,12 +406,23 @@ async function carregarMovimentos() {
 document.getElementById('formMovimento').addEventListener('submit', async (e) => {
   e.preventDefault();
 
+  const tipo = document.getElementById('tipoMovimento').value;
   const movimento = {
     produto_id: parseInt(document.getElementById('produtoMovimento').value),
-    tipo: document.getElementById('tipoMovimento').value,
+    tipo: tipo,
     quantidade: parseInt(document.getElementById('qtdMovimento').value),
     motivo: document.getElementById('motivoMovimento').value
   };
+
+  // Adicionar campos condicionais baseado no tipo
+  if (tipo === 'saida') {
+    movimento.requisitante = document.getElementById('requisiante').value;
+    movimento.local_aplicacao = document.getElementById('localAplicacao').value;
+  } else if (tipo === 'entrada') {
+    movimento.preco_unitario = document.getElementById('precoUnitario').value || null;
+    movimento.numero_nf = document.getElementById('numeroNF').value || null;
+    movimento.fornecedor = document.getElementById('fornecedor').value || null;
+  }
 
   try {
     const response = await fetch(`${API_URL}/movimentos`, {
@@ -380,6 +439,8 @@ document.getElementById('formMovimento').addEventListener('submit', async (e) =>
     if (response.ok) {
       mostrarNotificacao('Movimentação registrada com sucesso!', 'success');
       document.getElementById('formMovimento').reset();
+      document.getElementById('camposSaida').style.display = 'none';
+      document.getElementById('camposEntrada').style.display = 'none';
       carregarMovimentos();
       carregarProdutos();
       carregarResumoEstoque();
@@ -461,12 +522,27 @@ async function carregarResumoEstoque() {
 // ==================== UTILIDADES ====================
 
 // Abrir modal para editar movimentação
-function abrirEditarMov(id, data, produtoNome, produtoId, tipo, quantidade, motivo) {
+function abrirEditarMov(id, data, produtoNome, produtoId, tipo, quantidade, motivo, operador, requisitante, localAplicacao, precoUnitario, numeroNF, fornecedor) {
   document.getElementById('movData').value = data;
   document.getElementById('movNome').value = produtoNome;
+  document.getElementById('movOperador').value = operador || '-';
   document.getElementById('movTipo').value = tipo;
   document.getElementById('movQtd').value = quantidade;
-  document.getElementById('movMotivo').value = motivo;
+  document.getElementById('movMotivo').value = motivo || '';
+  
+  // Preencher campos dinâmicos baseado no tipo
+  if (tipo === 'saida') {
+    document.getElementById('movRequisitante').value = requisitante || '';
+    document.getElementById('movLocalAplicacao').value = localAplicacao || '';
+    document.getElementById('camposSaidaModal').style.display = 'block';
+    document.getElementById('camposEntradaModal').style.display = 'none';
+  } else if (tipo === 'entrada') {
+    document.getElementById('movPrecoUnitario').value = precoUnitario || '';
+    document.getElementById('movNumeroNF').value = numeroNF || '';
+    document.getElementById('movFornecedor').value = fornecedor || '';
+    document.getElementById('camposSaidaModal').style.display = 'none';
+    document.getElementById('camposEntradaModal').style.display = 'block';
+  }
   
   // Armazenar ID e produto_id para uso na submissão
   document.getElementById('formEditarMovimento').dataset.id = id;
@@ -491,12 +567,29 @@ function inicializarFormEditarMovimento() {
     const tipo = document.getElementById('movTipo').value;
     const quantidade = parseInt(document.getElementById('movQtd').value);
     const motivo = document.getElementById('movMotivo').value;
+    
+    const dadosMovimento = {
+      produto_id,
+      tipo,
+      quantidade,
+      motivo
+    };
+
+    // Adicionar campos condicionais baseado no tipo
+    if (tipo === 'saida') {
+      dadosMovimento.requisitante = document.getElementById('movRequisitante').value;
+      dadosMovimento.local_aplicacao = document.getElementById('movLocalAplicacao').value;
+    } else if (tipo === 'entrada') {
+      dadosMovimento.preco_unitario = document.getElementById('movPrecoUnitario').value || null;
+      dadosMovimento.numero_nf = document.getElementById('movNumeroNF').value || null;
+      dadosMovimento.fornecedor = document.getElementById('movFornecedor').value || null;
+    }
 
     try {
       const response = await fetch(`${API_URL}/movimentos/${id}`, {
         method: 'PUT',
         headers: getHeaders(),
-        body: JSON.stringify({ produto_id, tipo, quantidade, motivo })
+        body: JSON.stringify(dadosMovimento)
       });
 
       if (response.status === 401) {

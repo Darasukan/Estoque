@@ -154,7 +154,8 @@ app.get('/api/movimentos', verificarToken, (req, res) => {
 
 // POST - Registrar movimento (entrada/saída)
 app.post('/api/movimentos', verificarToken, (req, res) => {
-  const { produto_id, tipo, quantidade, motivo } = req.body;
+  const { produto_id, tipo, quantidade, motivo, requisitante, local_aplicacao, preco_unitario, numero_nf, fornecedor } = req.body;
+  const operador = req.usuario;
 
   if (!produto_id || !tipo || !quantidade) {
     return res.status(400).json({ error: 'Produto, tipo e quantidade são obrigatórios' });
@@ -164,7 +165,15 @@ app.post('/api/movimentos', verificarToken, (req, res) => {
     return res.status(400).json({ error: 'Tipo deve ser "entrada" ou "saida"' });
   }
 
-  db.addMovimento(produto_id, tipo, quantidade, motivo || '', (err, id) => {
+  const dadosAdicionais = {
+    requisitante: tipo === 'saida' ? requisitante : null,
+    local_aplicacao: tipo === 'saida' ? local_aplicacao : null,
+    preco_unitario: tipo === 'entrada' ? preco_unitario : null,
+    numero_nf: tipo === 'entrada' ? numero_nf : null,
+    fornecedor: tipo === 'entrada' ? fornecedor : null
+  };
+
+  db.addMovimento(produto_id, tipo, quantidade, motivo || '', operador, dadosAdicionais, (err, id) => {
     if (err) {
       return res.status(500).json({ error: err.message });
     }
@@ -175,7 +184,8 @@ app.post('/api/movimentos', verificarToken, (req, res) => {
 // PUT - Atualizar movimento
 app.put('/api/movimentos/:id', verificarToken, (req, res) => {
   const { id } = req.params;
-  const { produto_id, tipo, quantidade, motivo } = req.body;
+  const { produto_id, tipo, quantidade, motivo, requisitante, local_aplicacao, preco_unitario, numero_nf, fornecedor } = req.body;
+  const operador = req.usuario;
 
   if (!produto_id || !tipo || !quantidade) {
     return res.status(400).json({ error: 'Produto, tipo e quantidade são obrigatórios' });
@@ -185,7 +195,15 @@ app.put('/api/movimentos/:id', verificarToken, (req, res) => {
     return res.status(400).json({ error: 'Tipo deve ser "entrada" ou "saida"' });
   }
 
-  db.updateMovimento(id, produto_id, tipo, quantidade, motivo || '', (err) => {
+  const dadosAdicionais = {
+    requisitante: tipo === 'saida' ? requisitante : null,
+    local_aplicacao: tipo === 'saida' ? local_aplicacao : null,
+    preco_unitario: tipo === 'entrada' ? preco_unitario : null,
+    numero_nf: tipo === 'entrada' ? numero_nf : null,
+    fornecedor: tipo === 'entrada' ? fornecedor : null
+  };
+
+  db.updateMovimento(id, produto_id, tipo, quantidade, motivo || '', operador, dadosAdicionais, (err) => {
     if (err) {
       return res.status(500).json({ error: err.message });
     }

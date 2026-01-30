@@ -29,6 +29,12 @@ function initialize() {
         tipo TEXT NOT NULL CHECK(tipo IN ('entrada', 'saida')),
         quantidade INTEGER NOT NULL,
         motivo TEXT,
+        requisitante TEXT,
+        local_aplicacao TEXT,
+        preco_unitario REAL,
+        numero_nf TEXT,
+        fornecedor TEXT,
+        operador TEXT,
         data_movimento DATETIME DEFAULT CURRENT_TIMESTAMP,
         FOREIGN KEY (produto_id) REFERENCES produtos(id)
       )
@@ -77,11 +83,13 @@ function getMovimentos(callback) {
   `, callback);
 }
 
-function addMovimento(produto_id, tipo, quantidade, motivo, callback) {
+function addMovimento(produto_id, tipo, quantidade, motivo, operador, dadosAdicionais, callback) {
+  const { requisitante, local_aplicacao, preco_unitario, numero_nf, fornecedor } = dadosAdicionais || {};
+  
   // Primeiro, registra o movimento
   db.run(
-    'INSERT INTO movimentos (produto_id, tipo, quantidade, motivo) VALUES (?, ?, ?, ?)',
-    [produto_id, tipo, quantidade, motivo],
+    'INSERT INTO movimentos (produto_id, tipo, quantidade, motivo, operador, requisitante, local_aplicacao, preco_unitario, numero_nf, fornecedor) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
+    [produto_id, tipo, quantidade, motivo, operador, requisitante || null, local_aplicacao || null, preco_unitario || null, numero_nf || null, fornecedor || null],
     function(err) {
       if (err) return callback(err);
 
@@ -98,7 +106,9 @@ function addMovimento(produto_id, tipo, quantidade, motivo, callback) {
   );
 }
 
-function updateMovimento(id, produto_id, tipo, quantidade, motivo, callback) {
+function updateMovimento(id, produto_id, tipo, quantidade, motivo, operador, dadosAdicionais, callback) {
+  const { requisitante, local_aplicacao, preco_unitario, numero_nf, fornecedor } = dadosAdicionais || {};
+  
   // Primeiro, obter o movimento antigo
   db.get('SELECT * FROM movimentos WHERE id = ?', [id], (err, movimentoAntigo) => {
     if (err) return callback(err);
@@ -114,8 +124,8 @@ function updateMovimento(id, produto_id, tipo, quantidade, motivo, callback) {
 
         // Atualizar o movimento
         db.run(
-          'UPDATE movimentos SET produto_id = ?, tipo = ?, quantidade = ?, motivo = ? WHERE id = ?',
-          [produto_id, tipo, quantidade, motivo, id],
+          'UPDATE movimentos SET produto_id = ?, tipo = ?, quantidade = ?, motivo = ?, operador = ?, requisitante = ?, local_aplicacao = ?, preco_unitario = ?, numero_nf = ?, fornecedor = ? WHERE id = ?',
+          [produto_id, tipo, quantidade, motivo, operador, requisitante || null, local_aplicacao || null, preco_unitario || null, numero_nf || null, fornecedor || null, id],
           (err) => {
             if (err) return callback(err);
 
