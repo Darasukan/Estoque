@@ -1,21 +1,26 @@
 ﻿// ==================== CARREGAR SIDEBAR COMPARTILHADA ====================
 document.addEventListener('DOMContentLoaded', () => {
   fetch('sidebar.html')
-    .then(response => response.text())
+    .then(response => {
+      if (!response.ok) {
+        throw new Error(`Erro ao carregar sidebar.html: ${response.status}`);
+      }
+      return response.text();
+    })
     .then(html => {
       // Encontrar ou criar container para a sidebar
       const container = document.querySelector('.container');
       if (container && !document.querySelector('.sidebar')) {
         container.insertAdjacentHTML('afterbegin', html);
         
-        // Carregar dados do usuÃ¡rio
+        // Carregar dados do usuario
         const usuarioLogado = localStorage.getItem('usuario');
         const token = localStorage.getItem('token');
         
-        // Atualizar interface de autenticaÃ§Ã£o
+        // Atualizar interface de autenticacao
         atualizarSidebarAuth(usuarioLogado, token);
         
-        // Marcar a pÃ¡gina ativa
+        // Marcar a pagina ativa
         const currentPage = window.location.pathname.split('/').pop() || 'index.html';
         
         if (currentPage === 'index.html' || currentPage === '') {
@@ -36,12 +41,19 @@ document.addEventListener('DOMContentLoaded', () => {
     .catch(err => console.error('Erro ao carregar sidebar:', err));
 });
 
-// Atualizar interface de autenticaÃ§Ã£o na sidebar
+// Atualizar interface de autenticacao na sidebar
 function atualizarSidebarAuth(usuario, token) {
   const loginSection = document.getElementById('loginSection');
   const logoutSection = document.getElementById('logoutSection');
   const adminMenu = document.getElementById('adminMenu');
   const usuarioLogadoEl = document.getElementById('usuarioLogado');
+  
+  // Validar se elementos existem
+  if (!loginSection || !logoutSection || !adminMenu || !usuarioLogadoEl) {
+    console.error('Elementos da sidebar nao encontrados. Verifique se sidebar.html foi carregado corretamente.');
+    return;
+  }
+  
   const btnLoginToggle = document.getElementById('btnLoginToggle');
   const loginFormSidebar = document.getElementById('loginFormSidebar');
   const btnCancelarLogin = document.getElementById('btnCancelarLogin');
@@ -49,39 +61,45 @@ function atualizarSidebarAuth(usuario, token) {
   const loginSenha = document.getElementById('loginSenha');
   
   if (token && usuario) {
-    // UsuÃ¡rio logado
+    // Usuario logado
     loginSection.style.display = 'none';
     logoutSection.style.display = 'block';
     adminMenu.style.display = 'block';
     usuarioLogadoEl.textContent = usuario;
   } else {
-    // UsuÃ¡rio nÃ£o logado
+    // Usuario nao logado
     loginSection.style.display = 'block';
     logoutSection.style.display = 'none';
     adminMenu.style.display = 'none';
     usuarioLogadoEl.textContent = 'Visitante';
     
-    // Configurar botÃ£o de login
-    btnLoginToggle.addEventListener('click', (e) => {
-      e.preventDefault();
-      loginFormSidebar.style.display = loginFormSidebar.style.display === 'none' ? 'block' : 'none';
-    });
+    // Configurar botao de login
+    if (btnLoginToggle) {
+      btnLoginToggle.addEventListener('click', (e) => {
+        e.preventDefault();
+        loginFormSidebar.style.display = loginFormSidebar.style.display === 'none' ? 'block' : 'none';
+      });
+    }
     
-    btnCancelarLogin.addEventListener('click', () => {
-      loginFormSidebar.style.display = 'none';
-      loginUsuario.value = '';
-      loginSenha.value = '';
-    });
+    if (btnCancelarLogin) {
+      btnCancelarLogin.addEventListener('click', () => {
+        loginFormSidebar.style.display = 'none';
+        loginUsuario.value = '';
+        loginSenha.value = '';
+      });
+    }
     
-    // FormulÃ¡rio de login
-    loginFormSidebar.addEventListener('submit', async (e) => {
-      e.preventDefault();
-      await fazerLoginSidebar(loginUsuario.value, loginSenha.value);
-    });
+    // Formulario de login
+    if (loginFormSidebar) {
+      loginFormSidebar.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        await fazerLoginSidebar(loginUsuario.value, loginSenha.value);
+      });
+    }
   }
 }
 
-// FunÃ§Ã£o para fazer login via sidebar
+// Funcao para fazer login via sidebar
 async function fazerLoginSidebar(usuario, senha) {
   const API_URL = `http://${window.location.hostname}:3000/api`;
   
@@ -99,10 +117,10 @@ async function fazerLoginSidebar(usuario, senha) {
       localStorage.setItem('usuario', usuario);
       localStorage.setItem('perfil', data.perfil || 'usuario');
       
-      // Recarregar a pÃ¡gina para atualizar interface
+      // Recarregar a pagina para atualizar interface
       location.reload();
     } else {
-      alert('UsuÃ¡rio ou senha incorretos');
+      alert('Usuario ou senha incorretos');
     }
   } catch (error) {
     console.error('Erro ao fazer login:', error);
