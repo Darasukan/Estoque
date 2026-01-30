@@ -81,6 +81,9 @@ document.querySelectorAll('.nav-btn').forEach(btn => {
 
 // ==================== PRODUTOS ====================
 
+// Cache de produtos para edição
+let produtosCache_Produtos = [];
+
 // Carregar lista de produtos
 async function carregarProdutos() {
   try {
@@ -94,6 +97,7 @@ async function carregarProdutos() {
     }
 
     const produtos = await response.json();
+    produtosCache_Produtos = produtos; // Armazenar em cache
     const tbody = document.getElementById('bodyProdutos');
 
     if (produtos.length === 0) {
@@ -110,7 +114,7 @@ async function carregarProdutos() {
         <td>R$ ${p.preco.toFixed(2)}</td>
         <td>${p.categoria || '-'}</td>
         <td>
-          <button class="btn btn-edit" onclick="abrirEditar(${p.id}, '${p.nome}', '${p.sku}', ${p.quantidade}, ${p.preco}, '${p.categoria}')">✏️ Editar</button>
+          <button class="btn btn-edit" onclick="abrirEditar(${p.id})">✏️ Editar</button>
           <button class="btn btn-danger" onclick="deletarProduto(${p.id})">🗑️ Deletar</button>
         </td>
       </tr>
@@ -124,12 +128,50 @@ async function carregarProdutos() {
 document.getElementById('formProduto').addEventListener('submit', async (e) => {
   e.preventDefault();
 
+  // Validar campos obrigatórios
+  const nome = document.getElementById('nomeProduto').value.trim();
+  const sku = document.getElementById('skuProduto').value.trim();
+  const quantidade = parseInt(document.getElementById('qtdProduto').value);
+  const preco = parseFloat(document.getElementById('precoProduto').value) || 0;
+
+  if (!nome) {
+    mostrarNotificacao('⚠️ Nome do produto é obrigatório!', 'warning');
+    return;
+  }
+
+  if (!sku) {
+    mostrarNotificacao('⚠️ SKU é obrigatório!', 'warning');
+    return;
+  }
+
+  if (isNaN(quantidade) || quantidade < 0) {
+    mostrarNotificacao('⚠️ Quantidade deve ser um número maior ou igual a 0!', 'warning');
+    return;
+  }
+
+  if (preco < 0) {
+    mostrarNotificacao('⚠️ Preço não pode ser negativo!', 'warning');
+    return;
+  }
+
+  // Coletar atributos do formulário
+  const atributos = {};
+  document.querySelectorAll('#listaAtributos .atributo-campo').forEach(div => {
+    const chave = div.querySelector('.atributo-chave').value.trim();
+    const valor = div.querySelector('.atributo-valor').value.trim();
+    if (chave && valor) {
+      atributos[chave] = valor;
+    }
+  });
+
   const produto = {
-    nome: document.getElementById('nomeProduto').value,
-    sku: document.getElementById('skuProduto').value,
-    quantidade: parseInt(document.getElementById('qtdProduto').value),
-    preco: parseFloat(document.getElementById('precoProduto').value) || 0,
-    categoria: document.getElementById('categoriaProduto').value
+    nome: nome,
+    sku: sku,
+    quantidade: quantidade,
+    preco: preco,
+    categoria: document.getElementById('categoriaProduto').value.trim(),
+    grupo: document.getElementById('grupoProduto').value.trim() || 'Sem Grupo',
+    atributos: atributos
   };
 
   try {
@@ -147,6 +189,7 @@ document.getElementById('formProduto').addEventListener('submit', async (e) => {
     if (response.ok) {
       mostrarNotificacao('Produto adicionado com sucesso!', 'success');
       document.getElementById('formProduto').reset();
+      document.getElementById('listaAtributos').innerHTML = '';
       carregarProdutos();
       if (document.getElementById('produtoMovimento')) {
         carregarProdutosSelect();
@@ -194,13 +237,51 @@ async function deletarProduto(id) {
 // ==================== MODAIS (Lógica Corrigida) ====================
 
 // 1. Abrir modal de edição de PRODUTO (Usa o modal antigo)
-function abrirEditar(id, nome, sku, quantidade, preco, categoria) {
+function abrirEditar(id) {
+  const produto = produtosCache_Produtos.find(p => p.id == id);
+  if (!produto) {
+    console.error('Produto não encontrado');
+    return;
+  }
+
   document.getElementById('idProdutoEdicao').value = id;
-  document.getElementById('nomeEditar').value = nome;
-  document.getElementById('skuEditar').value = sku;
-  document.getElementById('qtdEditar').value = quantidade;
-  document.getElementById('precoEditar').value = preco;
-  document.getElementById('categoriaEditar').value = categoria;
+  document.getElementById('nomeEditar').value = produto.nome;
+  document.getElementById('skuEditar').value = produto.sku;
+  document.getElementById('qtdEditar').value = produto.quantidade;
+  document.getElementById('precoEditar').value = produto.preco;
+  document.getElementById('categoriaEditar').value = produto.categoria || '';
+  document.getElementById('grupoEditar').value = produto.grupo || '';
+
+  // Limpar e preencher atributos
+  const container = document.getElementById('listaAtributosEditar');
+  container.innerHTML = '';
+  if (produto.atributos && Object.keys(produto.atributos).length > 0) {
+    Object.entries(produto.atributos).forEach(([chave, valor]) => {
+      const div = document.createElement('div');
+      div.className = 'atributo-campo';
+      
+      const inputChave = document.createElement('input');
+      inputChave.type = 'text';
+      inputChave.className = 'atributo-chave';
+      inputChave.value = chave;
+      
+      const inputValor = document.createElement('input');
+      inputValor.type = 'text';
+      inputValor.className = 'atributo-valor';
+      inputValor.value = valor;
+      
+      const btnRemover = document.createElement('button');
+      btnRemover.type = 'button';
+      btnRemover.className = 'btn btn-danger btn-small';
+      btnRemover.textContent = '✕';
+      btnRemover.onclick = () => div.remove();
+      
+      div.appendChild(inputChave);
+      div.appendChild(inputValor);
+      div.appendChild(btnRemover);
+      container.appendChild(div);
+    });
+  }
 
   document.getElementById('modalEditar').classList.add('show');
 }
@@ -244,13 +325,51 @@ window.onclick = function(event) {
 document.getElementById('formEditarProduto').addEventListener('submit', async (e) => {
   e.preventDefault();
 
+  // Validar campos obrigatórios
+  const nome = document.getElementById('nomeEditar').value.trim();
+  const sku = document.getElementById('skuEditar').value.trim();
+  const quantidade = parseInt(document.getElementById('qtdEditar').value);
+  const preco = parseFloat(document.getElementById('precoEditar').value) || 0;
+
+  if (!nome) {
+    mostrarNotificacao('⚠️ Nome do produto é obrigatório!', 'warning');
+    return;
+  }
+
+  if (!sku) {
+    mostrarNotificacao('⚠️ SKU é obrigatório!', 'warning');
+    return;
+  }
+
+  if (isNaN(quantidade) || quantidade < 0) {
+    mostrarNotificacao('⚠️ Quantidade deve ser um número maior ou igual a 0!', 'warning');
+    return;
+  }
+
+  if (preco < 0) {
+    mostrarNotificacao('⚠️ Preço não pode ser negativo!', 'warning');
+    return;
+  }
+
+  // Coletar atributos do formulário
+  const atributos = {};
+  document.querySelectorAll('#listaAtributosEditar .atributo-campo').forEach(div => {
+    const chave = div.querySelector('.atributo-chave').value.trim();
+    const valor = div.querySelector('.atributo-valor').value.trim();
+    if (chave && valor) {
+      atributos[chave] = valor;
+    }
+  });
+
   const id = document.getElementById('idProdutoEdicao').value;
   const produto = {
-    nome: document.getElementById('nomeEditar').value,
-    sku: document.getElementById('skuEditar').value,
-    quantidade: parseInt(document.getElementById('qtdEditar').value),
-    preco: parseFloat(document.getElementById('precoEditar').value),
-    categoria: document.getElementById('categoriaEditar').value
+    nome: nome,
+    sku: sku,
+    quantidade: quantidade,
+    preco: preco,
+    categoria: document.getElementById('categoriaEditar').value.trim(),
+    grupo: document.getElementById('grupoEditar').value.trim() || 'Sem Grupo',
+    atributos: atributos
   };
 
   try {
@@ -649,6 +768,62 @@ async function deletarMovimentacao(id) {
     mostrarNotificacao('Erro ao deletar movimentação', 'danger');
     console.error('Erro:', error);
   }
+}
+
+// ==================== GERENCIAMENTO DE ATRIBUTOS ====================
+
+function adicionarCampoAtributo() {
+  const container = document.getElementById('listaAtributos');
+  const div = document.createElement('div');
+  div.className = 'atributo-campo';
+  
+  const inputChave = document.createElement('input');
+  inputChave.type = 'text';
+  inputChave.className = 'atributo-chave';
+  inputChave.placeholder = 'Nome do atributo (ex: Processador)';
+  
+  const inputValor = document.createElement('input');
+  inputValor.type = 'text';
+  inputValor.className = 'atributo-valor';
+  inputValor.placeholder = 'Valor (ex: Intel i7)';
+  
+  const btnRemover = document.createElement('button');
+  btnRemover.type = 'button';
+  btnRemover.className = 'btn btn-danger btn-small';
+  btnRemover.textContent = '✕';
+  btnRemover.onclick = () => div.remove();
+  
+  div.appendChild(inputChave);
+  div.appendChild(inputValor);
+  div.appendChild(btnRemover);
+  container.appendChild(div);
+}
+
+function adicionarCampoAtributoEditar() {
+  const container = document.getElementById('listaAtributosEditar');
+  const div = document.createElement('div');
+  div.className = 'atributo-campo';
+  
+  const inputChave = document.createElement('input');
+  inputChave.type = 'text';
+  inputChave.className = 'atributo-chave';
+  inputChave.placeholder = 'Nome do atributo (ex: Processador)';
+  
+  const inputValor = document.createElement('input');
+  inputValor.type = 'text';
+  inputValor.className = 'atributo-valor';
+  inputValor.placeholder = 'Valor (ex: Intel i7)';
+  
+  const btnRemover = document.createElement('button');
+  btnRemover.type = 'button';
+  btnRemover.className = 'btn btn-danger btn-small';
+  btnRemover.textContent = '✕';
+  btnRemover.onclick = () => div.remove();
+  
+  div.appendChild(inputChave);
+  div.appendChild(inputValor);
+  div.appendChild(btnRemover);
+  container.appendChild(div);
 }
 
 function mostrarNotificacao(mensagem, tipo) {

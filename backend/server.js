@@ -105,13 +105,27 @@ app.get('/api/produtos', verificarToken, (req, res) => {
 
 // POST - Adicionar novo produto
 app.post('/api/produtos', verificarToken, (req, res) => {
-  const { nome, sku, quantidade, preco, categoria } = req.body;
+  const { nome, sku, quantidade, preco, subcategoria_id } = req.body;
   
-  if (!nome || !sku || quantidade === undefined) {
-    return res.status(400).json({ error: 'Nome, SKU e quantidade são obrigatórios' });
+  if (!sku || quantidade === undefined) {
+    return res.status(400).json({ error: 'SKU e quantidade são obrigatórios' });
   }
 
-  db.addProduto(nome, sku, quantidade, preco || 0, categoria || 'Geral', (err, id) => {
+  // Validar quantidade não negativa
+  if (isNaN(quantidade) || parseInt(quantidade) < 0) {
+    return res.status(400).json({ error: 'Quantidade deve ser um número maior ou igual a 0' });
+  }
+
+  // Validar preço não negativo
+  if (preco && isNaN(preco)) {
+    return res.status(400).json({ error: 'Preço deve ser um número válido' });
+  }
+
+  if (preco && parseFloat(preco) < 0) {
+    return res.status(400).json({ error: 'Preço não pode ser negativo' });
+  }
+
+  db.addProduto(nome || null, sku, parseInt(quantidade), parseFloat(preco) || 0, subcategoria_id || null, (err, id) => {
     if (err) {
       return res.status(500).json({ error: err.message });
     }
@@ -122,9 +136,27 @@ app.post('/api/produtos', verificarToken, (req, res) => {
 // PUT - Atualizar produto
 app.put('/api/produtos/:id', verificarToken, (req, res) => {
   const { id } = req.params;
-  const { nome, sku, quantidade, preco, categoria } = req.body;
+  const { nome, sku, quantidade, preco, subcategoria_id } = req.body;
 
-  db.updateProduto(id, nome, sku, quantidade, preco, categoria, (err) => {
+  if (!sku || quantidade === undefined) {
+    return res.status(400).json({ error: 'SKU e quantidade são obrigatórios' });
+  }
+
+  // Validar quantidade não negativa
+  if (isNaN(quantidade) || parseInt(quantidade) < 0) {
+    return res.status(400).json({ error: 'Quantidade deve ser um número maior ou igual a 0' });
+  }
+
+  // Validar preço não negativo
+  if (preco && isNaN(preco)) {
+    return res.status(400).json({ error: 'Preço deve ser um número válido' });
+  }
+
+  if (preco && parseFloat(preco) < 0) {
+    return res.status(400).json({ error: 'Preço não pode ser negativo' });
+  }
+
+  db.updateProduto(id, nome || null, sku, parseInt(quantidade), parseFloat(preco) || 0, subcategoria_id || null, (err) => {
     if (err) {
       return res.status(500).json({ error: err.message });
     }
@@ -248,6 +280,179 @@ app.get('/api/relatorios/movimentos/:produto_id', verificarToken, (req, res) => 
       return res.status(500).json({ error: err.message });
     }
     res.json(movimentos);
+  });
+});
+
+// ==================== ROTAS DE CATEGORIAS ====================
+
+// GET - Listar categorias
+app.get('/api/categorias', verificarToken, (req, res) => {
+  db.getCategorias((err, categorias) => {
+    if (err) {
+      return res.status(500).json({ error: err.message });
+    }
+    res.json(categorias);
+  });
+});
+
+// POST - Adicionar categoria
+app.post('/api/categorias', verificarToken, (req, res) => {
+  const { nome, descricao } = req.body;
+  
+  if (!nome) {
+    return res.status(400).json({ error: 'Nome da categoria é obrigatório' });
+  }
+
+  db.addCategoria(nome, descricao || null, (err, id) => {
+    if (err) {
+      return res.status(500).json({ error: err.message });
+    }
+    res.status(201).json({ id, message: 'Categoria adicionada com sucesso' });
+  });
+});
+
+// PUT - Atualizar categoria
+app.put('/api/categorias/:id', verificarToken, (req, res) => {
+  const { id } = req.params;
+  const { nome, descricao } = req.body;
+
+  if (!nome) {
+    return res.status(400).json({ error: 'Nome da categoria é obrigatório' });
+  }
+
+  db.updateCategoria(id, nome, descricao || null, (err) => {
+    if (err) {
+      return res.status(500).json({ error: err.message });
+    }
+    res.json({ message: 'Categoria atualizada com sucesso' });
+  });
+});
+
+// DELETE - Deletar categoria
+app.delete('/api/categorias/:id', verificarToken, (req, res) => {
+  const { id } = req.params;
+
+  db.deleteCategoria(id, (err) => {
+    if (err) {
+      return res.status(500).json({ error: err.message });
+    }
+    res.json({ message: 'Categoria deletada com sucesso' });
+  });
+});
+
+// ==================== ROTAS DE SUBCATEGORIAS ====================
+
+// GET - Listar subcategorias
+app.get('/api/subcategorias', verificarToken, (req, res) => {
+  const { categoria_id } = req.query;
+  db.getSubcategorias((err, subcategorias) => {
+    if (err) {
+      return res.status(500).json({ error: err.message });
+    }
+    res.json(subcategorias);
+  }, categoria_id);
+});
+
+// POST - Adicionar subcategoria
+app.post('/api/subcategorias', verificarToken, (req, res) => {
+  const { categoria_id, nome, descricao } = req.body;
+  
+  if (!categoria_id || !nome) {
+    return res.status(400).json({ error: 'Categoria e nome da subcategoria são obrigatórios' });
+  }
+
+  db.addSubcategoria(categoria_id, nome, descricao || null, (err, id) => {
+    if (err) {
+      return res.status(500).json({ error: err.message });
+    }
+    res.status(201).json({ id, message: 'Subcategoria adicionada com sucesso' });
+  });
+});
+
+// PUT - Atualizar subcategoria
+app.put('/api/subcategorias/:id', verificarToken, (req, res) => {
+  const { id } = req.params;
+  const { nome, descricao } = req.body;
+
+  if (!nome) {
+    return res.status(400).json({ error: 'Nome da subcategoria é obrigatório' });
+  }
+
+  db.updateSubcategoria(id, nome, descricao || null, (err) => {
+    if (err) {
+      return res.status(500).json({ error: err.message });
+    }
+    res.json({ message: 'Subcategoria atualizada com sucesso' });
+  });
+});
+
+// DELETE - Deletar subcategoria
+app.delete('/api/subcategorias/:id', verificarToken, (req, res) => {
+  const { id } = req.params;
+
+  db.deleteSubcategoria(id, (err) => {
+    if (err) {
+      return res.status(500).json({ error: err.message });
+    }
+    res.json({ message: 'Subcategoria deletada com sucesso' });
+  });
+});
+
+// ==================== ROTAS DE TAGS ====================
+
+// GET - Listar tags
+app.get('/api/tags', verificarToken, (req, res) => {
+  const { subcategoria_id } = req.query;
+  db.getTags((err, tags) => {
+    if (err) {
+      return res.status(500).json({ error: err.message });
+    }
+    res.json(tags);
+  }, subcategoria_id);
+});
+
+// POST - Adicionar tag
+app.post('/api/tags', verificarToken, (req, res) => {
+  const { subcategoria_id, nome, descricao } = req.body;
+  
+  if (!subcategoria_id || !nome) {
+    return res.status(400).json({ error: 'Subcategoria e nome da tag são obrigatórios' });
+  }
+
+  db.addTag(subcategoria_id, nome, descricao || null, (err, id) => {
+    if (err) {
+      return res.status(500).json({ error: err.message });
+    }
+    res.status(201).json({ id, message: 'Tag adicionada com sucesso' });
+  });
+});
+
+// PUT - Atualizar tag
+app.put('/api/tags/:id', verificarToken, (req, res) => {
+  const { id } = req.params;
+  const { nome, descricao } = req.body;
+
+  if (!nome) {
+    return res.status(400).json({ error: 'Nome da tag é obrigatório' });
+  }
+
+  db.updateTag(id, nome, descricao || null, (err) => {
+    if (err) {
+      return res.status(500).json({ error: err.message });
+    }
+    res.json({ message: 'Tag atualizada com sucesso' });
+  });
+});
+
+// DELETE - Deletar tag
+app.delete('/api/tags/:id', verificarToken, (req, res) => {
+  const { id } = req.params;
+
+  db.deleteTag(id, (err) => {
+    if (err) {
+      return res.status(500).json({ error: err.message });
+    }
+    res.json({ message: 'Tag deletada com sucesso' });
   });
 });
 

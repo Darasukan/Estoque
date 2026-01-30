@@ -15,14 +15,17 @@
         <p>👤 <span id="usuarioLogado">Usuário</span></p>
       </div>
       <nav>
-        <button class="nav-btn active" data-section="produtos">
-          📦 Produtos
-        </button>
+        <a href="inventario.html" class="nav-btn" style="text-decoration: none; display: block; text-align: left;">
+          📊 Inventário
+        </a>
         <button class="nav-btn" data-section="movimentos">
           🔄 Movimentações
         </button>
+        <a href="cadastro.html" class="nav-btn" style="text-decoration: none; display: block; text-align: left;">
+          📝 Cadastro de Produtos
+        </a>
         <button class="nav-btn" data-section="relatorios">
-          📊 Relatórios
+          📈 Relatórios
         </button>
       </nav>
       <button class="btn-logout" onclick="logout()">🚪 Sair</button>
@@ -56,11 +59,27 @@
                 <label>Preço</label>
                 <input type="number" id="precoProduto" step="0.01" placeholder="0.00">
               </div>
+            <div class="form-row">
               <div class="form-group">
                 <label>Categoria</label>
                 <input type="text" id="categoriaProduto" placeholder="Ex: Eletrônicos">
               </div>
+              <div class="form-group">
+                <label>Família (Grupo)</label>
+                <input type="text" id="grupoProduto" placeholder="Ex: Informática">
+              </div>
             </div>
+
+            <!-- Seção de Atributos Dinâmicos -->
+            <div id="secaoAtributos">
+              <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+                <strong>Atributos do Produto</strong>
+                <button type="button" class="btn btn-small btn-secondary" onclick="adicionarCampoAtributo()" title="Adicionar atributo">➕</button>
+              </div>
+              <div id="listaAtributos"></div>
+              <small style="color: #666;">Adicione atributos como processador, cor, tamanho, etc.</small>
+            </div>
+
             <button type="submit" class="btn btn-primary">➕ Adicionar Produto</button>
           </form>
         </div>
@@ -263,10 +282,20 @@
             <label>Preço</label>
             <input type="number" id="precoEditar" step="0.01">
           </div>
+        <div class="form-row">
           <div class="form-group">
             <label>Categoria</label>
             <input type="text" id="categoriaEditar">
           </div>
+          <div class="form-group">
+            <label>Família (Grupo)</label>
+            <input type="text" id="grupoEditar">
+          </div>
+        </div>
+        <div style="margin-bottom: 15px;">
+          <strong>Atributos</strong>
+          <div id="listaAtributosEditar" style="margin-top: 10px;"></div>
+          <button type="button" class="btn btn-small btn-secondary" onclick="adicionarCampoAtributoEditar()" title="Adicionar atributo">➕ Adicionar Atributo</button>
         </div>
         <button type="submit" class="btn btn-primary">💾 Salvar Alterações</button>
       </form>
