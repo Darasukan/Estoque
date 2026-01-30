@@ -1,24 +1,24 @@
-﻿// ==================== CARREGAR SIDEBAR COMPARTILHADA ====================
+﻿// ==================== CARREGAR NAVBAR COMPARTILHADA ====================
 document.addEventListener('DOMContentLoaded', () => {
-  fetch('sidebar.html')
+  fetch('navbar.html')
     .then(response => {
       if (!response.ok) {
-        throw new Error(`Erro ao carregar sidebar.html: ${response.status}`);
+        throw new Error(`Erro ao carregar navbar.html: ${response.status}`);
       }
       return response.text();
     })
     .then(html => {
-      // Encontrar ou criar container para a sidebar
-      const container = document.querySelector('.container');
-      if (container && !document.querySelector('.sidebar')) {
-        container.insertAdjacentHTML('afterbegin', html);
+      // Encontrar ou criar container para a navbar
+      const body = document.body;
+      if (!document.querySelector('.navbar')) {
+        body.insertAdjacentHTML('afterbegin', html);
         
         // Carregar dados do usuario
         const usuarioLogado = localStorage.getItem('usuario');
         const token = localStorage.getItem('token');
         
         // Atualizar interface de autenticacao
-        atualizarSidebarAuth(usuarioLogado, token);
+        atualizarNavbarAuth(usuarioLogado, token);
         
         // Marcar a pagina ativa
         const currentPage = window.location.pathname.split('/').pop() || 'index.html';
@@ -38,11 +38,11 @@ document.addEventListener('DOMContentLoaded', () => {
         }
       }
     })
-    .catch(err => console.error('Erro ao carregar sidebar:', err));
+    .catch(err => console.error('Erro ao carregar navbar:', err));
 });
 
-// Atualizar interface de autenticacao na sidebar
-function atualizarSidebarAuth(usuario, token) {
+// Atualizar interface de autenticacao na navbar
+function atualizarNavbarAuth(usuario, token) {
   const loginSection = document.getElementById('loginSection');
   const logoutSection = document.getElementById('logoutSection');
   const adminMenu = document.getElementById('adminMenu');
@@ -50,7 +50,7 @@ function atualizarSidebarAuth(usuario, token) {
   
   // Validar se elementos existem
   if (!loginSection || !logoutSection || !adminMenu || !usuarioLogadoEl) {
-    console.error('Elementos da sidebar nao encontrados. Verifique se sidebar.html foi carregado corretamente.');
+    console.error('Elementos da navbar nao encontrados. Verifique se navbar.html foi carregado corretamente.');
     return;
   }
   
@@ -64,7 +64,7 @@ function atualizarSidebarAuth(usuario, token) {
     // Usuario logado
     loginSection.style.display = 'none';
     logoutSection.style.display = 'block';
-    adminMenu.style.display = 'block';
+    adminMenu.style.display = 'flex';
     usuarioLogadoEl.textContent = usuario;
   } else {
     // Usuario nao logado
