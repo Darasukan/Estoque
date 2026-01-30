@@ -273,7 +273,10 @@ function limparFiltros() {
 }
 
 function logout() {
-  localStorage.clear();
+  // Remove apenas dados de autenticação, preserva cadastros
+  localStorage.removeItem('token');
+  localStorage.removeItem('usuario');
+  localStorage.removeItem('perfil');
   location.reload(); // Recarrega a página para limpar o estado
 }
 

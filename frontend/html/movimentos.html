@@ -4,10 +4,14 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Movimentações - Almoxarifado</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
   <link rel="stylesheet" href="../styles.css">
   <style>
     .container {
-      max-width: 1100px;
+      max-width: 1600px;
       margin: 0 auto;
       padding: 20px;
     }
@@ -304,6 +308,85 @@
       color: #991b1b;
     }
 
+    /* Tooltip para observações */
+    .tooltip-container {
+      position: relative;
+      cursor: help;
+    }
+
+    .tooltip-container:hover .tooltip-text {
+      visibility: visible;
+      opacity: 1;
+    }
+
+    .tooltip-text {
+      visibility: hidden;
+      opacity: 0;
+      position: absolute;
+      bottom: 100%;
+      left: 50%;
+      transform: translateX(-50%);
+      background: #333;
+      color: white;
+      padding: 8px 12px;
+      border-radius: 6px;
+      font-size: 12px;
+      white-space: nowrap;
+      max-width: 300px;
+      white-space: normal;
+      z-index: 100;
+      transition: opacity 0.2s;
+      margin-bottom: 5px;
+    }
+
+    .tooltip-text::after {
+      content: '';
+      position: absolute;
+      top: 100%;
+      left: 50%;
+      transform: translateX(-50%);
+      border: 6px solid transparent;
+      border-top-color: #333;
+    }
+
+    /* Botões de ação admin */
+    .acoes-admin {
+      display: flex;
+      gap: 5px;
+    }
+
+    .btn-acao {
+      padding: 4px 8px;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 12px;
+      transition: all 0.2s;
+    }
+
+    .btn-editar-mov {
+      background: #e0e7ff;
+      color: #3730a3;
+    }
+
+    .btn-editar-mov:hover {
+      background: #c7d2fe;
+    }
+
+    .btn-deletar-mov {
+      background: #fee2e2;
+      color: #991b1b;
+    }
+
+    .btn-deletar-mov:hover {
+      background: #fecaca;
+    }
+
+    .tem-obs {
+      color: #2563eb;
+      text-decoration: underline dotted;
+    }
+
     .mensagem {
       padding: 15px;
       border-radius: 6px;
@@ -390,30 +473,19 @@
       <!-- ================== ABA ENTRADA ================== -->
       <div id="tab-entrada" class="tab-content ativo">
         <div class="painel entrada">
-          <h2>📥 Registrar Entrada</h2>
+          <h2><i class="bi bi-box-arrow-in-down"></i> Registrar Entrada</h2>
 
           <div class="info-box">
-            ℹ️ Registre o recebimento de materiais no almoxarifado.
+            <i class="bi bi-info-circle"></i> Registre o recebimento de materiais no almoxarifado.
           </div>
 
           <form id="formEntrada">
-            <div class="form-row-tres">
+            <!-- Linha 1: ID (skip tab), Categoria, Subcategoria, Item -->
+            <div class="form-row-quatro">
               <div class="form-grupo">
-                <label for="dataEntrada">Data</label>
-                <input type="date" id="dataEntrada" required>
+                <label for="idEntrada">ID <span class="opcional">(auto)</span></label>
+                <input type="text" id="idEntrada" placeholder="Automático" tabindex="-1">
               </div>
-              <div class="form-grupo">
-                <label for="idEntrada">ID <span class="opcional">(editável)</span></label>
-                <input type="text" id="idEntrada" placeholder="Automático ou manual">
-              </div>
-              <div class="form-grupo">
-                <label for="operadorEntrada">Operador *</label>
-                <input type="text" id="operadorEntrada" required placeholder="Quem registrou">
-              </div>
-            </div>
-
-            <!-- Seleção em Cascata -->
-            <div class="form-row-tres">
               <div class="form-grupo">
                 <label for="categoriaEntrada">Categoria *</label>
                 <select id="categoriaEntrada" required>
@@ -423,36 +495,47 @@
               <div class="form-grupo">
                 <label for="subcategoriaEntrada">Subcategoria *</label>
                 <select id="subcategoriaEntrada" required disabled>
-                  <option value="">Primeiro selecione categoria</option>
+                  <option value="">Selecione categoria</option>
                 </select>
               </div>
               <div class="form-grupo">
                 <label for="itemEntrada">Item *</label>
                 <select id="itemEntrada" required disabled>
-                  <option value="">Primeiro selecione subcategoria</option>
+                  <option value="">Selecione subcategoria</option>
                 </select>
               </div>
             </div>
 
             <!-- Info do item selecionado -->
             <div id="itemSelecionadoEntrada" class="item-selecionado" style="display: none;">
-              <h4>📌 Item Selecionado</h4>
-              <div class="nome" id="nomeItemEntrada">-</div>
+              <div class="item-info-header">
+                <i class="bi bi-pin-angle-fill"></i>
+                <span class="nome" id="nomeItemEntrada">-</span>
+              </div>
               <div class="detalhes">
-                <div class="detalhe">📦 Estoque: <strong id="estoqueItemEntrada">0</strong></div>
-                <div class="detalhe">📏 Unidade: <strong id="unidadeItemEntrada">UN</strong></div>
-                <div class="detalhe">⚠️ Mínimo: <strong id="minimoItemEntrada">10</strong></div>
+                <div class="detalhe"><i class="bi bi-box"></i> Estoque: <strong id="estoqueItemEntrada">0</strong></div>
+                <div class="detalhe"><i class="bi bi-rulers"></i> Unidade: <strong id="unidadeItemEntrada">UN</strong></div>
+                <div class="detalhe"><i class="bi bi-exclamation-triangle"></i> Mínimo: <strong id="minimoItemEntrada">10</strong></div>
               </div>
             </div>
 
-            <div class="form-row-quatro">
+            <!-- Linha 2: Quantidade, Data -->
+            <div class="form-row">
               <div class="form-grupo">
                 <label for="qtdEntrada">Quantidade *</label>
                 <input type="number" id="qtdEntrada" required min="1" placeholder="0">
               </div>
               <div class="form-grupo">
-                <label for="valorUnitarioEntrada">Valor Unit. <span class="opcional">(opc)</span></label>
-                <input type="number" id="valorUnitarioEntrada" step="0.01" min="0" placeholder="R$">
+                <label for="dataEntrada">Data *</label>
+                <input type="date" id="dataEntrada" required>
+              </div>
+            </div>
+
+            <!-- Linha 3: Valor unitário, Nota Fiscal, Fornecedor -->
+            <div class="form-row-tres">
+              <div class="form-grupo">
+                <label for="valorUnitarioEntrada">Valor Unitário <span class="opcional">(opc)</span></label>
+                <input type="text" id="valorUnitarioEntrada" placeholder="R$ 0,00">
               </div>
               <div class="form-grupo">
                 <label for="nfEntrada">Nota Fiscal <span class="opcional">(opc)</span></label>
@@ -460,18 +543,13 @@
               </div>
               <div class="form-grupo">
                 <label for="fornecedorEntrada">Fornecedor <span class="opcional">(opc)</span></label>
-                <input type="text" id="fornecedorEntrada" placeholder="Nome">
+                <input type="text" id="fornecedorEntrada" placeholder="Nome do fornecedor">
               </div>
             </div>
 
-            <div class="form-grupo">
-              <label for="obsEntrada">Observações <span class="opcional">(opcional)</span></label>
-              <textarea id="obsEntrada" rows="2" placeholder="Observações..."></textarea>
-            </div>
-
             <div class="btn-group">
-              <button type="submit" class="btn btn-entrada">✅ Registrar Entrada</button>
-              <button type="reset" class="btn btn-secondary">🔄 Limpar</button>
+              <button type="submit" class="btn btn-entrada"><i class="bi bi-check-lg"></i> Registrar Entrada</button>
+              <button type="reset" class="btn btn-secondary"><i class="bi bi-arrow-clockwise"></i> Limpar</button>
             </div>
           </form>
         </div>
@@ -480,30 +558,19 @@
       <!-- ================== ABA SAÍDA ================== -->
       <div id="tab-saida" class="tab-content">
         <div class="painel saida">
-          <h2>📤 Registrar Saída</h2>
+          <h2><i class="bi bi-box-arrow-up"></i> Registrar Saída</h2>
 
           <div class="info-box">
-            ℹ️ Registre a retirada de materiais do almoxarifado.
+            <i class="bi bi-info-circle"></i> Registre a retirada de materiais do almoxarifado.
           </div>
 
           <form id="formSaida">
-            <div class="form-row-tres">
+            <!-- Linha 1: ID (skip tab), Categoria, Subcategoria, Item -->
+            <div class="form-row-quatro">
               <div class="form-grupo">
-                <label for="dataSaida">Data</label>
-                <input type="date" id="dataSaida" required>
+                <label for="idSaida">ID <span class="opcional">(auto)</span></label>
+                <input type="text" id="idSaida" placeholder="Automático" tabindex="-1">
               </div>
-              <div class="form-grupo">
-                <label for="idSaida">ID <span class="opcional">(editável)</span></label>
-                <input type="text" id="idSaida" placeholder="Automático ou manual">
-              </div>
-              <div class="form-grupo">
-                <label for="operadorSaida">Operador *</label>
-                <input type="text" id="operadorSaida" required placeholder="Quem registrou">
-              </div>
-            </div>
-
-            <!-- Seleção em Cascata -->
-            <div class="form-row-tres">
               <div class="form-grupo">
                 <label for="categoriaSaida">Categoria *</label>
                 <select id="categoriaSaida" required>
@@ -513,50 +580,62 @@
               <div class="form-grupo">
                 <label for="subcategoriaSaida">Subcategoria *</label>
                 <select id="subcategoriaSaida" required disabled>
-                  <option value="">Primeiro selecione categoria</option>
+                  <option value="">Selecione categoria</option>
                 </select>
               </div>
               <div class="form-grupo">
                 <label for="itemSaida">Item *</label>
                 <select id="itemSaida" required disabled>
-                  <option value="">Primeiro selecione subcategoria</option>
+                  <option value="">Selecione subcategoria</option>
                 </select>
               </div>
             </div>
 
             <!-- Info do item selecionado -->
             <div id="itemSelecionadoSaida" class="item-selecionado" style="display: none;">
-              <h4>📌 Item Selecionado</h4>
-              <div class="nome" id="nomeItemSaida">-</div>
+              <div class="item-info-header">
+                <i class="bi bi-pin-angle-fill"></i>
+                <span class="nome" id="nomeItemSaida">-</span>
+              </div>
               <div class="detalhes">
-                <div class="detalhe">📦 Estoque: <strong id="estoqueItemSaida">0</strong></div>
-                <div class="detalhe">📏 Unidade: <strong id="unidadeItemSaida">UN</strong></div>
+                <div class="detalhe"><i class="bi bi-box"></i> Estoque: <strong id="estoqueItemSaida">0</strong></div>
+                <div class="detalhe"><i class="bi bi-rulers"></i> Unidade: <strong id="unidadeItemSaida">UN</strong></div>
               </div>
             </div>
 
-            <div class="form-row-tres">
+            <!-- Linha 2: Quantidade, Data -->
+            <div class="form-row">
               <div class="form-grupo">
                 <label for="qtdSaida">Quantidade *</label>
                 <input type="number" id="qtdSaida" required min="1" placeholder="0">
               </div>
               <div class="form-grupo">
-                <label for="quemRetirouSaida">Quem Retirou *</label>
-                <input type="text" id="quemRetirouSaida" required placeholder="Nome">
-              </div>
-              <div class="form-grupo campo-futuro">
-                <label for="localAplicacaoSaida">Local de Aplicação</label>
-                <input type="text" id="localAplicacaoSaida" disabled placeholder="Em breve">
+                <label for="dataSaida">Data *</label>
+                <input type="date" id="dataSaida" required>
               </div>
             </div>
 
+            <!-- Linha 3: Quem Retirou, Local de Aplicação -->
+            <div class="form-row">
+              <div class="form-grupo">
+                <label for="quemRetirouSaida">Quem Retirou *</label>
+                <input type="text" id="quemRetirouSaida" required placeholder="Nome de quem retirou">
+              </div>
+              <div class="form-grupo">
+                <label for="localAplicacaoSaida">Local de Aplicação <span class="opcional">(opc)</span></label>
+                <input type="text" id="localAplicacaoSaida" placeholder="Onde será usado">
+              </div>
+            </div>
+
+            <!-- Observações -->
             <div class="form-grupo">
-              <label for="obsSaida">Observações <span class="opcional">(opcional)</span></label>
-              <textarea id="obsSaida" rows="2" placeholder="Observações..."></textarea>
+              <label for="obsSaida">Observações <span class="opcional">(opc)</span></label>
+              <textarea id="obsSaida" rows="2" placeholder="Observações adicionais..."></textarea>
             </div>
 
             <div class="btn-group">
-              <button type="submit" class="btn btn-saida">✅ Registrar Saída</button>
-              <button type="reset" class="btn btn-secondary">🔄 Limpar</button>
+              <button type="submit" class="btn btn-saida"><i class="bi bi-check-lg"></i> Registrar Saída</button>
+              <button type="reset" class="btn btn-secondary"><i class="bi bi-arrow-clockwise"></i> Limpar</button>
             </div>
           </form>
         </div>
@@ -565,7 +644,7 @@
       <!-- ================== ABA HISTÓRICO ================== -->
       <div id="tab-historico" class="tab-content">
         <div class="filtros">
-          <h3>🔍 Filtros</h3>
+          <h3><i class="bi bi-funnel"></i> Filtros</h3>
           <div class="form-row-quatro">
             <div class="form-grupo">
               <label for="filtroTipo">Tipo</label>
@@ -600,14 +679,16 @@
                 <th>ID</th>
                 <th>Tipo</th>
                 <th>Item</th>
+                <th>Obs</th>
                 <th>Qtd</th>
                 <th>Operador</th>
                 <th>Detalhes</th>
+                <th id="colAcoes" style="display: none;">Ações</th>
               </tr>
             </thead>
             <tbody>
               <tr>
-                <td colspan="7" class="vazio">Nenhuma movimentação registrada</td>
+                <td colspan="9" class="vazio">Nenhuma movimentação registrada</td>
               </tr>
             </tbody>
           </table>

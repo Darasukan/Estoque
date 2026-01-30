@@ -186,10 +186,10 @@ function atualizarPreview() {
   // Montar nome
   let partes = [categoria.nome, subcategoria.nome];
   
-  // Adicionar valores dos atributos
+  // Adicionar valores dos atributos com nome do atributo
   const valores = coletarValoresAtributos();
-  Object.values(valores).forEach(v => {
-    if (v) partes.push(v);
+  Object.entries(valores).forEach(([nome, valor]) => {
+    if (valor) partes.push(`${nome}: ${valor}`);
   });
 
   // Adicionar descrição se houver
@@ -242,10 +242,10 @@ function criarItem(e) {
     }
   }
 
-  // Montar nome completo
+  // Montar nome completo com nome dos atributos
   let partes = [categoria.nome, subcategoria.nome];
-  Object.values(atributosValores).forEach(v => {
-    if (v) partes.push(v);
+  Object.entries(atributosValores).forEach(([nome, valor]) => {
+    if (valor) partes.push(`${nome}: ${valor}`);
   });
   if (descricao) partes.push(descricao);
   const nomeCompleto = partes.join(' - ');

@@ -2,36 +2,37 @@
 <nav class="navbar">
   <div class="navbar-container">
     <div class="navbar-brand">
-      <h1>🏭 Almoxarifado</h1>
+      <h1><i class="bi bi-box-seam-fill"></i> Almoxarifado</h1>
     </div>
     
     <div class="navbar-menu">
-      <a href="index.html" class="nav-btn index-link">🏠 Painel</a>
-      <a href="produtos.html" class="nav-btn produtos-link">📦 Catálogo</a>
+      <a href="index.html" class="nav-btn index-link"><i class="bi bi-speedometer2"></i> Painel</a>
+      <a href="produtos.html" class="nav-btn produtos-link"><i class="bi bi-box"></i> Catálogo</a>
       
       <div id="adminMenu" style="display: none;" class="admin-links">
-        <a href="movimentos.html" class="nav-btn movimentos-link">📥 Movimentações</a>
-        <a href="cadastro.html" class="nav-btn cadastro-link">📁 Cadastros</a>
-        <a href="relatorios.html" class="nav-btn relatorios-link">📊 Relatórios</a>
+        <a href="itens.html" class="nav-btn itens-link"><i class="bi bi-plus-circle"></i> Novo Item</a>
+        <a href="movimentos.html" class="nav-btn movimentos-link"><i class="bi bi-arrow-left-right"></i> Movimentações</a>
+        <a href="cadastro.html" class="nav-btn cadastro-link"><i class="bi bi-folder"></i> Cadastros</a>
+        <a href="relatorios.html" class="nav-btn relatorios-link"><i class="bi bi-graph-up"></i> Relatórios</a>
       </div>
     </div>
     
     <!-- User Info e Auth -->
     <div class="navbar-auth">
-      <span id="usuarioLogado" class="user-name">Visitante</span>
+      <span id="usuarioLogado" class="user-name"><i class="bi bi-person-circle"></i> Visitante</span>
       
       <div id="loginSection" class="auth-buttons">
-        <button id="btnLoginToggle" class="btn-login">🔐 Login</button>
+        <button id="btnLoginToggle" class="btn-login"><i class="bi bi-box-arrow-in-right"></i> Login</button>
         <form id="loginFormSidebar" class="login-form" style="display: none;" autocomplete="on">
           <input type="text" id="loginUsuario" placeholder="Usuário" required autocomplete="username">
           <input type="password" id="loginSenha" placeholder="Senha" required autocomplete="current-password">
-          <button type="submit" class="btn-submit">Entrar</button>
-          <button type="button" id="btnCancelarLogin" class="btn-cancel">Cancelar</button>
+          <button type="submit" class="btn-submit"><i class="bi bi-check-lg"></i> Entrar</button>
+          <button type="button" id="btnCancelarLogin" class="btn-cancel"><i class="bi bi-x-lg"></i></button>
         </form>
       </div>
       
       <div id="logoutSection" style="display: none;">
-        <button class="btn-logout" onclick="logout()">🚪 Sair</button>
+        <button class="btn-logout" onclick="logout()"><i class="bi bi-box-arrow-right"></i> Sair</button>
       </div>
     </div>
   </div>

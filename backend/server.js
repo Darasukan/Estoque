@@ -524,6 +524,10 @@ app.get('/movimentos.html', (req, res) => {
   res.sendFile(path.join(__dirname, '../frontend/html/movimentos.html'));
 });
 
+app.get('/itens.html', (req, res) => {
+  res.sendFile(path.join(__dirname, '../frontend/html/itens.html'));
+});
+
 app.get('/relatorios.html', (req, res) => {
   res.sendFile(path.join(__dirname, '../frontend/html/relatorios.html'));
 });

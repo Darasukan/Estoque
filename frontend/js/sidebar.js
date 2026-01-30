@@ -63,12 +63,12 @@ function atualizarNavbarAuth(usuario, token) {
   if (token && usuario) {
     // Usuário logado
     loginSection.style.display = 'none';
-    logoutSection.style.display = 'block';
+    logoutSection.style.display = 'flex';
     adminMenu.style.display = 'flex';
     usuarioLogadoEl.textContent = usuario;
   } else {
     // Usuário não logado
-    loginSection.style.display = 'block';
+    loginSection.style.display = 'flex';
     logoutSection.style.display = 'none';
     adminMenu.style.display = 'none';
     usuarioLogadoEl.textContent = 'Visitante';
@@ -77,13 +77,15 @@ function atualizarNavbarAuth(usuario, token) {
     if (btnLoginToggle) {
       btnLoginToggle.addEventListener('click', (e) => {
         e.preventDefault();
-        loginFormSidebar.style.display = loginFormSidebar.style.display === 'none' ? 'block' : 'none';
+        loginFormSidebar.style.display = 'flex';
+        btnLoginToggle.style.display = 'none';
       });
     }
     
     if (btnCancelarLogin) {
       btnCancelarLogin.addEventListener('click', () => {
         loginFormSidebar.style.display = 'none';
+        btnLoginToggle.style.display = 'flex';
         loginUsuario.value = '';
         loginSenha.value = '';
       });
@@ -130,7 +132,10 @@ async function fazerLoginSidebar(usuario, senha) {
 
 // ==================== LOGOUT ====================
 function logout() {
-  localStorage.clear();
+  // Remove apenas dados de autenticação, preserva cadastros
+  localStorage.removeItem('token');
+  localStorage.removeItem('usuario');
+  localStorage.removeItem('perfil');
   location.reload();
 }
 

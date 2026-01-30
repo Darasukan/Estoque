@@ -58,14 +58,26 @@ function setupAtributosInput() {
   if (!input || !container) return;
 
   input.addEventListener('keydown', (e) => {
+    // Enter adiciona a tag e mantém foco
     if (e.key === 'Enter') {
       e.preventDefault();
+      e.stopPropagation();
       const valor = input.value.trim();
       if (valor && !atributosTemp.includes(valor)) {
         atributosTemp.push(valor);
         atualizarAtributosVisuais();
       }
       input.value = '';
+      // Garantir foco no input
+      setTimeout(() => input.focus(), 0);
+    }
+    
+    // Backspace com input vazio remove última tag
+    if (e.key === 'Backspace' && input.value === '' && atributosTemp.length > 0) {
+      e.preventDefault();
+      atributosTemp.pop();
+      atualizarAtributosVisuais();
+      setTimeout(() => input.focus(), 0);
     }
   });
 
@@ -163,8 +175,8 @@ function carregarCategorias() {
             <div class="desc-item">${contarSubcategorias(cat.id)} subcategoria(s)</div>
           </div>
           <div class="acoes-item">
-            <button class="btn-editar" onclick="editarCategoria('${cat.id}')">✏️</button>
-            <button class="btn-deletar" onclick="deletarCategoria('${cat.id}')">🗑️</button>
+            <button class="btn-editar" onclick="editarCategoria('${cat.id}')"><i class="bi bi-pencil"></i></button>
+            <button class="btn-deletar" onclick="deletarCategoria('${cat.id}')"><i class="bi bi-trash"></i></button>
           </div>
         </div>
       `).join('');
@@ -315,8 +327,8 @@ function carregarSubcategorias(filtroCategoria = '') {
             </div>
           </div>
           <div class="acoes-item">
-            <button class="btn-editar" onclick="editarSubcategoria('${sub.id}')">✏️</button>
-            <button class="btn-deletar" onclick="deletarSubcategoria('${sub.id}')">🗑️</button>
+            <button class="btn-editar" onclick="editarSubcategoria('${sub.id}')"><i class="bi bi-pencil"></i></button>
+            <button class="btn-deletar" onclick="deletarSubcategoria('${sub.id}')"><i class="bi bi-trash"></i></button>
           </div>
         </div>
       `;

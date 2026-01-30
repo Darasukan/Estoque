@@ -4,377 +4,44 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Cadastros - Almoxarifado</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
   <link rel="stylesheet" href="../styles.css">
-  <style>
-    .container {
-      max-width: 1400px;
-      margin: 0 auto;
-      padding: 20px;
-    }
-
-    .main-content {
-      margin-top: 80px;
-    }
-
-    .pagina-titulo {
-      font-size: 28px;
-      color: #333;
-      margin-bottom: 30px;
-      display: flex;
-      align-items: center;
-      gap: 10px;
-    }
-
-    .layout-dois-paineis {
-      display: grid;
-      grid-template-columns: 1fr 1.5fr;
-      gap: 25px;
-      margin-top: 20px;
-    }
-
-    .painel {
-      background: white;
-      padding: 25px;
-      border-radius: 10px;
-      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-    }
-
-    .painel h2 {
-      font-size: 18px;
-      color: #333;
-      margin-bottom: 20px;
-      padding-bottom: 10px;
-      border-bottom: 2px solid #eee;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-
-    .form-grupo {
-      margin-bottom: 18px;
-    }
-
-    .form-grupo label {
-      display: block;
-      margin-bottom: 6px;
-      color: #333;
-      font-weight: 600;
-      font-size: 13px;
-    }
-
-    .form-grupo label .opcional {
-      color: #999;
-      font-weight: normal;
-      font-size: 11px;
-    }
-
-    .form-grupo input,
-    .form-grupo select,
-    .form-grupo textarea {
-      width: 100%;
-      padding: 10px 12px;
-      border: 2px solid #ddd;
-      border-radius: 6px;
-      font-size: 14px;
-      font-family: inherit;
-    }
-
-    .form-grupo input:focus,
-    .form-grupo select:focus,
-    .form-grupo textarea:focus {
-      outline: none;
-      border-color: #2563eb;
-      box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
-    }
-
-    .form-grupo small {
-      display: block;
-      margin-top: 4px;
-      color: #999;
-      font-size: 11px;
-    }
-
-    .form-row {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 15px;
-    }
-
-    .btn-group {
-      display: flex;
-      gap: 8px;
-      margin-top: 20px;
-    }
-
-    .btn {
-      padding: 10px 18px;
-      border: none;
-      border-radius: 6px;
-      font-size: 13px;
-      cursor: pointer;
-      font-weight: 600;
-      transition: all 0.3s;
-      flex: 1;
-    }
-
-    .btn-primary {
-      background: #2563eb;
-      color: white;
-    }
-
-    .btn-primary:hover {
-      background: #1d4ed8;
-    }
-
-    .btn-secondary {
-      background: #f0f0f0;
-      color: #333;
-    }
-
-    .btn-secondary:hover {
-      background: #e0e0e0;
-    }
-
-    .lista-itens {
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
-      margin-top: 15px;
-      max-height: 300px;
-      overflow-y: auto;
-    }
-
-    .item-lista {
-      background: #f8f9fa;
-      padding: 12px;
-      border-radius: 6px;
-      border-left: 4px solid #2563eb;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-
-    .item-lista.subcategoria {
-      border-left-color: #10b981;
-    }
-
-    .info-item {
-      flex: 1;
-    }
-
-    .nome-item {
-      font-weight: 600;
-      color: #333;
-      font-size: 14px;
-    }
-
-    .desc-item {
-      font-size: 12px;
-      color: #666;
-      margin-top: 2px;
-    }
-
-    .badges {
-      display: flex;
-      gap: 6px;
-      margin-top: 6px;
-    }
-
-    .badge {
-      padding: 2px 8px;
-      border-radius: 12px;
-      font-size: 10px;
-      font-weight: 600;
-    }
-
-    .badge-unidade {
-      background: #fef3c7;
-      color: #92400e;
-    }
-
-    .badge-minimo {
-      background: #fee2e2;
-      color: #991b1b;
-    }
-
-    .badge-atributo {
-      background: #e0e7ff;
-      color: #3730a3;
-    }
-
-    .acoes-item {
-      display: flex;
-      gap: 6px;
-    }
-
-    .btn-editar,
-    .btn-deletar {
-      padding: 5px 10px;
-      font-size: 11px;
-      border: none;
-      border-radius: 4px;
-      cursor: pointer;
-      transition: all 0.3s;
-    }
-
-    .btn-editar {
-      background: #3b82f6;
-      color: white;
-    }
-
-    .btn-deletar {
-      background: #ef4444;
-      color: white;
-    }
-
-    .vazio {
-      padding: 25px 15px;
-      text-align: center;
-      color: #999;
-      font-size: 13px;
-      background: #f8f9fa;
-      border-radius: 6px;
-      border: 2px dashed #ddd;
-    }
-
-    .mensagem {
-      padding: 15px;
-      border-radius: 6px;
-      margin-bottom: 20px;
-      display: none;
-    }
-
-    .mensagem.sucesso {
-      background: #d1fae5;
-      color: #065f46;
-      border: 1px solid #a7f3d0;
-    }
-
-    .mensagem.erro {
-      background: #fee2e2;
-      color: #7f1d1d;
-      border: 1px solid #fca5a5;
-    }
-
-    .info-adicional {
-      background: #f0f9ff;
-      border: 1px solid #93c5fd;
-      padding: 12px;
-      border-radius: 6px;
-      font-size: 13px;
-      color: #0c2d6b;
-      margin-bottom: 20px;
-    }
-
-    .contador {
-      font-size: 12px;
-      color: #666;
-      margin-top: 10px;
-      text-align: right;
-    }
-
-    /* Atributos Input */
-    .atributos-container {
-      border: 2px solid #ddd;
-      border-radius: 6px;
-      padding: 8px;
-      min-height: 44px;
-      display: flex;
-      flex-wrap: wrap;
-      gap: 6px;
-      cursor: text;
-    }
-
-    .atributos-container:focus-within {
-      border-color: #2563eb;
-      box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
-    }
-
-    .atributo-tag {
-      background: #e0e7ff;
-      color: #3730a3;
-      padding: 4px 10px;
-      border-radius: 12px;
-      font-size: 12px;
-      display: flex;
-      align-items: center;
-      gap: 4px;
-    }
-
-    .atributo-tag .remover {
-      cursor: pointer;
-      font-weight: bold;
-    }
-
-    .atributo-tag .remover:hover {
-      color: #dc2626;
-    }
-
-    .atributos-container input {
-      border: none;
-      outline: none;
-      flex: 1;
-      min-width: 120px;
-      padding: 4px;
-      font-size: 14px;
-    }
-
-    .secao-separador {
-      border-top: 2px solid #eee;
-      margin-top: 25px;
-      padding-top: 20px;
-    }
-
-    @media (max-width: 1000px) {
-      .layout-dois-paineis {
-        grid-template-columns: 1fr;
-      }
-    }
-  </style>
 </head>
 <body>
   <div id="navbarContainer"></div>
-
   <div class="container">
     <main class="main-content">
-      <h1 class="pagina-titulo">📁 Cadastros</h1>
-
+      <h1 class="pagina-titulo"><i class="bi bi-folder2"></i> Cadastros</h1>
       <div id="mensagem" class="mensagem"></div>
-
-      <div class="info-adicional">
-        ℹ️ <strong>Estrutura:</strong> Categoria → Subcategoria (com atributos). Depois vá em <strong>Novo Item</strong> para criar itens preenchendo os valores dos atributos.
+      <div class="info-box">
+        <i class="bi bi-info-circle"></i>
+        <div><strong>Estrutura:</strong> Categoria → Subcategoria (com atributos). Depois vá em <strong>Novo Item</strong> para criar itens preenchendo os valores dos atributos.</div>
       </div>
-
       <div class="layout-dois-paineis">
-        <!-- PAINEL 1: CATEGORIAS -->
         <div class="painel">
-          <h2>📦 Categorias</h2>
-
+          <h2><i class="bi bi-box-seam"></i> Categorias</h2>
           <form id="formCategoria">
             <div class="form-grupo">
               <label for="nomeCategoria">Nome da Categoria *</label>
               <input type="text" id="nomeCategoria" required placeholder="Ex: Ferramentas, EPIs, Fixação">
             </div>
-
             <div class="btn-group">
-              <button type="submit" class="btn btn-primary">💾 Salvar</button>
-              <button type="reset" class="btn btn-secondary">🔄</button>
+              <button type="submit" class="btn btn-primary"><i class="bi bi-floppy"></i> Salvar</button>
+              <button type="reset" class="btn btn-secondary"><i class="bi bi-arrow-clockwise"></i></button>
             </div>
           </form>
-
           <div id="listaCategorias" class="lista-itens">
-            <div class="vazio">Nenhuma categoria cadastrada</div>
+            <div class="vazio"><i class="bi bi-inbox"></i> Nenhuma categoria cadastrada</div>
           </div>
-
           <div class="contador">
             <strong id="totalCategorias">0</strong> categoria(s)
           </div>
         </div>
-
-        <!-- PAINEL 2: SUBCATEGORIAS -->
         <div class="painel">
-          <h2>📂 Subcategorias</h2>
-
+          <h2><i class="bi bi-folder"></i> Subcategorias</h2>
           <form id="formSubcategoria">
             <div class="form-grupo">
               <label for="categoriaParente">Categoria *</label>
@@ -382,12 +49,10 @@
                 <option value="">Selecione uma categoria</option>
               </select>
             </div>
-
             <div class="form-grupo">
               <label for="nomeSubcategoria">Nome da Subcategoria *</label>
               <input type="text" id="nomeSubcategoria" required placeholder="Ex: Chaves, Parafusos, Luvas">
             </div>
-
             <div class="form-row">
               <div class="form-grupo">
                 <label for="unidadeSubcategoria">Unidade *</label>
@@ -409,21 +74,18 @@
                 <input type="number" id="estoqueMinimo" required min="0" value="10" placeholder="10">
               </div>
             </div>
-
             <div class="form-grupo">
               <label>Atributos <span class="opcional">(campos que o item terá)</span></label>
               <div class="atributos-container" id="atributosContainer">
-                <input type="text" id="atributoInput" placeholder="Digite e pressione Enter (Ex: Comprimento, Diâmetro)">
+                <input type="text" id="atributoInput" placeholder="Digite e pressione Enter">
               </div>
-              <small>Pressione Enter para adicionar cada atributo. Ex: Comprimento, Diâmetro, Material, Cor</small>
+              <small>Enter para adicionar, Backspace para remover a última</small>
             </div>
-
             <div class="btn-group">
-              <button type="submit" class="btn btn-primary">💾 Salvar Subcategoria</button>
-              <button type="reset" class="btn btn-secondary">🔄</button>
+              <button type="submit" class="btn btn-primary"><i class="bi bi-floppy"></i> Salvar Subcategoria</button>
+              <button type="reset" class="btn btn-secondary"><i class="bi bi-arrow-clockwise"></i></button>
             </div>
           </form>
-
           <div class="secao-separador">
             <div class="form-grupo">
               <label for="filtroSubcategorias">Filtrar por Categoria</label>
@@ -432,11 +94,9 @@
               </select>
             </div>
           </div>
-
           <div id="listaSubcategorias" class="lista-itens">
-            <div class="vazio">Nenhuma subcategoria cadastrada</div>
+            <div class="vazio"><i class="bi bi-inbox"></i> Nenhuma subcategoria cadastrada</div>
           </div>
-
           <div class="contador">
             <strong id="totalSubcategorias">0</strong> subcategoria(s)
           </div>
@@ -444,7 +104,6 @@
       </div>
     </main>
   </div>
-
   <script src="../js/sidebar.js"></script>
   <script src="../js/cadastro.js"></script>
 </body>
