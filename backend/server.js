@@ -7,6 +7,9 @@ const db = require('./database');
 const app = express();
 const PORT = 3000;
 
+// Servir arquivos estáticos da pasta frontend
+app.use(express.static(path.join(__dirname, '../frontend')));
+
 // Usuários demo (Em produção, isso seria um banco de dados)
 const usuarios = {
   'admin': { senha: 'admin123', perfil: 'admin' },
