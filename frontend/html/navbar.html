@@ -1,18 +1,17 @@
-﻿<!-- Navbar de Navegação -->
+﻿<!-- Navbar de Navegação - Almoxarifado -->
 <nav class="navbar">
   <div class="navbar-container">
     <div class="navbar-brand">
-      <h1>📦 Estoque</h1>
+      <h1>🏭 Almoxarifado</h1>
     </div>
     
     <div class="navbar-menu">
-      <a href="index.html" class="nav-btn index-link">🏠 Home</a>
-      <a href="inventario.html" class="nav-btn inventario-link">🏪 Inventário</a>
+      <a href="index.html" class="nav-btn index-link">🏠 Painel</a>
+      <a href="produtos.html" class="nav-btn produtos-link">📦 Catálogo</a>
       
       <div id="adminMenu" style="display: none;" class="admin-links">
-        <a href="produtos.html" class="nav-btn produtos-link">📦 Produtos</a>
-        <a href="movimentos.html" class="nav-btn movimentos-link">🔄 Movimentações</a>
-        <a href="cadastro.html" class="nav-btn cadastro-link">📋 Grupos</a>
+        <a href="movimentos.html" class="nav-btn movimentos-link">📥 Movimentações</a>
+        <a href="cadastro.html" class="nav-btn cadastro-link">📁 Cadastros</a>
         <a href="relatorios.html" class="nav-btn relatorios-link">📊 Relatórios</a>
       </div>
     </div>
@@ -23,9 +22,9 @@
       
       <div id="loginSection" class="auth-buttons">
         <button id="btnLoginToggle" class="btn-login">🔐 Login</button>
-        <form id="loginFormSidebar" class="login-form" style="display: none;">
-          <input type="text" id="loginUsuario" placeholder="Usuário" required>
-          <input type="password" id="loginSenha" placeholder="Senha" required>
+        <form id="loginFormSidebar" class="login-form" style="display: none;" autocomplete="on">
+          <input type="text" id="loginUsuario" placeholder="Usuário" required autocomplete="username">
+          <input type="password" id="loginSenha" placeholder="Senha" required autocomplete="current-password">
           <button type="submit" class="btn-submit">Entrar</button>
           <button type="button" id="btnCancelarLogin" class="btn-cancel">Cancelar</button>
         </form>

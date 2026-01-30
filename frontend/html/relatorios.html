@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Relatórios - Sistema de Estoque</title>
+  <title>Relatórios - Sistema de Almoxarifado</title>
   <link rel="stylesheet" href="../styles.css">
   <style>
     .container {
@@ -318,37 +318,37 @@
         <div class="relatorios-grid">
           <div class="card-relatorio" onclick="abrirRelatorio('estoque')">
             <h3>📦 Relatório de Estoque</h3>
-            <p>Visualize a quantidade atual de todos os produtos em estoque, valores totais e produtos com baixa quantidade.</p>
+            <p>Visualize a quantidade atual de todos os materiais em estoque, localização e itens com baixa quantidade.</p>
             <button class="btn">Abrir Relatório</button>
           </div>
 
           <div class="card-relatorio" onclick="abrirRelatorio('movimentacoes')">
-            <h3>🔄 Relatório de Movimentações</h3>
-            <p>Histórico completo de entradas, saídas, ajustes e devoluções de produtos com data e responsável.</p>
+            <h3>📝 Relatório de Requisições</h3>
+            <p>Histórico completo de entradas, saídas e devoluções de materiais com departamento e solicitante.</p>
             <button class="btn">Abrir Relatório</button>
           </div>
 
-          <div class="card-relatorio" onclick="abrirRelatorio('vendas')">
-            <h3>💰 Relatório de Vendas</h3>
-            <p>Análise de vendas por período, valor total, produtos mais vendidos e margem de lucro.</p>
+          <div class="card-relatorio" onclick="abrirRelatorio('consumo')">
+            <h3>🏢 Consumo por Departamento</h3>
+            <p>Análise de consumo de materiais por departamento, com ranking e totais por período.</p>
             <button class="btn">Abrir Relatório</button>
           </div>
 
           <div class="card-relatorio" onclick="abrirRelatorio('criticidade')">
-            <h3>⚠️ Relatório de Criticidade</h3>
-            <p>Produtos com estoque abaixo do mínimo, produtos fora de estoque e alertas de reposição.</p>
+            <h3>⚠️ Materiais Críticos</h3>
+            <p>Materiais com estoque abaixo do mínimo, materiais zerados e alertas de reposição urgente.</p>
             <button class="btn">Abrir Relatório</button>
           </div>
 
           <div class="card-relatorio" onclick="abrirRelatorio('familias')">
-            <h3>📚 Relatório por Famílias</h3>
-            <p>Análise de produtos agrupados por família/categoria com valores e quantidades totais.</p>
+            <h3>📂 Relatório por Grupos</h3>
+            <p>Análise de materiais agrupados por família/grupo com quantidades e localizações.</p>
             <button class="btn">Abrir Relatório</button>
           </div>
 
-          <div class="card-relatorio" onclick="abrirRelatorio('financeiro')">
-            <h3>💵 Relatório Financeiro</h3>
-            <p>Análise financeira com valor total em estoque, custo total e preço total de venda.</p>
+          <div class="card-relatorio" onclick="abrirRelatorio('fornecedores')">
+            <h3>🚚 Relatório de Fornecedores</h3>
+            <p>Lista de fornecedores, materiais fornecidos e histórico de entradas por fornecedor.</p>
             <button class="btn">Abrir Relatório</button>
           </div>
         </div>
@@ -361,24 +361,26 @@
         <h2>📦 Relatório de Estoque</h2>
 
         <div class="info-box">
-          ℹ️ Visualize todos os produtos em estoque com suas quantidades, valores e status.
+          ℹ️ Visualize todos os materiais em estoque com suas quantidades, localizações e status.
         </div>
 
         <div class="filtros-relatorio">
           <h3>Filtros</h3>
           <div class="form-row">
             <div class="form-grupo">
-              <label for="filtroFamilia">Família</label>
+              <label for="filtroFamilia">Grupo</label>
               <select id="filtroFamilia">
-                <option value="">Todas as famílias</option>
-                <option value="pneus">Pneus</option>
-                <option value="rodas">Rodas</option>
+                <option value="">Todos os grupos</option>
+                <option value="epi">EPIs</option>
+                <option value="fixacao">Fixação</option>
+                <option value="eletrica">Elétrica</option>
+                <option value="hidraulica">Hidráulica</option>
               </select>
             </div>
             <div class="form-grupo">
               <label for="filtroStatusEstoque">Status</label>
               <select id="filtroStatusEstoque">
-                <option value="">Todos os produtos</option>
+                <option value="">Todos os materiais</option>
                 <option value="normal">✅ Estoque Normal</option>
                 <option value="baixo">⚠️ Estoque Baixo</option>
                 <option value="zerado">❌ Sem Estoque</option>
@@ -394,19 +396,19 @@
         <div class="resultado-relatorio">
           <div class="resumo-stats">
             <div class="stat-box">
-              <div class="stat-label">Total de Produtos</div>
+              <div class="stat-label">Total de Materiais</div>
               <div class="stat-valor">0</div>
             </div>
             <div class="stat-box azul">
-              <div class="stat-label">Valor Total (Custo)</div>
-              <div class="stat-valor">R$ 0,00</div>
+              <div class="stat-label">Quantidade Total</div>
+              <div class="stat-valor">0</div>
             </div>
             <div class="stat-box verde">
-              <div class="stat-label">Valor Total (Venda)</div>
-              <div class="stat-valor">R$ 0,00</div>
+              <div class="stat-label">Estoque Normal</div>
+              <div class="stat-valor">0</div>
             </div>
             <div class="stat-box laranja">
-              <div class="stat-label">Produtos em Falta</div>
+              <div class="stat-label">Materiais Críticos</div>
               <div class="stat-valor">0</div>
             </div>
           </div>
@@ -416,18 +418,17 @@
               <thead>
                 <tr>
                   <th>Código</th>
-                  <th>Produto</th>
-                  <th>Família</th>
+                  <th>Descrição</th>
+                  <th>Grupo</th>
+                  <th>Localização</th>
                   <th>Quantidade</th>
-                  <th>Mín. Recomendado</th>
-                  <th>Preço Unitário</th>
-                  <th>Valor Total</th>
+                  <th>Mínimo</th>
                   <th>Status</th>
                 </tr>
               </thead>
               <tbody>
                 <tr>
-                  <td colspan="8" class="vazio">Gere o relatório para visualizar os dados.</td>
+                  <td colspan="7" class="vazio">Gere o relatório para visualizar os dados.</td>
                 </tr>
               </tbody>
             </table>
@@ -439,10 +440,10 @@
       <div id="relMovimentacoes" class="painel-relatorio">
         <button class="btn-voltar" onclick="voltarAoMenu()">← Voltar ao Menu</button>
 
-        <h2>🔄 Relatório de Movimentações</h2>
+        <h2>� Relatório de Requisições</h2>
 
         <div class="info-box">
-          ℹ️ Histórico completo de todas as movimentações de estoque com detalhes de entrada, saída, ajuste e devolução.
+          ℹ️ Histórico completo de todas as requisições de materiais com departamento e solicitante.
         </div>
 
         <div class="filtros-relatorio">
@@ -470,11 +471,11 @@
                 <tr>
                   <th>Data</th>
                   <th>Tipo</th>
-                  <th>Produto</th>
+                  <th>Material</th>
                   <th>Quantidade</th>
-                  <th>Valor Unitário</th>
-                  <th>Valor Total</th>
-                  <th>Responsável</th>
+                  <th>Departamento</th>
+                  <th>Solicitante</th>
+                  <th>Motivo</th>
                 </tr>
               </thead>
               <tbody>
@@ -488,28 +489,28 @@
       </div>
 
       <!-- OUTROS RELATÓRIOS (placeholders) -->
-      <div id="relVendas" class="painel-relatorio">
+      <div id="relConsumo" class="painel-relatorio">
         <button class="btn-voltar" onclick="voltarAoMenu()">← Voltar ao Menu</button>
-        <h2>💰 Relatório de Vendas</h2>
-        <div class="info-box">ℹ️ Relatório de vendas por período em desenvolvimento...</div>
+        <h2>🏢 Consumo por Departamento</h2>
+        <div class="info-box">ℹ️ Análise de consumo de materiais por departamento em desenvolvimento...</div>
       </div>
 
       <div id="relCriticidade" class="painel-relatorio">
         <button class="btn-voltar" onclick="voltarAoMenu()">← Voltar ao Menu</button>
-        <h2>⚠️ Relatório de Criticidade</h2>
-        <div class="info-box">ℹ️ Produtos com baixo estoque em desenvolvimento...</div>
+        <h2>⚠️ Materiais Críticos</h2>
+        <div class="info-box">ℹ️ Materiais com baixo estoque em desenvolvimento...</div>
       </div>
 
       <div id="relFamilias" class="painel-relatorio">
         <button class="btn-voltar" onclick="voltarAoMenu()">← Voltar ao Menu</button>
-        <h2>📚 Relatório por Famílias</h2>
-        <div class="info-box">ℹ️ Análise por famílias em desenvolvimento...</div>
+        <h2>📂 Relatório por Grupos</h2>
+        <div class="info-box">ℹ️ Análise por grupos em desenvolvimento...</div>
       </div>
 
-      <div id="relFinanceiro" class="painel-relatorio">
+      <div id="relFornecedores" class="painel-relatorio">
         <button class="btn-voltar" onclick="voltarAoMenu()">← Voltar ao Menu</button>
-        <h2>💵 Relatório Financeiro</h2>
-        <div class="info-box">ℹ️ Análise financeira em desenvolvimento...</div>
+        <h2>🚚 Relatório de Fornecedores</h2>
+        <div class="info-box">ℹ️ Análise de fornecedores em desenvolvimento...</div>
       </div>
     </main>
   </div>

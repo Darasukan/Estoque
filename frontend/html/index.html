@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Dashboard - Sistema de Estoque</title>
+  <title>Painel - Sistema de Almoxarifado</title>
   <link rel="stylesheet" href="../styles.css">
   <style>
     .dashboard-grid {
@@ -93,23 +93,47 @@
       color: #991b1b;
       font-weight: bold;
     }
+
+    .lista-rapida .local {
+      color: #666;
+      font-size: 11px;
+    }
+
+    .requisicao-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .requisicao-info {
+      flex: 1;
+    }
+
+    .requisicao-departamento {
+      background: #e0f2fe;
+      color: #0369a1;
+      padding: 2px 8px;
+      border-radius: 12px;
+      font-size: 11px;
+      font-weight: 600;
+    }
   </style>
 </head>
 <body>
   <div class="container">
-    <!-- Sidebar será carregada por JavaScript -->
+    <!-- Navbar será carregada por JavaScript -->
 
     <!-- Conteúdo Principal -->
     <main class="main-content">
-      <h2>📊 Dashboard - Sistema de Estoque</h2>
-      <p style="color: #666; margin-bottom: 30px;">Resumo geral do seu estoque</p>
+      <h2>🏭 Painel do Almoxarifado</h2>
+      <p style="color: #666; margin-bottom: 30px;">Resumo geral dos materiais e requisições</p>
 
       <!-- Cards de Estatísticas -->
       <div class="dashboard-grid">
         <div class="card-stat">
-          <h4>Total de Produtos</h4>
+          <h4>Total de Materiais</h4>
           <p class="valor" id="totalProdutos">0</p>
-          <p class="subtitulo">Cadastrados no sistema</p>
+          <p class="subtitulo">Itens cadastrados no sistema</p>
         </div>
 
         <div class="card-stat" style="border-top-color: #10b981;">
@@ -118,38 +142,38 @@
           <p class="subtitulo">Unidades disponíveis</p>
         </div>
 
-        <div class="card-stat" style="border-top-color: #8b5cf6;">
-          <h4>Valor Total</h4>
-          <p class="valor" id="valorTotal">R$ 0,00</p>
-          <p class="subtitulo">Investimento em estoque</p>
-        </div>
-
         <div class="card-stat" style="border-top-color: #f59e0b;">
-          <h4>Produtos com Baixo Estoque</h4>
+          <h4>Materiais Críticos</h4>
           <p class="valor" id="produtosBaixoEstoque">0</p>
-          <p class="subtitulo">Quantidade < 10</p>
+          <p class="subtitulo">Abaixo do estoque mínimo</p>
+        </div>
+
+        <div class="card-stat" style="border-top-color: #8b5cf6;">
+          <h4>Requisições Hoje</h4>
+          <p class="valor" id="requisicoesDia">0</p>
+          <p class="subtitulo">Saídas registradas</p>
         </div>
       </div>
 
-      <!-- Produtos Recentes -->
+      <!-- Materiais Críticos (Estoque Baixo) -->
       <div class="dashboard-section">
-        <h3>🆕 Produtos Recentes</h3>
-        <ul class="lista-rapida" id="listaProdutosRecentes">
-          <li style="text-align: center; color: #999; padding: 20px;">Carregando...</li>
-        </ul>
-      </div>
-
-      <!-- Produtos com Baixo Estoque -->
-      <div class="dashboard-section">
-        <h3>⚠️ Produtos com Baixo Estoque</h3>
+        <h3>⚠️ Materiais Críticos - Necessário Reposição</h3>
         <ul class="lista-rapida" id="listaBaixoEstoque">
           <li style="text-align: center; color: #999; padding: 20px;">Carregando...</li>
         </ul>
       </div>
 
-      <!-- Famílias Cadastradas -->
+      <!-- Últimas Requisições -->
       <div class="dashboard-section">
-        <h3>👥 Grupos/Famílias Cadastradas</h3>
+        <h3>📝 Últimas Requisições</h3>
+        <ul class="lista-rapida" id="listaRequisicoes">
+          <li style="text-align: center; color: #999; padding: 20px;">Carregando...</li>
+        </ul>
+      </div>
+
+      <!-- Grupos/Famílias Cadastradas -->
+      <div class="dashboard-section">
+        <h3>📂 Grupos de Materiais</h3>
         <ul class="lista-rapida" id="listaFamilias">
           <li style="text-align: center; color: #999; padding: 20px;">Carregando...</li>
         </ul>
@@ -158,16 +182,16 @@
       <!-- Botões de Acesso Rápido -->
       <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin-top: 30px;">
         <a href="produtos.html" class="btn btn-primary" style="padding: 15px; text-align: center; text-decoration: none;">
-          📦 Gerenciar Produtos
+          🔧 Gerenciar Materiais
         </a>
         <a href="inventario.html" class="btn btn-primary" style="padding: 15px; text-align: center; text-decoration: none; background: #10b981;">
-          🏪 Ver Inventário
+          📋 Catálogo de Materiais
         </a>
-        <a href="cadastro.html" class="btn btn-primary" style="padding: 15px; text-align: center; text-decoration: none; background: #8b5cf6;">
-          📋 Cadastro de Grupos
+        <a href="movimentos.html" class="btn btn-primary" style="padding: 15px; text-align: center; text-decoration: none; background: #f59e0b;">
+          📝 Nova Requisição
         </a>
-        <a href="relatorios.html" class="btn btn-primary" style="padding: 15px; text-align: center; text-decoration: none; background: #f59e0b;">
-          📊 Relatórios Completos
+        <a href="relatorios.html" class="btn btn-primary" style="padding: 15px; text-align: center; text-decoration: none; background: #8b5cf6;">
+          📊 Relatórios
         </a>
       </div>
     </main>
