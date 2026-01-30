@@ -503,6 +503,35 @@ app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, '../frontend/html/index.html'));
 });
 
+// Rotas para servir arquivos HTML
+app.get('/index.html', (req, res) => {
+  res.sendFile(path.join(__dirname, '../frontend/html/index.html'));
+});
+
+app.get('/inventario.html', (req, res) => {
+  res.sendFile(path.join(__dirname, '../frontend/html/inventario.html'));
+});
+
+app.get('/produtos.html', (req, res) => {
+  res.sendFile(path.join(__dirname, '../frontend/html/produtos.html'));
+});
+
+app.get('/cadastro.html', (req, res) => {
+  res.sendFile(path.join(__dirname, '../frontend/html/cadastro.html'));
+});
+
+app.get('/movimentos.html', (req, res) => {
+  res.sendFile(path.join(__dirname, '../frontend/html/movimentos.html'));
+});
+
+app.get('/relatorios.html', (req, res) => {
+  res.sendFile(path.join(__dirname, '../frontend/html/relatorios.html'));
+});
+
+app.get('/login.html', (req, res) => {
+  res.sendFile(path.join(__dirname, '../frontend/html/login.html'));
+});
+
 // Iniciar servidor
 app.listen(PORT, '0.0.0.0', () => {
   const os = require('os');
