@@ -133,6 +133,6 @@ function carregarFamilias(categorias) {
 
 function logout() {
   localStorage.clear();
-  window.location.href = 'html/login.html';
+  location.reload();
 }
 

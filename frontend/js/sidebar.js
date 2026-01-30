@@ -1,6 +1,6 @@
 ﻿// ==================== CARREGAR SIDEBAR COMPARTILHADA ====================
 document.addEventListener('DOMContentLoaded', () => {
-  fetch('html/sidebar.html')
+  fetch('sidebar.html')
     .then(response => response.text())
     .then(html => {
       // Encontrar ou criar container para a sidebar

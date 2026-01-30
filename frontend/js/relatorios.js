@@ -142,6 +142,6 @@ function exportarPDF() {
 
 function logout() {
   localStorage.clear();
-  window.location.href = 'html/login.html';
+  location.reload();
 }
 

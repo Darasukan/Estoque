@@ -71,6 +71,6 @@ async function carregarMovimentos() {
 
 function logout() {
   localStorage.clear();
-  window.location.href = 'html/login.html';
+  location.reload();
 }
 
