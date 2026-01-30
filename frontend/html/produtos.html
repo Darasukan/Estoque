@@ -5,168 +5,422 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Produtos - Sistema de Estoque</title>
   <link rel="stylesheet" href="../styles.css">
+  <style>
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+
+    .main-content {
+      margin-top: 80px;
+    }
+
+    .pagina-titulo {
+      font-size: 28px;
+      color: #333;
+      margin-bottom: 30px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .tab-container {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 30px;
+      border-bottom: 2px solid #eee;
+    }
+
+    .tab-btn {
+      padding: 12px 20px;
+      background: none;
+      border: none;
+      cursor: pointer;
+      font-size: 16px;
+      color: #666;
+      border-bottom: 3px solid transparent;
+      transition: all 0.3s;
+    }
+
+    .tab-btn.ativo {
+      color: #2563eb;
+      border-bottom-color: #2563eb;
+    }
+
+    .tab-btn:hover {
+      color: #2563eb;
+    }
+
+    .tab-content {
+      display: none;
+    }
+
+    .tab-content.ativo {
+      display: block;
+    }
+
+    .formulario-container {
+      background: white;
+      padding: 25px;
+      border-radius: 10px;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+      margin-bottom: 30px;
+    }
+
+    .form-grupo {
+      margin-bottom: 20px;
+    }
+
+    .form-grupo label {
+      display: block;
+      margin-bottom: 8px;
+      color: #333;
+      font-weight: 600;
+      font-size: 14px;
+    }
+
+    .form-grupo input,
+    .form-grupo select,
+    .form-grupo textarea {
+      width: 100%;
+      padding: 12px;
+      border: 2px solid #ddd;
+      border-radius: 6px;
+      font-size: 14px;
+      font-family: inherit;
+    }
+
+    .form-grupo textarea {
+      resize: vertical;
+      min-height: 100px;
+    }
+
+    .form-grupo input:focus,
+    .form-grupo select:focus,
+    .form-grupo textarea:focus {
+      outline: none;
+      border-color: #2563eb;
+      box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+    }
+
+    .form-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+    }
+
+    .btn-group {
+      display: flex;
+      gap: 10px;
+      margin-top: 25px;
+    }
+
+    .btn {
+      padding: 12px 24px;
+      border: none;
+      border-radius: 6px;
+      font-size: 14px;
+      cursor: pointer;
+      font-weight: 600;
+      transition: all 0.3s;
+    }
+
+    .btn-primary {
+      background: #2563eb;
+      color: white;
+    }
+
+    .btn-primary:hover {
+      background: #1d4ed8;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);
+    }
+
+    .btn-secondary {
+      background: #f0f0f0;
+      color: #333;
+    }
+
+    .btn-secondary:hover {
+      background: #e0e0e0;
+    }
+
+    .btn-danger {
+      background: #dc2626;
+      color: white;
+    }
+
+    .btn-danger:hover {
+      background: #b91c1c;
+    }
+
+    .btn-small {
+      padding: 8px 12px;
+      font-size: 12px;
+    }
+
+    .tabela-container {
+      background: white;
+      border-radius: 10px;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+      overflow: hidden;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    th {
+      background: #f8f9fa;
+      padding: 15px;
+      text-align: left;
+      font-weight: 600;
+      color: #333;
+      border-bottom: 2px solid #ddd;
+      font-size: 13px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    td {
+      padding: 15px;
+      border-bottom: 1px solid #eee;
+      color: #666;
+      font-size: 14px;
+    }
+
+    tr:hover {
+      background: #f8f9fa;
+    }
+
+    .status-badge {
+      display: inline-block;
+      padding: 6px 12px;
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: 600;
+    }
+
+    .status-ativo {
+      background: #d1fae5;
+      color: #065f46;
+    }
+
+    .status-inativo {
+      background: #fee2e2;
+      color: #7f1d1d;
+    }
+
+    .mensagem {
+      padding: 15px;
+      border-radius: 6px;
+      margin-bottom: 20px;
+      display: none;
+    }
+
+    .mensagem.sucesso {
+      background: #d1fae5;
+      color: #065f46;
+      border: 1px solid #a7f3d0;
+    }
+
+    .mensagem.erro {
+      background: #fee2e2;
+      color: #7f1d1d;
+      border: 1px solid #fca5a5;
+    }
+
+    .mensagem.info {
+      background: #dbeafe;
+      color: #0c2d6b;
+      border: 1px solid #93c5fd;
+    }
+
+    .vazio {
+      padding: 40px 20px;
+      text-align: center;
+      color: #999;
+      font-size: 16px;
+    }
+
+    .acoes {
+      display: flex;
+      gap: 8px;
+    }
+
+    .alert-info {
+      background: #dbeafe;
+      border: 1px solid #93c5fd;
+      color: #0c2d6b;
+      padding: 12px;
+      border-radius: 6px;
+      margin-bottom: 20px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    @media (max-width: 768px) {
+      .form-row {
+        grid-template-columns: 1fr;
+      }
+
+      .tabela-container {
+        overflow-x: auto;
+      }
+
+      .btn-group {
+        flex-wrap: wrap;
+      }
+    }
+  </style>
 </head>
 <body>
-  <div class="container">
-    <!-- Sidebar serÃ¡ carregada por JavaScript -->
+  <div id="navbarContainer"></div>
 
-    <!-- ConteÃºdo Principal -->
+  <div class="container">
     <main class="main-content">
-      <!-- SeÃ§Ã£o de Produtos -->
-      <section id="produtos" class="section active">
-        <h2>ðŸ“¦ Gerenciar Produtos</h2>
-        <p style="color: #666; margin-bottom: 30px;">Adicione e gerencie os produtos base do sistema</p>
-        
-        <div id="avisoAuthProdutos" style="display: none; padding: 15px; background: #fff3cd; border: 1px solid #ffc107; border-radius: 4px; margin-bottom: 20px; color: #856404;">
-          <strong>âš ï¸ Recurso Protegido</strong><br>
-          VocÃª precisa estar logado para gerenciar produtos. FaÃ§a login na barra lateral.
-        </div>
-        
-        <div class="form-section" id="formSecaoProdutos">
-          <h3>Adicionar Novo Produto</h3>
+      <h1 class="pagina-titulo">📦 Gestão de Produtos</h1>
+
+      <div class="alert-info">
+        ℹ️ <span>Esta página requer autenticação. Faça login como administrador para gerenciar produtos.</span>
+      </div>
+
+      <div id="mensagem" class="mensagem"></div>
+
+      <div class="tab-container">
+        <button class="tab-btn ativo" data-tab="cadastro">➕ Novo Produto</button>
+        <button class="tab-btn" data-tab="lista">📋 Lista de Produtos</button>
+      </div>
+
+      <!-- ABA: CADASTRO -->
+      <div id="tab-cadastro" class="tab-content ativo">
+        <div class="formulario-container">
+          <h2>Cadastrar Novo Produto</h2>
+          
           <form id="formProduto">
             <div class="form-row">
-              <div class="form-group">
-                <label>Nome *</label>
-                <input type="text" id="nomeProduto" required placeholder="Nome do produto">
+              <div class="form-grupo">
+                <label for="codProduto">Código do Produto *</label>
+                <input type="text" id="codProduto" name="codigo" required placeholder="Ex: PRD001">
               </div>
-              <div class="form-group">
-                <label>SKU *</label>
-                <input type="text" id="skuProduto" required placeholder="SKU Ãºnico">
-              </div>
-            </div>
-            <div class="form-row">
-              <div class="form-group">
-                <label>Quantidade *</label>
-                <input type="number" id="qtdProduto" required min="0" placeholder="0">
-              </div>
-              <div class="form-group">
-                <label>PreÃ§o</label>
-                <input type="number" id="precoProduto" step="0.01" placeholder="0.00">
-              </div>
-            </div>
-            <div class="form-row">
-              <div class="form-group">
-                <label>Categoria</label>
-                <input type="text" id="categoriaProduto" placeholder="Ex: EletrÃ´nicos">
-              </div>
-              <div class="form-group">
-                <label>FamÃ­lia (Grupo)</label>
-                <input type="text" id="grupoProduto" placeholder="Ex: InformÃ¡tica">
+              <div class="form-grupo">
+                <label for="nomeProduto">Nome do Produto *</label>
+                <input type="text" id="nomeProduto" name="nome" required placeholder="Ex: Pneu Aro 15">
               </div>
             </div>
 
-            <!-- SeÃ§Ã£o de Atributos DinÃ¢micos -->
-            <div id="secaoAtributos">
-              <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
-                <strong>Atributos do Produto</strong>
-                <button type="button" class="btn btn-small btn-secondary" onclick="adicionarCampoAtributo()" title="Adicionar atributo">âž•</button>
+            <div class="form-row">
+              <div class="form-grupo">
+                <label for="categoriaProduto">Categoria/Grupo *</label>
+                <select id="categoriaProduto" name="categoria" required>
+                  <option value="">Selecione uma categoria</option>
+                  <option value="pneus">Pneus</option>
+                  <option value="rodas">Rodas</option>
+                  <option value="acessorios">Acessórios</option>
+                  <option value="oleo">Óleo e Fluídos</option>
+                  <option value="pecas">Peças Diversas</option>
+                </select>
               </div>
-              <div id="listaAtributos"></div>
-              <small style="color: #666;">Adicione atributos como processador, cor, tamanho, etc.</small>
+              <div class="form-grupo">
+                <label for="skuProduto">SKU</label>
+                <input type="text" id="skuProduto" name="sku" placeholder="SKU do fornecedor">
+              </div>
             </div>
 
-            <button type="submit" class="btn btn-primary">âž• Adicionar Produto</button>
+            <div class="form-row">
+              <div class="form-grupo">
+                <label for="precoCusto">Preço de Custo (R$) *</label>
+                <input type="number" id="precoCusto" name="precoCusto" step="0.01" required placeholder="0.00">
+              </div>
+              <div class="form-grupo">
+                <label for="precoVenda">Preço de Venda (R$) *</label>
+                <input type="number" id="precoVenda" name="precoVenda" step="0.01" required placeholder="0.00">
+              </div>
+            </div>
+
+            <div class="form-row">
+              <div class="form-grupo">
+                <label for="estoque">Estoque Inicial</label>
+                <input type="number" id="estoque" name="estoque" value="0" placeholder="0">
+              </div>
+              <div class="form-grupo">
+                <label for="estoqueMinimo">Estoque Mínimo</label>
+                <input type="number" id="estoqueMinimo" name="estoqueMinimo" value="10" placeholder="10">
+              </div>
+            </div>
+
+            <div class="form-grupo">
+              <label for="descricao">Descrição do Produto</label>
+              <textarea id="descricao" name="descricao" placeholder="Descrição detalhada do produto, especificações, etc..."></textarea>
+            </div>
+
+            <div class="form-grupo">
+              <label>
+                <input type="checkbox" id="ativo" name="ativo" checked>
+                Produto Ativo
+              </label>
+            </div>
+
+            <div class="btn-group">
+              <button type="submit" class="btn btn-primary">✅ Salvar Produto</button>
+              <button type="reset" class="btn btn-secondary">🔄 Limpar Formulário</button>
+            </div>
           </form>
         </div>
+      </div>
 
-        <!-- Lista de Produtos -->
-        <div class="table-section">
-          <h3>Produtos Cadastrados</h3>
+      <!-- ABA: LISTA -->
+      <div id="tab-lista" class="tab-content">
+        <div class="formulario-container" style="margin-bottom: 20px;">
+          <h3>Filtros</h3>
+          <div class="form-row">
+            <div class="form-grupo">
+              <label for="filtroCategoria">Categoria</label>
+              <select id="filtroCategoria">
+                <option value="">Todas as categorias</option>
+                <option value="pneus">Pneus</option>
+                <option value="rodas">Rodas</option>
+                <option value="acessorios">Acessórios</option>
+                <option value="oleo">Óleo e Fluídos</option>
+                <option value="pecas">Peças Diversas</option>
+              </select>
+            </div>
+            <div class="form-grupo">
+              <label for="filtroBusca">Buscar por Nome/Código</label>
+              <input type="text" id="filtroBusca" placeholder="Digite para filtrar...">
+            </div>
+          </div>
+        </div>
+
+        <div class="tabela-container">
           <table id="tabelaProdutos">
             <thead>
               <tr>
-                <th>ID</th>
+                <th>Código</th>
                 <th>Nome</th>
-                <th>SKU</th>
-                <th>Quantidade</th>
-                <th>PreÃ§o</th>
                 <th>Categoria</th>
-                <th>AÃ§Ãµes</th>
+                <th>Preço Custo</th>
+                <th>Preço Venda</th>
+                <th>Estoque</th>
+                <th>Status</th>
+                <th>Ações</th>
               </tr>
             </thead>
-            <tbody id="bodyProdutos">
+            <tbody>
               <tr>
-                <td colspan="7" style="text-align: center;">Nenhum produto cadastrado</td>
+                <td colspan="8" class="vazio">Nenhum produto cadastrado. Crie um novo produto para começar!</td>
               </tr>
             </tbody>
           </table>
         </div>
-      </section>
+      </div>
     </main>
   </div>
 
-  <!-- Modal de EdiÃ§Ã£o -->
-  <div id="modalEditar" class="modal">
-    <div class="modal-content">
-      <span class="close">&times;</span>
-      <h2>Editar Produto</h2>
-      <form id="formEditarProduto">
-        <input type="hidden" id="idProdutoEdicao">
-        <div class="form-row">
-          <div class="form-group">
-            <label>Nome *</label>
-            <input type="text" id="nomeEditar" required>
-          </div>
-          <div class="form-group">
-            <label>SKU *</label>
-            <input type="text" id="skuEditar" required>
-          </div>
-        </div>
-        <div class="form-row">
-          <div class="form-group">
-            <label>Quantidade *</label>
-            <input type="number" id="qtdEditar" required min="0">
-          </div>
-          <div class="form-group">
-            <label>PreÃ§o</label>
-            <input type="number" id="precoEditar" step="0.01">
-          </div>
-        </div>
-        <div class="form-row">
-          <div class="form-group">
-            <label>Categoria</label>
-            <input type="text" id="categoriaEditar">
-          </div>
-          <div class="form-group">
-            <label>FamÃ­lia (Grupo)</label>
-            <input type="text" id="grupoEditar">
-          </div>
-        </div>
-        <div style="margin-bottom: 15px;">
-          <strong>Atributos</strong>
-          <div id="listaAtributosEditar" style="margin-top: 10px;"></div>
-          <button type="button" class="btn btn-small btn-secondary" onclick="adicionarCampoAtributoEditar()" title="Adicionar atributo">âž• Adicionar Atributo</button>
-        </div>
-        <button type="submit" class="btn btn-primary">ðŸ’¾ Salvar AlteraÃ§Ãµes</button>
-      </form>
-    </div>
-  </div>
-
-  <script>
-    // Verificar autenticaÃ§Ã£o na pÃ¡gina de produtos
-    document.addEventListener('DOMContentLoaded', () => {
-      const token = localStorage.getItem('token');
-      const formSecaoProdutos = document.getElementById('formSecaoProdutos');
-      const tabelaProdutos = document.getElementById('tabelaProdutos');
-      const avisoAuthProdutos = document.getElementById('avisoAuthProdutos');
-      
-      if (!token) {
-        // UsuÃ¡rio nÃ£o autenticado
-        formSecaoProdutos.style.display = 'none';
-        tabelaProdutos.style.display = 'none';
-        avisoAuthProdutos.style.display = 'block';
-      } else {
-        // UsuÃ¡rio autenticado
-        avisoAuthProdutos.style.display = 'none';
-        formSecaoProdutos.style.display = 'block';
-        tabelaProdutos.style.display = 'table';
-      }
-    });
-  </script>
-
-  <script src="../js/sidebar.js"></script>
-  <script src="../js/script.js"></script>
+  <script src="../js/produtos.js"></script>
 </body>
 </html>
 

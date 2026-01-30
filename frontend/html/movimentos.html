@@ -1,141 +1,172 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>MovimentaÃ§Ãµes - Sistema de Estoque</title>
+  <title>Movimentações - Sistema de Estoque</title>
   <link rel="stylesheet" href="../styles.css">
   <style>
-    .movimentos-container {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 30px;
-      margin-top: 30px;
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 20px;
     }
 
-    .form-section {
+    .main-content {
+      margin-top: 80px;
+    }
+
+    .pagina-titulo {
+      font-size: 28px;
+      color: #333;
+      margin-bottom: 30px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .tab-container {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 30px;
+      border-bottom: 2px solid #eee;
+    }
+
+    .tab-btn {
+      padding: 12px 20px;
+      background: none;
+      border: none;
+      cursor: pointer;
+      font-size: 16px;
+      color: #666;
+      border-bottom: 3px solid transparent;
+      transition: all 0.3s;
+    }
+
+    .tab-btn.ativo {
+      color: #2563eb;
+      border-bottom-color: #2563eb;
+    }
+
+    .tab-btn:hover {
+      color: #2563eb;
+    }
+
+    .tab-content {
+      display: none;
+    }
+
+    .tab-content.ativo {
+      display: block;
+    }
+
+    .painel {
       background: white;
-      padding: 20px;
+      padding: 25px;
       border-radius: 10px;
       box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+      margin-bottom: 30px;
     }
 
-    .form-section h3 {
+    .painel h2 {
+      font-size: 20px;
       color: #333;
       margin-bottom: 20px;
-      font-size: 18px;
     }
 
-    .form-group {
-      margin-bottom: 15px;
+    .form-grupo {
+      margin-bottom: 20px;
     }
 
-    .form-group label {
+    .form-grupo label {
       display: block;
       margin-bottom: 8px;
-      color: #555;
-      font-weight: 500;
+      color: #333;
+      font-weight: 600;
       font-size: 14px;
     }
 
-    .form-group input,
-    .form-group select,
-    .form-group textarea {
+    .form-grupo input,
+    .form-grupo select,
+    .form-grupo textarea {
       width: 100%;
-      padding: 10px;
+      padding: 12px;
       border: 2px solid #ddd;
       border-radius: 6px;
       font-size: 14px;
-      transition: border-color 0.3s;
+      font-family: inherit;
     }
 
-    .form-group input:focus,
-    .form-group select:focus,
-    .form-group textarea:focus {
+    .form-grupo input:focus,
+    .form-grupo select:focus,
+    .form-grupo textarea:focus {
       outline: none;
       border-color: #2563eb;
-      box-shadow: 0 0 5px rgba(37, 99, 235, 0.2);
+      box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
     }
 
-    .movimentos-list {
-      background: white;
-      padding: 20px;
-      border-radius: 10px;
-      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    .form-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
     }
 
-    .movimentos-list h3 {
-      color: #333;
-      margin-bottom: 15px;
+    .form-row-tres {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 20px;
     }
 
-    .movimento-item {
-      padding: 15px;
-      border-left: 4px solid #2563eb;
-      margin-bottom: 12px;
-      background: #f9fafb;
-      border-radius: 6px;
-      transition: transform 0.2s;
-    }
-
-    .movimento-item:hover {
-      transform: translateX(5px);
-      background: #f3f4f6;
-    }
-
-    .movimento-header {
+    .btn-group {
       display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 10px;
+      gap: 10px;
+      margin-top: 25px;
     }
 
-    .movimento-header strong {
+    .btn {
+      padding: 12px 24px;
+      border: none;
+      border-radius: 6px;
+      font-size: 14px;
+      cursor: pointer;
+      font-weight: 600;
+      transition: all 0.3s;
+    }
+
+    .btn-primary {
+      background: #2563eb;
+      color: white;
+    }
+
+    .btn-primary:hover {
+      background: #1d4ed8;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);
+    }
+
+    .btn-secondary {
+      background: #f0f0f0;
       color: #333;
     }
 
-    .movimento-tipo {
-      display: inline-block;
-      padding: 4px 12px;
-      border-radius: 20px;
-      font-size: 12px;
-      font-weight: bold;
+    .btn-secondary:hover {
+      background: #e0e0e0;
     }
 
-    .tipo-entrada {
-      background: #dcfce7;
-      color: #166534;
+    .btn-perigo {
+      background: #ef4444;
+      color: white;
     }
 
-    .tipo-saida {
-      background: #fee2e2;
-      color: #991b1b;
-    }
-
-    .movimento-detail {
-      font-size: 13px;
-      color: #666;
-      margin: 5px 0;
-    }
-
-    .movimento-hora {
-      font-size: 12px;
-      color: #999;
-      margin-top: 10px;
-      text-align: right;
+    .btn-perigo:hover {
+      background: #dc2626;
     }
 
     .tabela-container {
-      margin-top: 30px;
       background: white;
-      padding: 20px;
       border-radius: 10px;
       box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-    }
-
-    .tabela-container h3 {
-      color: #333;
-      margin-bottom: 15px;
+      overflow: hidden;
     }
 
     table {
@@ -143,110 +174,272 @@
       border-collapse: collapse;
     }
 
-    thead {
-      background: #f3f4f6;
-    }
-
     th {
-      padding: 12px;
+      background: #f8f9fa;
+      padding: 15px;
       text-align: left;
       font-weight: 600;
       color: #333;
       border-bottom: 2px solid #ddd;
       font-size: 13px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
     }
 
     td {
-      padding: 12px;
-      border-bottom: 1px solid #ddd;
-      font-size: 13px;
+      padding: 15px;
+      border-bottom: 1px solid #eee;
+      color: #666;
+      font-size: 14px;
     }
 
-    tbody tr:hover {
-      background: #f9fafb;
+    tr:hover {
+      background: #f8f9fa;
+    }
+
+    .badge {
+      display: inline-block;
+      padding: 6px 12px;
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: 600;
+    }
+
+    .badge-entrada {
+      background: #d1fae5;
+      color: #065f46;
+    }
+
+    .badge-saida {
+      background: #fee2e2;
+      color: #7f1d1d;
+    }
+
+    .badge-ajuste {
+      background: #fef3c7;
+      color: #78350f;
+    }
+
+    .badge-devolucao {
+      background: #e0e7ff;
+      color: #3730a3;
+    }
+
+    .mensagem {
+      padding: 15px;
+      border-radius: 6px;
+      margin-bottom: 20px;
+      display: none;
+    }
+
+    .mensagem.sucesso {
+      background: #d1fae5;
+      color: #065f46;
+      border: 1px solid #a7f3d0;
+    }
+
+    .mensagem.erro {
+      background: #fee2e2;
+      color: #7f1d1d;
+      border: 1px solid #fca5a5;
+    }
+
+    .mensagem.info {
+      background: #dbeafe;
+      color: #0c2d6b;
+      border: 1px solid #93c5fd;
+    }
+
+    .vazio {
+      padding: 40px 20px;
+      text-align: center;
+      color: #999;
+      font-size: 16px;
+    }
+
+    .info-box {
+      background: #f0f9ff;
+      border: 1px solid #93c5fd;
+      padding: 15px;
+      border-radius: 6px;
+      margin-bottom: 20px;
+      color: #0c2d6b;
+      font-size: 14px;
+    }
+
+    .info-box strong {
+      display: block;
+      margin-bottom: 5px;
+    }
+
+    .filtros {
+      background: white;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+      margin-bottom: 20px;
+    }
+
+    .filtros h3 {
+      margin: 0 0 15px 0;
+      color: #333;
+      font-size: 16px;
+    }
+
+    .acoes {
+      display: flex;
+      gap: 8px;
+    }
+
+    .btn-pequeno {
+      padding: 6px 12px;
+      font-size: 12px;
+    }
+
+    @media (max-width: 768px) {
+      .form-row,
+      .form-row-tres {
+        grid-template-columns: 1fr;
+      }
+
+      .tabela-container {
+        overflow-x: auto;
+      }
     }
   </style>
 </head>
 <body>
+  <div id="navbarContainer"></div>
+
   <div class="container">
-    <!-- Sidebar serÃ¡ carregada por JavaScript -->
-
-    <!-- ConteÃºdo Principal -->
     <main class="main-content">
-      <h2>ðŸ”„ MovimentaÃ§Ãµes de Estoque</h2>
-      <p style="color: #666; margin-bottom: 20px;">Registre entradas e saÃ­das de produtos</p>
+      <h1 class="pagina-titulo">🔄 Movimentações de Estoque</h1>
 
-      <div class="movimentos-container">
-        <!-- FormulÃ¡rio de Nova MovimentaÃ§Ã£o -->
-        <div class="form-section">
-          <h3>Registrar MovimentaÃ§Ã£o</h3>
-          <form id="formMovimento">
-            <div class="form-group">
-              <label>Tipo de Movimento *</label>
-              <select id="tipoMovimento" required>
-                <option value="">-- Selecione --</option>
-                <option value="entrada">ðŸ“¥ Entrada</option>
-                <option value="saida">ðŸ“¤ SaÃ­da</option>
-                <option value="ajuste">ðŸ”§ Ajuste</option>
-              </select>
-            </div>
+      <div id="mensagem" class="mensagem"></div>
 
-            <div class="form-group">
-              <label>SKU do Produto *</label>
-              <input type="text" id="skuMovimento" placeholder="Digite o SKU" required>
-            </div>
+      <div class="tab-container">
+        <button class="tab-btn ativo" data-tab="registrar">➕ Registrar Movimentação</button>
+        <button class="tab-btn" data-tab="historico">📋 Histórico</button>
+      </div>
 
-            <div class="form-group">
-              <label>Quantidade *</label>
-              <input type="number" id="quantidadeMovimento" placeholder="Quantidade" min="1" required>
-            </div>
+      <!-- ABA: REGISTRAR MOVIMENTAÇÃO -->
+      <div id="tab-registrar" class="tab-content ativo">
+        <div class="painel">
+          <h2>Registrar Nova Movimentação</h2>
 
-            <div class="form-group">
-              <label>Motivo/DescriÃ§Ã£o</label>
-              <textarea id="motivoMovimento" placeholder="Compra, devoluÃ§Ã£o, perda, etc..." rows="3"></textarea>
-            </div>
-
-            <button type="submit" class="btn btn-primary" style="width: 100%; margin-top: 10px;">
-              ðŸ’¾ Registrar Movimento
-            </button>
-          </form>
-        </div>
-
-        <!-- Ãšltimos Movimentos -->
-        <div class="movimentos-list">
-          <h3>Ãšltimos Movimentos</h3>
-          <div id="listaMovimentos">
-            <p style="color: #999; text-align: center; padding: 20px;">Carregando movimentos...</p>
+          <div class="info-box">
+            <strong>ℹ️ Tipos de Movimentação:</strong>
+            <span>• <strong>Entrada</strong>: Compra de produtos | • <strong>Saída</strong>: Venda de produtos | • <strong>Ajuste</strong>: Correção de quantidade | • <strong>Devolução</strong>: Retorno de produtos</span>
           </div>
+
+          <form id="formMovimento">
+            <div class="form-row">
+              <div class="form-grupo">
+                <label for="tipoMovimento">Tipo de Movimentação *</label>
+                <select id="tipoMovimento" name="tipo" required>
+                  <option value="">Selecione o tipo</option>
+                  <option value="entrada">📥 Entrada</option>
+                  <option value="saida">📤 Saída</option>
+                  <option value="ajuste">⚙️ Ajuste</option>
+                  <option value="devolucao">↩️ Devolução</option>
+                </select>
+              </div>
+              <div class="form-grupo">
+                <label for="dataMovimento">Data da Movimentação *</label>
+                <input type="date" id="dataMovimento" name="data" required>
+              </div>
+            </div>
+
+            <div class="form-row">
+              <div class="form-grupo">
+                <label for="produtoMovimento">Produto *</label>
+                <select id="produtoMovimento" name="produto" required>
+                  <option value="">Selecione um produto</option>
+                  <option value="prod1">Pneu Aro 15</option>
+                  <option value="prod2">Roda de Alumínio 16"</option>
+                  <option value="prod3">Óleo de Motor 5L</option>
+                </select>
+              </div>
+              <div class="form-grupo">
+                <label for="quantidadeMovimento">Quantidade *</label>
+                <input type="number" id="quantidadeMovimento" name="quantidade" required min="1" placeholder="0">
+              </div>
+            </div>
+
+            <div class="form-row">
+              <div class="form-grupo">
+                <label for="precoUnitario">Preço Unitário (R$)</label>
+                <input type="number" id="precoUnitario" name="precoUnitario" step="0.01" placeholder="0.00">
+              </div>
+              <div class="form-grupo">
+                <label for="fornecedor">Fornecedor / Responsável</label>
+                <input type="text" id="fornecedor" name="fornecedor" placeholder="Nome do fornecedor ou responsável">
+              </div>
+            </div>
+
+            <div class="form-grupo">
+              <label for="observacaoMovimento">Observações</label>
+              <textarea id="observacaoMovimento" name="observacao" placeholder="Informações adicionais sobre a movimentação..."></textarea>
+            </div>
+
+            <div class="btn-group">
+              <button type="submit" class="btn btn-primary">✅ Registrar Movimentação</button>
+              <button type="reset" class="btn btn-secondary">🔄 Limpar Formulário</button>
+            </div>
+          </form>
         </div>
       </div>
 
-      <!-- Tabela Geral -->
-      <div class="tabela-container">
-        <h3>HistÃ³rico de MovimentaÃ§Ãµes</h3>
-        <table id="tabelaMovimentos">
-          <thead>
-            <tr>
-              <th>Data/Hora</th>
-              <th>Tipo</th>
-              <th>SKU</th>
-              <th>Quantidade</th>
-              <th>Motivo</th>
-              <th>UsuÃ¡rio</th>
-            </tr>
-          </thead>
-          <tbody id="bodyMovimentos">
-            <tr>
-              <td colspan="6" style="text-align: center; color: #999;">Nenhum movimento registrado</td>
-            </tr>
-          </tbody>
-        </table>
+      <!-- ABA: HISTÓRICO -->
+      <div id="tab-historico" class="tab-content">
+        <div class="filtros">
+          <h3>🔍 Filtros</h3>
+          <div class="form-row-tres">
+            <div class="form-grupo">
+              <label for="filtroTipo">Tipo de Movimentação</label>
+              <select id="filtroTipo">
+                <option value="">Todos os tipos</option>
+                <option value="entrada">📥 Entrada</option>
+                <option value="saida">📤 Saída</option>
+                <option value="ajuste">⚙️ Ajuste</option>
+                <option value="devolucao">↩️ Devolução</option>
+              </select>
+            </div>
+            <div class="form-grupo">
+              <label for="filtroDataInicio">Data Inicial</label>
+              <input type="date" id="filtroDataInicio">
+            </div>
+            <div class="form-grupo">
+              <label for="filtroDataFim">Data Final</label>
+              <input type="date" id="filtroDataFim">
+            </div>
+          </div>
+        </div>
+
+        <div class="tabela-container">
+          <table id="tabelaMovimentos">
+            <thead>
+              <tr>
+                <th>Data</th>
+                <th>Tipo</th>
+                <th>Produto</th>
+                <th>Quantidade</th>
+                <th>Valor</th>
+                <th>Fornecedor/Responsável</th>
+                <th>Observações</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td colspan="7" class="vazio">Nenhuma movimentação registrada. Comece a registrar para visualizar o histórico!</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
       </div>
     </main>
   </div>
 
-  <script src="../js/sidebar.js"></script>
   <script src="../js/movimentos.js"></script>
 </body>
 </html>
-

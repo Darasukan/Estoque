@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>InventÃ¡rio - Sistema de Estoque</title>
+  <title>Inventário - Sistema de Estoque</title>
   <link rel="stylesheet" href="../styles.css">
   <style>
     .inventario-container {
@@ -177,35 +177,35 @@
 </head>
 <body>
   <div class="container">
-    <!-- Sidebar serÃ¡ carregada por JavaScript -->
+    <!-- Navbar será carregada por JavaScript -->
 
-    <!-- ConteÃºdo Principal -->
+    <!-- Conteúdo Principal -->
     <main class="main-content">
       <section id="inventario" class="section active">
-        <h2>ðŸª InventÃ¡rio</h2>
+        <h2>📦 Inventário</h2>
         <p style="color: #666; margin-bottom: 20px;">Visualize e filtre os produtos em estoque</p>
 
         <div class="inventario-container">
           <!-- Painel de Filtros -->
           <div class="filtros-container">
-            <h3>ðŸ” Filtros</h3>
+            <h3>🔍 Filtros</h3>
 
             <div class="filtro-grupo">
-              <label>FamÃ­lia (Categoria Principal)</label>
+              <label>Família (Categoria Principal)</label>
               <select id="filtroFamilia">
-                <option value="">Selecione uma famÃ­lia...</option>
+                <option value="">Selecione uma família...</option>
               </select>
             </div>
 
             <div class="filtro-grupo">
-              <label>SubfamÃ­lia (Subcategoria)</label>
+              <label>Subfamília (Subcategoria)</label>
               <select id="filtroSubfamilia">
-                <option value="">Selecione uma subfamÃ­lia...</option>
+                <option value="">Selecione uma subfamília...</option>
               </select>
             </div>
 
             <div class="filtro-grupo">
-              <label>Buscar por Nome ou CÃ³digo</label>
+              <label>Buscar por Nome ou Código</label>
               <input type="text" id="filtroBusca" placeholder="Digite nome ou SKU...">
             </div>
 
@@ -215,7 +215,7 @@
             </div>
 
             <button class="btn btn-secondary" onclick="limparFiltros()" style="width: 100%; margin-top: 20px;">
-              ðŸ”„ Limpar Filtros
+              🔄 Limpar Filtros
             </button>
           </div>
 
@@ -225,12 +225,12 @@
             <table id="tabelaProdutos">
               <thead>
                 <tr>
-                  <th>CÃ³digo</th>
+                  <th>Código</th>
                   <th>Nome</th>
                   <th>Categoria</th>
                   <th>Atributos</th>
                   <th>Quantidade</th>
-                  <th>PreÃ§o</th>
+                  <th>Preço</th>
                 </tr>
               </thead>
               <tbody id="bodyProdutos">

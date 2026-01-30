@@ -1,92 +1,211 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>RelatÃ³rios - Sistema de Estoque</title>
+  <title>Relatórios - Sistema de Estoque</title>
   <link rel="stylesheet" href="../styles.css">
   <style>
-    .relatorios-container {
-      margin-top: 30px;
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+
+    .main-content {
+      margin-top: 80px;
+    }
+
+    .pagina-titulo {
+      font-size: 28px;
+      color: #333;
+      margin-bottom: 30px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
     }
 
     .relatorios-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
       gap: 20px;
-      margin-bottom: 30px;
+      margin-bottom: 40px;
     }
 
-    .relatorio-card {
+    .card-relatorio {
       background: white;
-      padding: 20px;
+      padding: 25px;
       border-radius: 10px;
       box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-      cursor: pointer;
-      transition: transform 0.2s, box-shadow 0.2s;
       border-top: 4px solid #2563eb;
+      transition: all 0.3s;
+      cursor: pointer;
     }
 
-    .relatorio-card:hover {
+    .card-relatorio:hover {
       transform: translateY(-5px);
       box-shadow: 0 5px 20px rgba(0, 0, 0, 0.15);
     }
 
-    .relatorio-card h3 {
+    .card-relatorio h3 {
+      font-size: 20px;
       color: #333;
-      margin-bottom: 10px;
-      font-size: 18px;
+      margin: 0 0 10px 0;
+      display: flex;
+      align-items: center;
+      gap: 8px;
     }
 
-    .relatorio-card p {
+    .card-relatorio p {
       color: #666;
       font-size: 14px;
-      margin: 0;
+      margin: 0 0 15px 0;
+      line-height: 1.5;
     }
 
-    .relatorio-card .icon {
-      font-size: 28px;
-      margin-bottom: 10px;
+    .card-relatorio .btn {
+      width: 100%;
+      padding: 12px;
+      background: #2563eb;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      font-weight: 600;
+      transition: background 0.3s;
     }
 
-    .relatorio-section {
+    .card-relatorio .btn:hover {
+      background: #1d4ed8;
+    }
+
+    .painel-relatorio {
       background: white;
-      padding: 20px;
+      padding: 25px;
       border-radius: 10px;
       box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-      margin-bottom: 30px;
+      display: none;
     }
 
-    .relatorio-section h3 {
-      color: #333;
-      margin-bottom: 20px;
-      font-size: 18px;
+    .painel-relatorio.ativo {
+      display: block;
     }
 
-    .stats-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-      gap: 15px;
-      margin-bottom: 20px;
-    }
-
-    .stat-item {
-      background: #f3f4f6;
-      padding: 15px;
-      border-radius: 8px;
-      border-left: 4px solid #2563eb;
-    }
-
-    .stat-item .label {
-      font-size: 12px;
-      color: #666;
-      margin-bottom: 8px;
-    }
-
-    .stat-item .value {
+    .painel-relatorio h2 {
       font-size: 24px;
-      font-weight: bold;
       color: #333;
+      margin: 0 0 20px 0;
+      padding-bottom: 15px;
+      border-bottom: 2px solid #eee;
+    }
+
+    .btn-voltar {
+      background: #f0f0f0;
+      color: #333;
+      padding: 10px 20px;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      font-weight: 600;
+      margin-bottom: 20px;
+      transition: background 0.3s;
+    }
+
+    .btn-voltar:hover {
+      background: #e0e0e0;
+    }
+
+    .filtros-relatorio {
+      background: #f8f9fa;
+      padding: 20px;
+      border-radius: 8px;
+      margin-bottom: 25px;
+      border: 1px solid #ddd;
+    }
+
+    .filtros-relatorio h3 {
+      margin: 0 0 15px 0;
+      color: #333;
+      font-size: 16px;
+    }
+
+    .form-grupo {
+      margin-bottom: 15px;
+    }
+
+    .form-grupo label {
+      display: block;
+      margin-bottom: 8px;
+      color: #333;
+      font-weight: 600;
+      font-size: 14px;
+    }
+
+    .form-grupo input,
+    .form-grupo select {
+      width: 100%;
+      padding: 10px;
+      border: 2px solid #ddd;
+      border-radius: 6px;
+      font-size: 14px;
+      font-family: inherit;
+    }
+
+    .form-grupo input:focus,
+    .form-grupo select:focus {
+      outline: none;
+      border-color: #2563eb;
+      box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+    }
+
+    .form-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 15px;
+    }
+
+    .btn-gerar {
+      background: #10b981;
+      color: white;
+      padding: 12px 24px;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      font-weight: 600;
+      font-size: 14px;
+      transition: background 0.3s;
+    }
+
+    .btn-gerar:hover {
+      background: #059669;
+    }
+
+    .btn-exportar {
+      background: #3b82f6;
+      color: white;
+      padding: 12px 24px;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      font-weight: 600;
+      font-size: 14px;
+      margin-left: 10px;
+      transition: background 0.3s;
+    }
+
+    .btn-exportar:hover {
+      background: #2563eb;
+    }
+
+    .resultado-relatorio {
+      margin-top: 30px;
+    }
+
+    .tabela-container {
+      background: white;
+      border-radius: 10px;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+      overflow: hidden;
     }
 
     table {
@@ -94,238 +213,319 @@
       border-collapse: collapse;
     }
 
-    thead {
-      background: #f3f4f6;
-    }
-
     th {
-      padding: 12px;
+      background: #f8f9fa;
+      padding: 15px;
       text-align: left;
       font-weight: 600;
       color: #333;
       border-bottom: 2px solid #ddd;
       font-size: 13px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
     }
 
     td {
-      padding: 12px;
-      border-bottom: 1px solid #ddd;
-      font-size: 13px;
-    }
-
-    tbody tr:hover {
-      background: #f9fafb;
-    }
-
-    .filtros-relatorio {
-      display: flex;
-      gap: 15px;
-      margin-bottom: 20px;
-      flex-wrap: wrap;
-    }
-
-    .filtros-relatorio input,
-    .filtros-relatorio select {
-      padding: 8px 12px;
-      border: 2px solid #ddd;
-      border-radius: 6px;
+      padding: 15px;
+      border-bottom: 1px solid #eee;
+      color: #666;
       font-size: 14px;
     }
 
-    .filtros-relatorio button {
-      padding: 8px 16px;
-      border: none;
-      border-radius: 6px;
-      background: #2563eb;
+    tr:hover {
+      background: #f8f9fa;
+    }
+
+    .resumo-stats {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 15px;
+      margin-bottom: 30px;
+    }
+
+    .stat-box {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
       color: white;
-      cursor: pointer;
-      font-weight: 600;
-      transition: background 0.2s;
+      padding: 20px;
+      border-radius: 8px;
+      text-align: center;
     }
 
-    .filtros-relatorio button:hover {
-      background: #1d4ed8;
+    .stat-box.verde {
+      background: linear-gradient(135deg, #10b981 0%, #059669 100%);
     }
 
-    .export-buttons {
-      display: flex;
-      gap: 10px;
+    .stat-box.azul {
+      background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
+    }
+
+    .stat-box.laranja {
+      background: linear-gradient(135deg, #f97316 0%, #ea580c 100%);
+    }
+
+    .stat-label {
+      font-size: 13px;
+      opacity: 0.9;
+      margin-bottom: 8px;
+    }
+
+    .stat-valor {
+      font-size: 28px;
+      font-weight: bold;
+    }
+
+    .vazio {
+      padding: 40px 20px;
+      text-align: center;
+      color: #999;
+      font-size: 16px;
+    }
+
+    .info-box {
+      background: #f0f9ff;
+      border: 1px solid #93c5fd;
+      padding: 15px;
+      border-radius: 6px;
       margin-bottom: 20px;
+      color: #0c2d6b;
+      font-size: 14px;
     }
 
-    .export-buttons button {
-      padding: 8px 16px;
-      border: 2px solid #2563eb;
-      background: white;
-      color: #2563eb;
-      border-radius: 6px;
-      cursor: pointer;
-      font-weight: 600;
-      transition: all 0.2s;
-    }
+    @media (max-width: 768px) {
+      .form-row {
+        grid-template-columns: 1fr;
+      }
 
-    .export-buttons button:hover {
-      background: #2563eb;
-      color: white;
+      .relatorios-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .tabela-container {
+        overflow-x: auto;
+      }
     }
   </style>
 </head>
 <body>
+  <div id="navbarContainer"></div>
+
   <div class="container">
-    <!-- Sidebar serÃ¡ carregada por JavaScript -->
-
-    <!-- ConteÃºdo Principal -->
     <main class="main-content">
-      <h2>ðŸ“Š RelatÃ³rios</h2>
-      <p style="color: #666; margin-bottom: 30px;">Visualize estatÃ­sticas e relatÃ³rios do seu estoque</p>
+      <h1 class="pagina-titulo">📊 Relatórios</h1>
 
-      <div class="relatorios-container">
-        <!-- Cards de RelatÃ³rios RÃ¡pidos -->
+      <!-- VISUALIZAÇÃO: MENU PRINCIPAL -->
+      <div id="menuRelatorios">
         <div class="relatorios-grid">
-          <div class="relatorio-card" onclick="selecionarRelatorio('resumo')">
-            <div class="icon">ðŸ“ˆ</div>
-            <h3>Resumo Geral</h3>
-            <p>VisÃ£o geral do estoque</p>
+          <div class="card-relatorio" onclick="abrirRelatorio('estoque')">
+            <h3>📦 Relatório de Estoque</h3>
+            <p>Visualize a quantidade atual de todos os produtos em estoque, valores totais e produtos com baixa quantidade.</p>
+            <button class="btn">Abrir Relatório</button>
           </div>
-          <div class="relatorio-card" onclick="selecionarRelatorio('produtos')">
-            <div class="icon">ðŸ“¦</div>
-            <h3>Produtos</h3>
-            <p>Lista completa de produtos</p>
+
+          <div class="card-relatorio" onclick="abrirRelatorio('movimentacoes')">
+            <h3>🔄 Relatório de Movimentações</h3>
+            <p>Histórico completo de entradas, saídas, ajustes e devoluções de produtos com data e responsável.</p>
+            <button class="btn">Abrir Relatório</button>
           </div>
-          <div class="relatorio-card" onclick="selecionarRelatorio('baixo-estoque')">
-            <div class="icon">âš ï¸</div>
-            <h3>Baixo Estoque</h3>
-            <p>Produtos com pouca quantidade</p>
+
+          <div class="card-relatorio" onclick="abrirRelatorio('vendas')">
+            <h3>💰 Relatório de Vendas</h3>
+            <p>Análise de vendas por período, valor total, produtos mais vendidos e margem de lucro.</p>
+            <button class="btn">Abrir Relatório</button>
           </div>
-          <div class="relatorio-card" onclick="selecionarRelatorio('movimentos')">
-            <div class="icon">ðŸ”„</div>
-            <h3>MovimentaÃ§Ãµes</h3>
-            <p>HistÃ³rico de entradas/saÃ­das</p>
+
+          <div class="card-relatorio" onclick="abrirRelatorio('criticidade')">
+            <h3>⚠️ Relatório de Criticidade</h3>
+            <p>Produtos com estoque abaixo do mínimo, produtos fora de estoque e alertas de reposição.</p>
+            <button class="btn">Abrir Relatório</button>
+          </div>
+
+          <div class="card-relatorio" onclick="abrirRelatorio('familias')">
+            <h3>📚 Relatório por Famílias</h3>
+            <p>Análise de produtos agrupados por família/categoria com valores e quantidades totais.</p>
+            <button class="btn">Abrir Relatório</button>
+          </div>
+
+          <div class="card-relatorio" onclick="abrirRelatorio('financeiro')">
+            <h3>💵 Relatório Financeiro</h3>
+            <p>Análise financeira com valor total em estoque, custo total e preço total de venda.</p>
+            <button class="btn">Abrir Relatório</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- RELATÓRIO: ESTOQUE -->
+      <div id="relEstoque" class="painel-relatorio">
+        <button class="btn-voltar" onclick="voltarAoMenu()">← Voltar ao Menu</button>
+
+        <h2>📦 Relatório de Estoque</h2>
+
+        <div class="info-box">
+          ℹ️ Visualize todos os produtos em estoque com suas quantidades, valores e status.
+        </div>
+
+        <div class="filtros-relatorio">
+          <h3>Filtros</h3>
+          <div class="form-row">
+            <div class="form-grupo">
+              <label for="filtroFamilia">Família</label>
+              <select id="filtroFamilia">
+                <option value="">Todas as famílias</option>
+                <option value="pneus">Pneus</option>
+                <option value="rodas">Rodas</option>
+              </select>
+            </div>
+            <div class="form-grupo">
+              <label for="filtroStatusEstoque">Status</label>
+              <select id="filtroStatusEstoque">
+                <option value="">Todos os produtos</option>
+                <option value="normal">✅ Estoque Normal</option>
+                <option value="baixo">⚠️ Estoque Baixo</option>
+                <option value="zerado">❌ Sem Estoque</option>
+              </select>
+            </div>
+            <div style="display: flex; align-items: flex-end; gap: 10px;">
+              <button class="btn-gerar">🔍 Gerar Relatório</button>
+              <button class="btn-exportar">💾 Exportar PDF</button>
+            </div>
           </div>
         </div>
 
-        <!-- Resumo Geral -->
-        <div class="relatorio-section" id="relatorioResumo">
-          <h3>ðŸ“ˆ Resumo Geral do Estoque</h3>
-          <div class="stats-grid">
-            <div class="stat-item">
-              <div class="label">Total de Produtos</div>
-              <div class="value" id="totalProdutos">0</div>
+        <div class="resultado-relatorio">
+          <div class="resumo-stats">
+            <div class="stat-box">
+              <div class="stat-label">Total de Produtos</div>
+              <div class="stat-valor">0</div>
             </div>
-            <div class="stat-item">
-              <div class="label">Quantidade Total</div>
-              <div class="value" id="quantidadeTotal">0</div>
+            <div class="stat-box azul">
+              <div class="stat-label">Valor Total (Custo)</div>
+              <div class="stat-valor">R$ 0,00</div>
             </div>
-            <div class="stat-item">
-              <div class="label">Valor Total</div>
-              <div class="value" id="valorTotal">R$ 0,00</div>
+            <div class="stat-box verde">
+              <div class="stat-label">Valor Total (Venda)</div>
+              <div class="stat-valor">R$ 0,00</div>
             </div>
-            <div class="stat-item">
-              <div class="label">Produtos Criados</div>
-              <div class="value" id="produtosCriados">0</div>
+            <div class="stat-box laranja">
+              <div class="stat-label">Produtos em Falta</div>
+              <div class="stat-valor">0</div>
+            </div>
+          </div>
+
+          <div class="tabela-container">
+            <table id="tabelaEstoque">
+              <thead>
+                <tr>
+                  <th>Código</th>
+                  <th>Produto</th>
+                  <th>Família</th>
+                  <th>Quantidade</th>
+                  <th>Mín. Recomendado</th>
+                  <th>Preço Unitário</th>
+                  <th>Valor Total</th>
+                  <th>Status</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td colspan="8" class="vazio">Gere o relatório para visualizar os dados.</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- RELATÓRIO: MOVIMENTAÇÕES -->
+      <div id="relMovimentacoes" class="painel-relatorio">
+        <button class="btn-voltar" onclick="voltarAoMenu()">← Voltar ao Menu</button>
+
+        <h2>🔄 Relatório de Movimentações</h2>
+
+        <div class="info-box">
+          ℹ️ Histórico completo de todas as movimentações de estoque com detalhes de entrada, saída, ajuste e devolução.
+        </div>
+
+        <div class="filtros-relatorio">
+          <h3>Filtros</h3>
+          <div class="form-row">
+            <div class="form-grupo">
+              <label for="filtroDataMovInicio">Data Inicial</label>
+              <input type="date" id="filtroDataMovInicio">
+            </div>
+            <div class="form-grupo">
+              <label for="filtroDataMovFim">Data Final</label>
+              <input type="date" id="filtroDataMovFim">
+            </div>
+            <div style="display: flex; align-items: flex-end; gap: 10px;">
+              <button class="btn-gerar">🔍 Gerar Relatório</button>
+              <button class="btn-exportar">💾 Exportar PDF</button>
             </div>
           </div>
         </div>
 
-        <!-- RelatÃ³rio de Produtos -->
-        <div class="relatorio-section" id="relatorioProdutos">
-          <h3>ðŸ“¦ Lista de Produtos</h3>
-          <div class="export-buttons">
-            <button onclick="exportarCSV()">ðŸ“¥ Baixar CSV</button>
-            <button onclick="exportarPDF()">ðŸ“„ Baixar PDF</button>
+        <div class="resultado-relatorio">
+          <div class="tabela-container">
+            <table id="tabelaMovimentacoes">
+              <thead>
+                <tr>
+                  <th>Data</th>
+                  <th>Tipo</th>
+                  <th>Produto</th>
+                  <th>Quantidade</th>
+                  <th>Valor Unitário</th>
+                  <th>Valor Total</th>
+                  <th>Responsável</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td colspan="7" class="vazio">Gere o relatório para visualizar os dados.</td>
+                </tr>
+              </tbody>
+            </table>
           </div>
-          <table id="tabelaProdutosRelatorio">
-            <thead>
-              <tr>
-                <th>SKU</th>
-                <th>Nome</th>
-                <th>Categoria</th>
-                <th>Quantidade</th>
-                <th>PreÃ§o Unit.</th>
-                <th>Total</th>
-              </tr>
-            </thead>
-            <tbody id="bodyProdutosRelatorio">
-              <tr>
-                <td colspan="6" style="text-align: center; color: #999;">Carregando produtos...</td>
-              </tr>
-            </tbody>
-          </table>
         </div>
+      </div>
 
-        <!-- RelatÃ³rio de Baixo Estoque -->
-        <div class="relatorio-section" id="relatorioBaixoEstoque">
-          <h3>âš ï¸ Produtos com Baixo Estoque</h3>
-          <div class="filtros-relatorio">
-            <label>
-              Limiar (quantidade mÃ­nima):
-              <input type="number" id="limiarEstoque" value="10" min="1" style="width: 100px;">
-            </label>
-            <button onclick="carregarBaixoEstoque()">ðŸ” Filtrar</button>
-          </div>
-          <table id="tabelaBaixoEstoque">
-            <thead>
-              <tr>
-                <th>SKU</th>
-                <th>Nome</th>
-                <th>Categoria</th>
-                <th>Quantidade</th>
-                <th>Limiar</th>
-                <th>DiferenÃ§a</th>
-              </tr>
-            </thead>
-            <tbody id="bodyBaixoEstoque">
-              <tr>
-                <td colspan="6" style="text-align: center; color: #999;">Nenhum produto com baixo estoque</td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
+      <!-- OUTROS RELATÓRIOS (placeholders) -->
+      <div id="relVendas" class="painel-relatorio">
+        <button class="btn-voltar" onclick="voltarAoMenu()">← Voltar ao Menu</button>
+        <h2>💰 Relatório de Vendas</h2>
+        <div class="info-box">ℹ️ Relatório de vendas por período em desenvolvimento...</div>
+      </div>
 
-        <!-- RelatÃ³rio de MovimentaÃ§Ãµes -->
-        <div class="relatorio-section" id="relatorioMovimentos">
-          <h3>ðŸ”„ HistÃ³rico de MovimentaÃ§Ãµes</h3>
-          <div class="filtros-relatorio">
-            <label>
-              De:
-              <input type="date" id="dataInicio">
-            </label>
-            <label>
-              AtÃ©:
-              <input type="date" id="dataFim">
-            </label>
-            <select id="tipoMovimentoFiltro">
-              <option value="">Todos os tipos</option>
-              <option value="entrada">Entrada</option>
-              <option value="saida">SaÃ­da</option>
-              <option value="ajuste">Ajuste</option>
-            </select>
-            <button onclick="carregarMovimentosRelatorio()">ðŸ” Filtrar</button>
-          </div>
-          <table id="tabelaMovimentosRelatorio">
-            <thead>
-              <tr>
-                <th>Data/Hora</th>
-                <th>Tipo</th>
-                <th>SKU</th>
-                <th>Quantidade</th>
-                <th>Motivo</th>
-                <th>UsuÃ¡rio</th>
-              </tr>
-            </thead>
-            <tbody id="bodyMovimentosRelatorio">
-              <tr>
-                <td colspan="6" style="text-align: center; color: #999;">Carregando movimentaÃ§Ãµes...</td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
+      <div id="relCriticidade" class="painel-relatorio">
+        <button class="btn-voltar" onclick="voltarAoMenu()">← Voltar ao Menu</button>
+        <h2>⚠️ Relatório de Criticidade</h2>
+        <div class="info-box">ℹ️ Produtos com baixo estoque em desenvolvimento...</div>
+      </div>
+
+      <div id="relFamilias" class="painel-relatorio">
+        <button class="btn-voltar" onclick="voltarAoMenu()">← Voltar ao Menu</button>
+        <h2>📚 Relatório por Famílias</h2>
+        <div class="info-box">ℹ️ Análise por famílias em desenvolvimento...</div>
+      </div>
+
+      <div id="relFinanceiro" class="painel-relatorio">
+        <button class="btn-voltar" onclick="voltarAoMenu()">← Voltar ao Menu</button>
+        <h2>💵 Relatório Financeiro</h2>
+        <div class="info-box">ℹ️ Análise financeira em desenvolvimento...</div>
       </div>
     </main>
   </div>
 
-  <script src="../js/sidebar.js"></script>
+  <script>
+    function abrirRelatorio(tipo) {
+      document.getElementById('menuRelatorios').style.display = 'none';
+      document.getElementById('rel' + tipo.charAt(0).toUpperCase() + tipo.slice(1)).classList.add('ativo');
+    }
+
+    function voltarAoMenu() {
+      document.querySelectorAll('.painel-relatorio').forEach(p => p.classList.remove('ativo'));
+      document.getElementById('menuRelatorios').style.display = 'block';
+    }
+  </script>
+
   <script src="../js/relatorios.js"></script>
 </body>
 </html>
-

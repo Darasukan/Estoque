@@ -1,98 +1,334 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Cadastro de Produtos - Sistema de Estoque</title>
+  <title>Cadastro de Famílias - Sistema de Estoque</title>
   <link rel="stylesheet" href="../styles.css">
+  <style>
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+
+    .main-content {
+      margin-top: 80px;
+    }
+
+    .pagina-titulo {
+      font-size: 28px;
+      color: #333;
+      margin-bottom: 30px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .layout-dois-colunas {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 30px;
+      margin-top: 20px;
+    }
+
+    .painel {
+      background: white;
+      padding: 25px;
+      border-radius: 10px;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    }
+
+    .painel h2 {
+      font-size: 20px;
+      color: #333;
+      margin-bottom: 20px;
+      padding-bottom: 10px;
+      border-bottom: 2px solid #eee;
+    }
+
+    .form-grupo {
+      margin-bottom: 20px;
+    }
+
+    .form-grupo label {
+      display: block;
+      margin-bottom: 8px;
+      color: #333;
+      font-weight: 600;
+      font-size: 14px;
+    }
+
+    .form-grupo input,
+    .form-grupo select,
+    .form-grupo textarea {
+      width: 100%;
+      padding: 12px;
+      border: 2px solid #ddd;
+      border-radius: 6px;
+      font-size: 14px;
+      font-family: inherit;
+    }
+
+    .form-grupo textarea {
+      resize: vertical;
+      min-height: 80px;
+    }
+
+    .form-grupo input:focus,
+    .form-grupo select:focus,
+    .form-grupo textarea:focus {
+      outline: none;
+      border-color: #2563eb;
+      box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+    }
+
+    .form-grupo small {
+      display: block;
+      margin-top: 5px;
+      color: #999;
+      font-size: 12px;
+    }
+
+    .btn-group {
+      display: flex;
+      gap: 10px;
+      margin-top: 25px;
+    }
+
+    .btn {
+      padding: 12px 24px;
+      border: none;
+      border-radius: 6px;
+      font-size: 14px;
+      cursor: pointer;
+      font-weight: 600;
+      transition: all 0.3s;
+      flex: 1;
+    }
+
+    .btn-primary {
+      background: #2563eb;
+      color: white;
+    }
+
+    .btn-primary:hover {
+      background: #1d4ed8;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);
+    }
+
+    .btn-secondary {
+      background: #f0f0f0;
+      color: #333;
+    }
+
+    .btn-secondary:hover {
+      background: #e0e0e0;
+    }
+
+    .lista-familias {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      margin-top: 15px;
+    }
+
+    .item-familia {
+      background: #f8f9fa;
+      padding: 15px;
+      border-radius: 6px;
+      border-left: 4px solid #2563eb;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .info-familia {
+      flex: 1;
+    }
+
+    .nome-familia {
+      font-weight: 600;
+      color: #333;
+      margin-bottom: 4px;
+    }
+
+    .desc-familia {
+      font-size: 13px;
+      color: #666;
+    }
+
+    .acoes-familia {
+      display: flex;
+      gap: 8px;
+    }
+
+    .btn-editar,
+    .btn-deletar,
+    .btn-pequeno {
+      padding: 6px 12px;
+      font-size: 12px;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+
+    .btn-editar {
+      background: #3b82f6;
+      color: white;
+    }
+
+    .btn-editar:hover {
+      background: #2563eb;
+    }
+
+    .btn-deletar {
+      background: #ef4444;
+      color: white;
+    }
+
+    .btn-deletar:hover {
+      background: #dc2626;
+    }
+
+    .vazio {
+      padding: 30px 20px;
+      text-align: center;
+      color: #999;
+      font-size: 14px;
+      background: #f8f9fa;
+      border-radius: 6px;
+      border: 2px dashed #ddd;
+    }
+
+    .mensagem {
+      padding: 15px;
+      border-radius: 6px;
+      margin-bottom: 20px;
+      display: none;
+    }
+
+    .mensagem.sucesso {
+      background: #d1fae5;
+      color: #065f46;
+      border: 1px solid #a7f3d0;
+    }
+
+    .mensagem.erro {
+      background: #fee2e2;
+      color: #7f1d1d;
+      border: 1px solid #fca5a5;
+    }
+
+    .mensagem.info {
+      background: #dbeafe;
+      color: #0c2d6b;
+      border: 1px solid #93c5fd;
+    }
+
+    .info-adicional {
+      background: #f0f9ff;
+      border: 1px solid #93c5fd;
+      padding: 12px;
+      border-radius: 6px;
+      font-size: 13px;
+      color: #0c2d6b;
+      margin-bottom: 20px;
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+    }
+
+    @media (max-width: 968px) {
+      .layout-dois-colunas {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .contador-familias {
+      font-size: 12px;
+      color: #666;
+      margin-top: 10px;
+    }
+  </style>
 </head>
 <body>
+  <div id="navbarContainer"></div>
+
   <div class="container">
-    <!-- Sidebar serÃ¡ carregada por JavaScript -->
-
-    <!-- ConteÃºdo Principal -->
     <main class="main-content">
-      <h2>Gerenciar FamÃ­lias de Produtos</h2>
-      <p style="color: #666; margin-bottom: 30px;">Defina a estrutura de dados para cada categoria de item do almazarifado.</p>
+      <h1 class="pagina-titulo">📋 Cadastro de Famílias de Produtos</h1>
 
-      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 30px; margin-top: 20px;">
-        <!-- Coluna Esquerda: FormulÃ¡rio -->
-        <div>
-          <div class="form-section">
-            <h3 style="color: #2563eb; margin-bottom: 20px; border-bottom: 3px solid #2563eb; padding-bottom: 10px;">CRIAR NOVA FAMÃLIA</h3>
-            
-            <form id="formFamilia">
-              <div class="form-group">
-                <label style="font-weight: 600; color: #333;">Grupo Principal *</label>
-                <input 
-                  type="text" 
-                  id="grupo" 
-                  placeholder="EX: EPI, FIXAÃ‡ÃƒO, ELÃ‰TRICA" 
-                  required
-                  style="padding: 12px; font-size: 14px;"
-                >
-                <small style="color: #999;">O grupo maior que engloba os produtos.</small>
-              </div>
+      <div id="mensagem" class="mensagem"></div>
 
-              <div class="form-group">
-                <label style="font-weight: 600; color: #333;">SubfamÃ­lia (Nome do Item) *</label>
-                <input 
-                  type="text" 
-                  id="subfamilia" 
-                  placeholder="EX: LUVA, PARAFUSO, BOTA" 
-                  required
-                  style="padding: 12px; font-size: 14px;"
-                >
-                <small style="color: #999;">O nome especÃ­fico do tipo de item.</small>
-              </div>
+      <div class="info-adicional">
+        ℹ️ <span>Famílias (ou grupos) são categorias de produtos. Por exemplo: Pneus, Rodas, Acessórios, etc. Use para organizar melhor seu estoque!</span>
+      </div>
 
-              <div class="form-group">
-                <label style="font-weight: 600; color: #333;">Campos ObrigatÃ³rios (Essenciais)</label>
-                <textarea 
-                  id="camposObrigatorios" 
-                  placeholder="EX: Tamanho, Material, Rosca&#10;Separe por vÃ­rgula. Estes campos serÃ£o fixos no cadastro." 
-                  style="padding: 12px; font-size: 14px; min-height: 80px; resize: vertical;"
-                ></textarea>
-                <small style="color: #999;">Separe por vÃ­rgula. Estes campos serÃ£o fixos no cadastro.</small>
-              </div>
+      <div class="layout-dois-colunas">
+        <!-- PAINEL ESQUERDO: FORMULÁRIO -->
+        <div class="painel">
+          <h2>➕ Nova Família</h2>
 
-              <div class="form-group">
-                <label style="font-weight: 600; color: #333;">Campos Extras (SugestÃµes)</label>
-                <textarea 
-                  id="camposExtras" 
-                  placeholder="EX: Cor, Marca, C.A., Validade&#10;Separe por vÃ­rgula. AparecerÃ£o como botÃµes opcionais." 
-                  style="padding: 12px; font-size: 14px; min-height: 80px; resize: vertical;"
-                ></textarea>
-                <small style="color: #999;">Separe por vÃ­rgula. AparecerÃ£o como botÃµes opcionais.</small>
-              </div>
+          <form id="formFamilia">
+            <div class="form-grupo">
+              <label for="codFamilia">Código da Família *</label>
+              <input type="text" id="codFamilia" name="codigo" required placeholder="Ex: FAM001" maxlength="10">
+              <small>Código único para identificar a família</small>
+            </div>
 
-              <button 
-                type="submit" 
-                class="btn btn-primary" 
-                style="width: 100%; padding: 14px; font-size: 16px; font-weight: 600;"
-              >
-                ðŸ’¾ SALVAR CONFIGURAÃ‡ÃƒO
-              </button>
-            </form>
-          </div>
+            <div class="form-grupo">
+              <label for="nomeFamilia">Nome da Família *</label>
+              <input type="text" id="nomeFamilia" name="nome" required placeholder="Ex: Pneus Novos" maxlength="50">
+              <small>Nome descritivo e fácil de lembrar</small>
+            </div>
+
+            <div class="form-grupo">
+              <label for="descricaoFamilia">Descrição</label>
+              <textarea id="descricaoFamilia" name="descricao" placeholder="Descrição detalhada da família de produtos..."></textarea>
+              <small>Opcional: informações adicionais sobre esta família</small>
+            </div>
+
+            <div class="form-grupo">
+              <label for="margemFamilia">Margem de Lucro Padrão (%)</label>
+              <input type="number" id="margemFamilia" name="margem" value="20" step="0.5" min="0" max="100" placeholder="20">
+              <small>Margem padrão para produtos desta família (recomendado: 20-40%)</small>
+            </div>
+
+            <div class="form-grupo">
+              <label>
+                <input type="checkbox" id="ativoFamilia" name="ativo" checked>
+                Família Ativa
+              </label>
+            </div>
+
+            <div class="btn-group">
+              <button type="submit" class="btn btn-primary">💾 Salvar Família</button>
+              <button type="reset" class="btn btn-secondary">🔄 Limpar</button>
+            </div>
+          </form>
         </div>
 
-        <!-- Coluna Direita: Lista -->
-        <div>
-          <h3 style="color: #333; margin-bottom: 20px; border-bottom: 2px solid #333; padding-bottom: 10px;">FAMÃLIAS CADASTRADAS</h3>
-          <div 
-            id="listaFamilias" 
-            style="max-height: 600px; overflow-y: auto; border: 1px solid #ddd; border-radius: 10px; padding: 20px; background: #f9f9f9;"
-          >
-            <p style="color: #999; text-align: center;">Carregando...</p>
+        <!-- PAINEL DIREITO: LISTA -->
+        <div class="painel">
+          <h2>📚 Famílias Cadastradas</h2>
+
+          <div id="listaFamilias" class="lista-familias">
+            <div class="vazio">
+              Nenhuma família cadastrada. Crie uma nova para começar!
+            </div>
+          </div>
+
+          <div class="contador-familias">
+            <strong id="totalFamilias">0</strong> família(s) cadastrada(s)
           </div>
         </div>
       </div>
     </main>
   </div>
 
-  <script src="../js/sidebar.js"></script>
   <script src="../js/cadastro.js"></script>
 </body>
 </html>
-
