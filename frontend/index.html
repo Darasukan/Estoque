@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sistema de Estoque e Fluxo</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="container">
+    <!-- Sidebar de Navegação -->
+    <aside class="sidebar">
+      <h1>📦 Estoque</h1>
+      <div class="user-info">
+        <p>👤 <span id="usuarioLogado">Usuário</span></p>
+      </div>
+      <nav>
+        <button class="nav-btn active" data-section="produtos">
+          📦 Produtos
+        </button>
+        <button class="nav-btn" data-section="movimentos">
+          🔄 Movimentações
+        </button>
+        <button class="nav-btn" data-section="relatorios">
+          📊 Relatórios
+        </button>
+      </nav>
+      <button class="btn-logout" onclick="logout()">🚪 Sair</button>
+    </aside>
+
+    <!-- Conteúdo Principal -->
+    <main class="main-content">
+      <!-- Seção de Produtos -->
+      <section id="produtos" class="section active">
+        <h2>Gerenciar Produtos</h2>
+        
+        <div class="form-section">
+          <h3>Adicionar Novo Produto</h3>
+          <form id="formProduto">
+            <div class="form-row">
+              <div class="form-group">
+                <label>Nome *</label>
+                <input type="text" id="nomeProduto" required placeholder="Nome do produto">
+              </div>
+              <div class="form-group">
+                <label>SKU *</label>
+                <input type="text" id="skuProduto" required placeholder="SKU único">
+              </div>
+            </div>
+            <div class="form-row">
+              <div class="form-group">
+                <label>Quantidade *</label>
+                <input type="number" id="qtdProduto" required min="0" placeholder="0">
+              </div>
+              <div class="form-group">
+                <label>Preço</label>
+                <input type="number" id="precoProduto" step="0.01" placeholder="0.00">
+              </div>
+              <div class="form-group">
+                <label>Categoria</label>
+                <input type="text" id="categoriaProduto" placeholder="Ex: Eletrônicos">
+              </div>
+            </div>
+            <button type="submit" class="btn btn-primary">➕ Adicionar Produto</button>
+          </form>
+        </div>
+
+        <!-- Lista de Produtos -->
+        <div class="table-section">
+          <h3>Produtos Cadastrados</h3>
+          <table id="tabelaProdutos">
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Nome</th>
+                <th>SKU</th>
+                <th>Quantidade</th>
+                <th>Preço</th>
+                <th>Categoria</th>
+                <th>Ações</th>
+              </tr>
+            </thead>
+            <tbody id="bodyProdutos">
+              <tr>
+                <td colspan="7" style="text-align: center;">Nenhum produto cadastrado</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- Seção de Movimentações -->
+      <section id="movimentos" class="section">
+        <h2>Registrar Movimentações</h2>
+
+        <div class="form-section">
+          <h3>Nova Movimentação</h3>
+          <form id="formMovimento">
+            <div class="form-row">
+              <div class="form-group">
+                <label>Produto *</label>
+                <select id="produtoMovimento" required>
+                  <option value="">-- Selecione um produto --</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label>Tipo *</label>
+                <select id="tipoMovimento" required>
+                  <option value="">-- Selecione --</option>
+                  <option value="entrada">📥 Entrada</option>
+                  <option value="saida">📤 Saída</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label>Quantidade *</label>
+                <input type="number" id="qtdMovimento" required min="1" placeholder="0">
+              </div>
+            </div>
+            <div class="form-row">
+              <div class="form-group">
+                <label>Motivo</label>
+                <input type="text" id="motivoMovimento" placeholder="Ex: Compra, Venda, Quebra">
+              </div>
+            </div>
+            <button type="submit" class="btn btn-primary">✅ Registrar Movimentação</button>
+          </form>
+        </div>
+
+        <!-- Histórico de Movimentos -->
+        <div class="table-section">
+          <h3>Histórico de Movimentações</h3>
+          <table id="tabelaMovimentos">
+            <thead>
+              <tr>
+                <th>Data</th>
+                <th>Produto</th>
+                <th>SKU</th>
+                <th>Tipo</th>
+                <th>Quantidade</th>
+                <th>Motivo</th>
+                <th>Ações</th>
+              </tr>
+            </thead>
+            <tbody id="bodyMovimentos">
+              <tr>
+                <td colspan="7" style="text-align: center;">Nenhuma movimentação registrada</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- Seção de Relatórios -->
+      <section id="relatorios" class="section">
+        <h2>Relatórios</h2>
+
+        <!-- Estoque Baixo -->
+        <div class="report-section">
+          <h3>⚠️ Produtos com Estoque Baixo</h3>
+          <div class="form-row">
+            <div class="form-group">
+              <label>Limite de Estoque</label>
+              <input type="number" id="limiteEstoque" value="10" min="1">
+            </div>
+            <button class="btn btn-secondary" onclick="carregarEstoqueBaixo()">🔄 Atualizar</button>
+          </div>
+          <table id="tabelaEstoqueBaixo">
+            <thead>
+              <tr>
+                <th>Nome</th>
+                <th>SKU</th>
+                <th>Quantidade</th>
+                <th>Preço</th>
+                <th>Categoria</th>
+              </tr>
+            </thead>
+            <tbody id="bodyEstoqueBaixo">
+              <tr>
+                <td colspan="5" style="text-align: center;">Carregando...</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <!-- Resumo de Estoque -->
+        <div class="report-section">
+          <h3>📊 Resumo de Estoque</h3>
+          <div class="stats">
+            <div class="stat-card">
+              <h4>Total de Produtos</h4>
+              <p id="totalProdutos">0</p>
+            </div>
+            <div class="stat-card">
+              <h4>Valor Total em Estoque</h4>
+              <p id="valorTotal">R$ 0,00</p>
+            </div>
+            <div class="stat-card">
+              <h4>Produtos em Falta</h4>
+              <p id="produtosEmFalta">0</p>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <!-- Modal de Edição -->
+  <div id="modalEditar" class="modal">
+    <div class="modal-content">
+      <span class="close">&times;</span>
+      <h2>Editar Produto</h2>
+      <form id="formEditarProduto">
+        <input type="hidden" id="idProdutoEdicao">
+        <div class="form-row">
+          <div class="form-group">
+            <label>Nome *</label>
+            <input type="text" id="nomeEditar" required>
+          </div>
+          <div class="form-group">
+            <label>SKU *</label>
+            <input type="text" id="skuEditar" required>
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label>Quantidade *</label>
+            <input type="number" id="qtdEditar" required min="0">
+          </div>
+          <div class="form-group">
+            <label>Preço</label>
+            <input type="number" id="precoEditar" step="0.01">
+          </div>
+          <div class="form-group">
+            <label>Categoria</label>
+            <input type="text" id="categoriaEditar">
+          </div>
+        </div>
+        <button type="submit" class="btn btn-primary">💾 Salvar Alterações</button>
+      </form>
+    </div>
+  </div>
+ <div id="modalMovimentacao" class="modal">
+  <div class="modal-content">
+    <span class="close" onclick="document.getElementById('modalMovimentacao').classList.remove('show')">&times;</span>
+    <h2>Editar Movimentação</h2>
+    
+    <form id="formEditarMovimento">
+      <div class="form-group">
+        <label>Data</label>
+        <input type="text" id="movData" readonly disabled style="background: #eee;">
+      </div>
+
+      <div class="form-group">
+        <label>Produto</label>
+        <input type="text" id="movNome" readonly disabled style="background: #eee;">
+      </div>
+
+      <div class="form-group">
+        <label>Tipo</label>
+        <select id="movTipo">
+            <option value="entrada">Entrada</option>
+            <option value="saida">Saída</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label>Quantidade</label>
+        <input type="number" id="movQtd" required>
+      </div>
+
+      <div class="form-group">
+        <label>Motivo</label>
+        <input type="text" id="movMotivo">
+      </div>
+
+      <div style="margin-top: 15px;">
+          <button type="submit" class="btn btn-primary">Salvar</button>
+          <button type="button" class="btn btn-danger" onclick="document.getElementById('modalMovimentacao').classList.remove('show')">Cancelar</button>
+      </div>
+    </form>
+  </div>
+</div>
+  <script src="script.js"></script>
+</body>
+</html>
