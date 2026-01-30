@@ -4,6 +4,12 @@ const path = require('path');
 const dbPath = path.join(__dirname, '../database/estoque.db');
 const db = new sqlite3.Database(dbPath);
 
+// Otimizações para múltiplas conexões
+db.configure('busyTimeout', 5000); // Aguarda 5s se BD estiver travado
+db.run('PRAGMA journal_mode = WAL'); // Write-Ahead Logging para melhor concorrência
+db.run('PRAGMA synchronous = NORMAL'); // Menos sync = mais rápido
+db.run('PRAGMA cache_size = -64000'); // 64MB cache
+
 // Inicializar banco de dados com tabelas
 function initialize() {
   db.serialize(() => {

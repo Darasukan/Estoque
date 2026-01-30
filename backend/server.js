@@ -3,11 +3,18 @@ const cors = require('cors');
 const bodyParser = require('body-parser');
 const path = require('path');
 const db = require('./database');
+const { registrarConexao, finalizarConexao } = require('./monitor');
 require('dotenv').config();
 
 const app = express();
 const PORT = process.env.API_PORT || 3000;
 
+// Middleware para monitorar requisições
+app.use((req, res, next) => {
+  registrarConexao();
+  res.on('finish', finalizarConexao);
+  next();
+});
 // Servir arquivos estáticos da pasta frontend
 app.use(express.static(path.join(__dirname, '../frontend')));
 
