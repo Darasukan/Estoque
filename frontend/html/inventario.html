@@ -1,10 +1,10 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Inventário - Sistema de Estoque</title>
-  <link rel="stylesheet" href="styles.css">
+  <title>InventÃ¡rio - Sistema de Estoque</title>
+  <link rel="stylesheet" href="../styles.css">
   <style>
     .inventario-container {
       display: flex;
@@ -177,56 +177,35 @@
 </head>
 <body>
   <div class="container">
-    <!-- Sidebar de Navegação -->
-    <aside class="sidebar">
-      <h1>📦 Estoque</h1>
-      <div class="user-info">
-        <p>👤 <span id="usuarioLogado">Usuário</span></p>
-      </div>
-      <nav>
-        <button class="nav-btn" onclick="irPara('produtos')">
-          📦 Produtos
-        </button>
-        <button class="nav-btn" onclick="irPara('movimentos')">
-          🔄 Movimentações
-        </button>
-        <button class="nav-btn" onclick="irPara('relatorios')">
-          📊 Relatórios
-        </button>
-        <button class="nav-btn active" onclick="irPara('inventario')">
-          🔍 Inventário
-        </button>
-      </nav>
-      <button class="btn-logout" onclick="logout()">🚪 Sair</button>
-    </aside>
+    <!-- Sidebar serÃ¡ carregada por JavaScript -->
 
-    <!-- Conteúdo Principal -->
+    <!-- ConteÃºdo Principal -->
     <main class="main-content">
       <section id="inventario" class="section active">
-        <h2>Inventário</h2>
-        <p style="color: #666; margin-bottom: 20px;">Navegue e filtre produtos por categoria, subcategoria e atributos</p>
+        <h2>ðŸª InventÃ¡rio</h2>
+        <p style="color: #666; margin-bottom: 20px;">Visualize e filtre os produtos em estoque</p>
 
         <div class="inventario-container">
           <!-- Painel de Filtros -->
           <div class="filtros-container">
-            <h3>🔍 Filtros</h3>
+            <h3>ðŸ” Filtros</h3>
 
             <div class="filtro-grupo">
-              <label>Família (Categoria Principal)</label>
+              <label>FamÃ­lia (Categoria Principal)</label>
               <select id="filtroFamilia">
-                <option value="">Selecione uma família...</option>
+                <option value="">Selecione uma famÃ­lia...</option>
               </select>
             </div>
 
             <div class="filtro-grupo">
-              <label>Subfamília (Subcategoria)</label>
+              <label>SubfamÃ­lia (Subcategoria)</label>
               <select id="filtroSubfamilia">
-                <option value="">Selecione uma subfamília...</option>
+                <option value="">Selecione uma subfamÃ­lia...</option>
               </select>
             </div>
 
             <div class="filtro-grupo">
-              <label>Buscar por Nome ou Código</label>
+              <label>Buscar por Nome ou CÃ³digo</label>
               <input type="text" id="filtroBusca" placeholder="Digite nome ou SKU...">
             </div>
 
@@ -236,7 +215,7 @@
             </div>
 
             <button class="btn btn-secondary" onclick="limparFiltros()" style="width: 100%; margin-top: 20px;">
-              🔄 Limpar Filtros
+              ðŸ”„ Limpar Filtros
             </button>
           </div>
 
@@ -246,12 +225,12 @@
             <table id="tabelaProdutos">
               <thead>
                 <tr>
-                  <th>Código</th>
+                  <th>CÃ³digo</th>
                   <th>Nome</th>
                   <th>Categoria</th>
                   <th>Atributos</th>
                   <th>Quantidade</th>
-                  <th>Preço</th>
+                  <th>PreÃ§o</th>
                 </tr>
               </thead>
               <tbody id="bodyProdutos">
@@ -269,6 +248,8 @@
     </main>
   </div>
 
-  <script src="inventario.js"></script>
+  <script src="../js/sidebar.js"></script>
+  <script src="../js/inventario.js"></script>
 </body>
 </html>
+

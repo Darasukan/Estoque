@@ -1,19 +1,15 @@
-// Cache de produtos em memória
+﻿// Cache de produtos em memÃ³ria
 let produtosCache = [];
 let filtrosAtivos = {};
+
+// API URL dinÃ¢mica
+const API_URL = `http://${window.location.hostname}:3000/api`;
 
 // Elemento para token
 let token = localStorage.getItem('token');
 
-// ==================== INICIALIZAÇÃO ====================
+// ==================== INICIALIZAÃ‡ÃƒO ====================
 document.addEventListener('DOMContentLoaded', () => {
-  const usuarioLogado = localStorage.getItem('usuario');
-  if (!usuarioLogado || !token) {
-    window.location.href = 'login.html';
-    return;
-  }
-
-  document.getElementById('usuarioLogado').textContent = usuarioLogado;
   carregarProdutos();
 
   // Event listeners dos filtros
@@ -24,17 +20,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
 // ==================== CARREGAR DADOS ====================
 function carregarProdutos() {
-  fetch('/api/produtos', {
-    headers: { 'Authorization': `Bearer ${token}` }
-  })
-    .then(res => {
-      if (res.status === 401) {
-        localStorage.clear();
-        window.location.href = 'login.html';
-        return;
-      }
-      return res.json();
-    })
+  fetch('/api/produtos')
+    .then(res => res.json())
     .then(data => {
       produtosCache = data || [];
       inicializarFiltros();
@@ -49,10 +36,10 @@ function carregarProdutos() {
 
 // ==================== INICIALIZAR CASCATAS ====================
 function inicializarFiltros() {
-  // Extrair famílias únicas
+  // Extrair famÃ­lias Ãºnicas
   const familias = [...new Set(produtosCache.map(p => p.grupo).filter(Boolean))];
   const selectFamilia = document.getElementById('filtroFamilia');
-  selectFamilia.innerHTML = '<option value="">Selecione uma família...</option>';
+  selectFamilia.innerHTML = '<option value="">Selecione uma famÃ­lia...</option>';
   familias.forEach(familia => {
     const option = document.createElement('option');
     option.value = familia;
@@ -64,7 +51,7 @@ function inicializarFiltros() {
 function atualizarSubfamilias() {
   const familia = document.getElementById('filtroFamilia').value;
   const selectSubfamilia = document.getElementById('filtroSubfamilia');
-  selectSubfamilia.innerHTML = '<option value="">Selecione uma subfamília...</option>';
+  selectSubfamilia.innerHTML = '<option value="">Selecione uma subfamÃ­lia...</option>';
 
   if (!familia) {
     document.getElementById('atributosContainer').style.display = 'none';
@@ -72,7 +59,7 @@ function atualizarSubfamilias() {
     return;
   }
 
-  // Filtrar produtos da família selecionada
+  // Filtrar produtos da famÃ­lia selecionada
   const produtosDaFamilia = produtosCache.filter(p => p.grupo === familia);
   const subfamilias = [...new Set(produtosDaFamilia.map(p => p.categoria).filter(Boolean))];
 
@@ -98,12 +85,12 @@ function atualizarAtributos() {
     return;
   }
 
-  // Filtrar produtos da subfamília selecionada
+  // Filtrar produtos da subfamÃ­lia selecionada
   const produtosDaSubfamilia = produtosCache.filter(
     p => p.grupo === familia && p.categoria === subfamilia
   );
 
-  // Extrair todos os atributos únicos de produtos dessa subfamília
+  // Extrair todos os atributos Ãºnicos de produtos dessa subfamÃ­lia
   const atributosMap = new Map();
   produtosDaSubfamilia.forEach(produto => {
     if (produto.atributos) {
@@ -202,20 +189,20 @@ function aplicarFiltros() {
   // Garantir que filtros ativos estejam atualizados
   atualizarFiltrosAtivos();
 
-  // Filtrar produtos com base em todos os critérios
+  // Filtrar produtos com base em todos os critÃ©rios
   const produtosFiltrados = produtosCache.filter(produto => {
-    // Critério: Família
+    // CritÃ©rio: FamÃ­lia
     const matchFamilia = !familia || produto.grupo === familia;
 
-    // Critério: Subfamília
+    // CritÃ©rio: SubfamÃ­lia
     const matchSubfamilia = !subfamilia || produto.categoria === subfamilia;
 
-    // Critério: Busca (Nome ou Código)
+    // CritÃ©rio: Busca (Nome ou CÃ³digo)
     const matchBusca = !busca || 
                        (produto.nome && produto.nome.toLowerCase().includes(busca)) ||
                        (produto.sku && produto.sku.toLowerCase().includes(busca));
 
-    // Critério: Atributos
+    // CritÃ©rio: Atributos
     let matchAtributos = true;
     Object.entries(filtrosAtivos).forEach(([chave, valores]) => {
       if (valores.length > 0) {
@@ -275,7 +262,7 @@ function renderizarTabela(produtos) {
   textoResultado.textContent = `Mostrando ${produtos.length} de ${produtosCache.length} produtos`;
 }
 
-// ==================== AÇÕES ====================
+// ==================== AÃ‡Ã•ES ====================
 function limparFiltros() {
   document.getElementById('filtroFamilia').value = '';
   document.getElementById('filtroSubfamilia').value = '';
@@ -287,14 +274,15 @@ function limparFiltros() {
 
 function logout() {
   localStorage.clear();
-  window.location.href = 'login.html';
+  location.reload(); // Recarrega a pÃ¡gina para limpar o estado
 }
 
 function irPara(pagina) {
-  // Redirecionar para a página principal e selecionar a seção
+  // Redirecionar para a pÃ¡gina principal e selecionar a seÃ§Ã£o
   if (pagina === 'inventario') {
-    // Já está nesta página
+    // JÃ¡ estÃ¡ nesta pÃ¡gina
     return;
   }
   window.location.href = 'index.html?section=' + pagina;
 }
+

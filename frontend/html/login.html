@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8">
@@ -190,7 +190,7 @@
   <div class="login-container">
     <div class="login-box">
       <div class="logo">
-        <h1>📦</h1>
+        <h1>ðŸ“¦</h1>
         <h1>Estoque</h1>
         <p>Sistema de Controle de Estoque e Fluxo</p>
       </div>
@@ -199,12 +199,12 @@
 
       <form id="formLogin">
         <div class="form-group">
-          <label for="usuario">Usuário</label>
+          <label for="usuario">UsuÃ¡rio</label>
           <input 
             type="text" 
             id="usuario" 
             name="usuario" 
-            placeholder="Digite seu usuário"
+            placeholder="Digite seu usuÃ¡rio"
             required
             autocomplete="username"
           >
@@ -222,7 +222,7 @@
           >
         </div>
 
-        <button type="submit" class="btn-login">🔐 Entrar</button>
+        <button type="submit" class="btn-login">ðŸ” Entrar</button>
 
         <div class="loading" id="loading">
           <div class="spinner"></div>
@@ -230,10 +230,10 @@
       </form>
 
       <div class="demo-users">
-        <p><strong>Usuários de Demonstração</strong></p>
+        <p><strong>UsuÃ¡rios de DemonstraÃ§Ã£o</strong></p>
         <div class="demo-credentials">
           <div><strong>Admin:</strong> admin / admin123</div>
-          <div><strong>Usuário:</strong> user / user123</div>
+          <div><strong>UsuÃ¡rio:</strong> user / user123</div>
         </div>
       </div>
     </div>
@@ -248,7 +248,7 @@
       const alert = document.getElementById('alertLogin');
       const loading = document.getElementById('loading');
 
-      // Validação simples de cliente
+      // ValidaÃ§Ã£o simples de cliente
       if (!usuario || !senha) {
         mostrarAlerta('Por favor, preencha todos os campos', 'danger');
         return;
@@ -258,7 +258,8 @@
       alert.style.display = 'none';
 
       try {
-        const response = await fetch('http://localhost:3000/api/login', {
+        const API_URL = `http://${window.location.hostname}:3000/api`;
+        const response = await fetch(`${API_URL}/login`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ usuario, senha })
@@ -278,7 +279,7 @@
             window.location.href = '/index.html';
           }, 1500);
         } else {
-          mostrarAlerta(data.error || 'Usuário ou senha incorretos', 'danger');
+          mostrarAlerta(data.error || 'UsuÃ¡rio ou senha incorretos', 'danger');
         }
       } catch (error) {
         console.error('Erro:', error);
@@ -295,10 +296,11 @@
       alert.style.display = 'block';
     }
 
-    // Se já estiver logado, redireciona para o dashboard
+    // Se jÃ¡ estiver logado, redireciona para o dashboard
     if (localStorage.getItem('token')) {
       window.location.href = '/index.html';
     }
   </script>
 </body>
 </html>
+

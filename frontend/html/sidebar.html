@@ -1,0 +1,45 @@
+<!-- Sidebar de Navegação Compartilhada -->
+<aside class="sidebar">
+  <h1>📦 Estoque</h1>
+  <div class="user-info" id="userInfoSection">
+    <p>👤 <span id="usuarioLogado">Visitante</span></p>
+  </div>
+  <nav>
+    <a href="index.html" class="nav-btn index-link" style="text-decoration: none; display: block; text-align: left;">
+      🏠 Home / Dashboard
+    </a>
+    <a href="inventario.html" class="nav-btn inventario-link" style="text-decoration: none; display: block; text-align: left;">
+      🏪 Inventário
+    </a>
+    <div id="adminMenu" style="display: none;">
+      <a href="produtos.html" class="nav-btn produtos-link" style="text-decoration: none; display: block; text-align: left;">
+        📦 Produtos
+      </a>
+      <a href="movimentos.html" class="nav-btn movimentos-link" style="text-decoration: none; display: block; text-align: left;">
+        🔄 Movimentações
+      </a>
+      <a href="cadastro.html" class="nav-btn cadastro-link" style="text-decoration: none; display: block; text-align: left;">
+        📋 Cadastro de Grupos
+      </a>
+      <a href="relatorios.html" class="nav-btn relatorios-link" style="text-decoration: none; display: block; text-align: left;">
+        📊 Relatórios
+      </a>
+    </div>
+  </nav>
+  
+  <!-- Seção de autenticação -->
+  <div id="authSection" style="border-top: 1px solid #ddd; padding-top: 15px; margin-top: 15px;">
+    <div id="loginSection">
+      <button id="btnLoginToggle" class="btn-login" style="width: 100%; padding: 10px; background: #007bff; color: white; border: none; border-radius: 4px; cursor: pointer; font-weight: bold;">🔐 Login</button>
+      <form id="loginFormSidebar" style="display: none; margin-top: 10px;">
+        <input type="text" id="loginUsuario" placeholder="Usuário" style="width: 100%; padding: 8px; margin-bottom: 8px; border: 1px solid #ddd; border-radius: 4px;">
+        <input type="password" id="loginSenha" placeholder="Senha" style="width: 100%; padding: 8px; margin-bottom: 8px; border: 1px solid #ddd; border-radius: 4px;">
+        <button type="submit" class="btn-submit" style="width: 100%; padding: 8px; background: #28a745; color: white; border: none; border-radius: 4px; cursor: pointer;">Entrar</button>
+        <button type="button" id="btnCancelarLogin" style="width: 100%; padding: 8px; margin-top: 8px; background: #6c757d; color: white; border: none; border-radius: 4px; cursor: pointer;">Cancelar</button>
+      </form>
+    </div>
+    <div id="logoutSection" style="display: none;">
+      <button class="btn-logout" onclick="logout()" style="width: 100%; padding: 10px; background: #dc3545; color: white; border: none; border-radius: 4px; cursor: pointer; font-weight: bold;">🚪 Sair</button>
+    </div>
+  </div>
+</aside>

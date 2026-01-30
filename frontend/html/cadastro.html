@@ -1,0 +1,98 @@
+﻿<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Cadastro de Produtos - Sistema de Estoque</title>
+  <link rel="stylesheet" href="../styles.css">
+</head>
+<body>
+  <div class="container">
+    <!-- Sidebar serÃ¡ carregada por JavaScript -->
+
+    <!-- ConteÃºdo Principal -->
+    <main class="main-content">
+      <h2>Gerenciar FamÃ­lias de Produtos</h2>
+      <p style="color: #666; margin-bottom: 30px;">Defina a estrutura de dados para cada categoria de item do almazarifado.</p>
+
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 30px; margin-top: 20px;">
+        <!-- Coluna Esquerda: FormulÃ¡rio -->
+        <div>
+          <div class="form-section">
+            <h3 style="color: #2563eb; margin-bottom: 20px; border-bottom: 3px solid #2563eb; padding-bottom: 10px;">CRIAR NOVA FAMÃLIA</h3>
+            
+            <form id="formFamilia">
+              <div class="form-group">
+                <label style="font-weight: 600; color: #333;">Grupo Principal *</label>
+                <input 
+                  type="text" 
+                  id="grupo" 
+                  placeholder="EX: EPI, FIXAÃ‡ÃƒO, ELÃ‰TRICA" 
+                  required
+                  style="padding: 12px; font-size: 14px;"
+                >
+                <small style="color: #999;">O grupo maior que engloba os produtos.</small>
+              </div>
+
+              <div class="form-group">
+                <label style="font-weight: 600; color: #333;">SubfamÃ­lia (Nome do Item) *</label>
+                <input 
+                  type="text" 
+                  id="subfamilia" 
+                  placeholder="EX: LUVA, PARAFUSO, BOTA" 
+                  required
+                  style="padding: 12px; font-size: 14px;"
+                >
+                <small style="color: #999;">O nome especÃ­fico do tipo de item.</small>
+              </div>
+
+              <div class="form-group">
+                <label style="font-weight: 600; color: #333;">Campos ObrigatÃ³rios (Essenciais)</label>
+                <textarea 
+                  id="camposObrigatorios" 
+                  placeholder="EX: Tamanho, Material, Rosca&#10;Separe por vÃ­rgula. Estes campos serÃ£o fixos no cadastro." 
+                  style="padding: 12px; font-size: 14px; min-height: 80px; resize: vertical;"
+                ></textarea>
+                <small style="color: #999;">Separe por vÃ­rgula. Estes campos serÃ£o fixos no cadastro.</small>
+              </div>
+
+              <div class="form-group">
+                <label style="font-weight: 600; color: #333;">Campos Extras (SugestÃµes)</label>
+                <textarea 
+                  id="camposExtras" 
+                  placeholder="EX: Cor, Marca, C.A., Validade&#10;Separe por vÃ­rgula. AparecerÃ£o como botÃµes opcionais." 
+                  style="padding: 12px; font-size: 14px; min-height: 80px; resize: vertical;"
+                ></textarea>
+                <small style="color: #999;">Separe por vÃ­rgula. AparecerÃ£o como botÃµes opcionais.</small>
+              </div>
+
+              <button 
+                type="submit" 
+                class="btn btn-primary" 
+                style="width: 100%; padding: 14px; font-size: 16px; font-weight: 600;"
+              >
+                ðŸ’¾ SALVAR CONFIGURAÃ‡ÃƒO
+              </button>
+            </form>
+          </div>
+        </div>
+
+        <!-- Coluna Direita: Lista -->
+        <div>
+          <h3 style="color: #333; margin-bottom: 20px; border-bottom: 2px solid #333; padding-bottom: 10px;">FAMÃLIAS CADASTRADAS</h3>
+          <div 
+            id="listaFamilias" 
+            style="max-height: 600px; overflow-y: auto; border: 1px solid #ddd; border-radius: 10px; padding: 20px; background: #f9f9f9;"
+          >
+            <p style="color: #999; text-align: center;">Carregando...</p>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <script src="../js/sidebar.js"></script>
+  <script src="../js/cadastro.js"></script>
+</body>
+</html>
+

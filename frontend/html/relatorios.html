@@ -1,0 +1,331 @@
+﻿<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>RelatÃ³rios - Sistema de Estoque</title>
+  <link rel="stylesheet" href="../styles.css">
+  <style>
+    .relatorios-container {
+      margin-top: 30px;
+    }
+
+    .relatorios-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 20px;
+      margin-bottom: 30px;
+    }
+
+    .relatorio-card {
+      background: white;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+      cursor: pointer;
+      transition: transform 0.2s, box-shadow 0.2s;
+      border-top: 4px solid #2563eb;
+    }
+
+    .relatorio-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 5px 20px rgba(0, 0, 0, 0.15);
+    }
+
+    .relatorio-card h3 {
+      color: #333;
+      margin-bottom: 10px;
+      font-size: 18px;
+    }
+
+    .relatorio-card p {
+      color: #666;
+      font-size: 14px;
+      margin: 0;
+    }
+
+    .relatorio-card .icon {
+      font-size: 28px;
+      margin-bottom: 10px;
+    }
+
+    .relatorio-section {
+      background: white;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+      margin-bottom: 30px;
+    }
+
+    .relatorio-section h3 {
+      color: #333;
+      margin-bottom: 20px;
+      font-size: 18px;
+    }
+
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 15px;
+      margin-bottom: 20px;
+    }
+
+    .stat-item {
+      background: #f3f4f6;
+      padding: 15px;
+      border-radius: 8px;
+      border-left: 4px solid #2563eb;
+    }
+
+    .stat-item .label {
+      font-size: 12px;
+      color: #666;
+      margin-bottom: 8px;
+    }
+
+    .stat-item .value {
+      font-size: 24px;
+      font-weight: bold;
+      color: #333;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    thead {
+      background: #f3f4f6;
+    }
+
+    th {
+      padding: 12px;
+      text-align: left;
+      font-weight: 600;
+      color: #333;
+      border-bottom: 2px solid #ddd;
+      font-size: 13px;
+    }
+
+    td {
+      padding: 12px;
+      border-bottom: 1px solid #ddd;
+      font-size: 13px;
+    }
+
+    tbody tr:hover {
+      background: #f9fafb;
+    }
+
+    .filtros-relatorio {
+      display: flex;
+      gap: 15px;
+      margin-bottom: 20px;
+      flex-wrap: wrap;
+    }
+
+    .filtros-relatorio input,
+    .filtros-relatorio select {
+      padding: 8px 12px;
+      border: 2px solid #ddd;
+      border-radius: 6px;
+      font-size: 14px;
+    }
+
+    .filtros-relatorio button {
+      padding: 8px 16px;
+      border: none;
+      border-radius: 6px;
+      background: #2563eb;
+      color: white;
+      cursor: pointer;
+      font-weight: 600;
+      transition: background 0.2s;
+    }
+
+    .filtros-relatorio button:hover {
+      background: #1d4ed8;
+    }
+
+    .export-buttons {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 20px;
+    }
+
+    .export-buttons button {
+      padding: 8px 16px;
+      border: 2px solid #2563eb;
+      background: white;
+      color: #2563eb;
+      border-radius: 6px;
+      cursor: pointer;
+      font-weight: 600;
+      transition: all 0.2s;
+    }
+
+    .export-buttons button:hover {
+      background: #2563eb;
+      color: white;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <!-- Sidebar serÃ¡ carregada por JavaScript -->
+
+    <!-- ConteÃºdo Principal -->
+    <main class="main-content">
+      <h2>ðŸ“Š RelatÃ³rios</h2>
+      <p style="color: #666; margin-bottom: 30px;">Visualize estatÃ­sticas e relatÃ³rios do seu estoque</p>
+
+      <div class="relatorios-container">
+        <!-- Cards de RelatÃ³rios RÃ¡pidos -->
+        <div class="relatorios-grid">
+          <div class="relatorio-card" onclick="selecionarRelatorio('resumo')">
+            <div class="icon">ðŸ“ˆ</div>
+            <h3>Resumo Geral</h3>
+            <p>VisÃ£o geral do estoque</p>
+          </div>
+          <div class="relatorio-card" onclick="selecionarRelatorio('produtos')">
+            <div class="icon">ðŸ“¦</div>
+            <h3>Produtos</h3>
+            <p>Lista completa de produtos</p>
+          </div>
+          <div class="relatorio-card" onclick="selecionarRelatorio('baixo-estoque')">
+            <div class="icon">âš ï¸</div>
+            <h3>Baixo Estoque</h3>
+            <p>Produtos com pouca quantidade</p>
+          </div>
+          <div class="relatorio-card" onclick="selecionarRelatorio('movimentos')">
+            <div class="icon">ðŸ”„</div>
+            <h3>MovimentaÃ§Ãµes</h3>
+            <p>HistÃ³rico de entradas/saÃ­das</p>
+          </div>
+        </div>
+
+        <!-- Resumo Geral -->
+        <div class="relatorio-section" id="relatorioResumo">
+          <h3>ðŸ“ˆ Resumo Geral do Estoque</h3>
+          <div class="stats-grid">
+            <div class="stat-item">
+              <div class="label">Total de Produtos</div>
+              <div class="value" id="totalProdutos">0</div>
+            </div>
+            <div class="stat-item">
+              <div class="label">Quantidade Total</div>
+              <div class="value" id="quantidadeTotal">0</div>
+            </div>
+            <div class="stat-item">
+              <div class="label">Valor Total</div>
+              <div class="value" id="valorTotal">R$ 0,00</div>
+            </div>
+            <div class="stat-item">
+              <div class="label">Produtos Criados</div>
+              <div class="value" id="produtosCriados">0</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- RelatÃ³rio de Produtos -->
+        <div class="relatorio-section" id="relatorioProdutos">
+          <h3>ðŸ“¦ Lista de Produtos</h3>
+          <div class="export-buttons">
+            <button onclick="exportarCSV()">ðŸ“¥ Baixar CSV</button>
+            <button onclick="exportarPDF()">ðŸ“„ Baixar PDF</button>
+          </div>
+          <table id="tabelaProdutosRelatorio">
+            <thead>
+              <tr>
+                <th>SKU</th>
+                <th>Nome</th>
+                <th>Categoria</th>
+                <th>Quantidade</th>
+                <th>PreÃ§o Unit.</th>
+                <th>Total</th>
+              </tr>
+            </thead>
+            <tbody id="bodyProdutosRelatorio">
+              <tr>
+                <td colspan="6" style="text-align: center; color: #999;">Carregando produtos...</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <!-- RelatÃ³rio de Baixo Estoque -->
+        <div class="relatorio-section" id="relatorioBaixoEstoque">
+          <h3>âš ï¸ Produtos com Baixo Estoque</h3>
+          <div class="filtros-relatorio">
+            <label>
+              Limiar (quantidade mÃ­nima):
+              <input type="number" id="limiarEstoque" value="10" min="1" style="width: 100px;">
+            </label>
+            <button onclick="carregarBaixoEstoque()">ðŸ” Filtrar</button>
+          </div>
+          <table id="tabelaBaixoEstoque">
+            <thead>
+              <tr>
+                <th>SKU</th>
+                <th>Nome</th>
+                <th>Categoria</th>
+                <th>Quantidade</th>
+                <th>Limiar</th>
+                <th>DiferenÃ§a</th>
+              </tr>
+            </thead>
+            <tbody id="bodyBaixoEstoque">
+              <tr>
+                <td colspan="6" style="text-align: center; color: #999;">Nenhum produto com baixo estoque</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <!-- RelatÃ³rio de MovimentaÃ§Ãµes -->
+        <div class="relatorio-section" id="relatorioMovimentos">
+          <h3>ðŸ”„ HistÃ³rico de MovimentaÃ§Ãµes</h3>
+          <div class="filtros-relatorio">
+            <label>
+              De:
+              <input type="date" id="dataInicio">
+            </label>
+            <label>
+              AtÃ©:
+              <input type="date" id="dataFim">
+            </label>
+            <select id="tipoMovimentoFiltro">
+              <option value="">Todos os tipos</option>
+              <option value="entrada">Entrada</option>
+              <option value="saida">SaÃ­da</option>
+              <option value="ajuste">Ajuste</option>
+            </select>
+            <button onclick="carregarMovimentosRelatorio()">ðŸ” Filtrar</button>
+          </div>
+          <table id="tabelaMovimentosRelatorio">
+            <thead>
+              <tr>
+                <th>Data/Hora</th>
+                <th>Tipo</th>
+                <th>SKU</th>
+                <th>Quantidade</th>
+                <th>Motivo</th>
+                <th>UsuÃ¡rio</th>
+              </tr>
+            </thead>
+            <tbody id="bodyMovimentosRelatorio">
+              <tr>
+                <td colspan="6" style="text-align: center; color: #999;">Carregando movimentaÃ§Ãµes...</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <script src="../js/sidebar.js"></script>
+  <script src="../js/relatorios.js"></script>
+</body>
+</html>
+

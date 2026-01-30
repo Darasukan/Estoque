@@ -1,0 +1,172 @@
+﻿<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Produtos - Sistema de Estoque</title>
+  <link rel="stylesheet" href="../styles.css">
+</head>
+<body>
+  <div class="container">
+    <!-- Sidebar serÃ¡ carregada por JavaScript -->
+
+    <!-- ConteÃºdo Principal -->
+    <main class="main-content">
+      <!-- SeÃ§Ã£o de Produtos -->
+      <section id="produtos" class="section active">
+        <h2>ðŸ“¦ Gerenciar Produtos</h2>
+        <p style="color: #666; margin-bottom: 30px;">Adicione e gerencie os produtos base do sistema</p>
+        
+        <div id="avisoAuthProdutos" style="display: none; padding: 15px; background: #fff3cd; border: 1px solid #ffc107; border-radius: 4px; margin-bottom: 20px; color: #856404;">
+          <strong>âš ï¸ Recurso Protegido</strong><br>
+          VocÃª precisa estar logado para gerenciar produtos. FaÃ§a login na barra lateral.
+        </div>
+        
+        <div class="form-section" id="formSecaoProdutos">
+          <h3>Adicionar Novo Produto</h3>
+          <form id="formProduto">
+            <div class="form-row">
+              <div class="form-group">
+                <label>Nome *</label>
+                <input type="text" id="nomeProduto" required placeholder="Nome do produto">
+              </div>
+              <div class="form-group">
+                <label>SKU *</label>
+                <input type="text" id="skuProduto" required placeholder="SKU Ãºnico">
+              </div>
+            </div>
+            <div class="form-row">
+              <div class="form-group">
+                <label>Quantidade *</label>
+                <input type="number" id="qtdProduto" required min="0" placeholder="0">
+              </div>
+              <div class="form-group">
+                <label>PreÃ§o</label>
+                <input type="number" id="precoProduto" step="0.01" placeholder="0.00">
+              </div>
+            </div>
+            <div class="form-row">
+              <div class="form-group">
+                <label>Categoria</label>
+                <input type="text" id="categoriaProduto" placeholder="Ex: EletrÃ´nicos">
+              </div>
+              <div class="form-group">
+                <label>FamÃ­lia (Grupo)</label>
+                <input type="text" id="grupoProduto" placeholder="Ex: InformÃ¡tica">
+              </div>
+            </div>
+
+            <!-- SeÃ§Ã£o de Atributos DinÃ¢micos -->
+            <div id="secaoAtributos">
+              <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+                <strong>Atributos do Produto</strong>
+                <button type="button" class="btn btn-small btn-secondary" onclick="adicionarCampoAtributo()" title="Adicionar atributo">âž•</button>
+              </div>
+              <div id="listaAtributos"></div>
+              <small style="color: #666;">Adicione atributos como processador, cor, tamanho, etc.</small>
+            </div>
+
+            <button type="submit" class="btn btn-primary">âž• Adicionar Produto</button>
+          </form>
+        </div>
+
+        <!-- Lista de Produtos -->
+        <div class="table-section">
+          <h3>Produtos Cadastrados</h3>
+          <table id="tabelaProdutos">
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Nome</th>
+                <th>SKU</th>
+                <th>Quantidade</th>
+                <th>PreÃ§o</th>
+                <th>Categoria</th>
+                <th>AÃ§Ãµes</th>
+              </tr>
+            </thead>
+            <tbody id="bodyProdutos">
+              <tr>
+                <td colspan="7" style="text-align: center;">Nenhum produto cadastrado</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <!-- Modal de EdiÃ§Ã£o -->
+  <div id="modalEditar" class="modal">
+    <div class="modal-content">
+      <span class="close">&times;</span>
+      <h2>Editar Produto</h2>
+      <form id="formEditarProduto">
+        <input type="hidden" id="idProdutoEdicao">
+        <div class="form-row">
+          <div class="form-group">
+            <label>Nome *</label>
+            <input type="text" id="nomeEditar" required>
+          </div>
+          <div class="form-group">
+            <label>SKU *</label>
+            <input type="text" id="skuEditar" required>
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label>Quantidade *</label>
+            <input type="number" id="qtdEditar" required min="0">
+          </div>
+          <div class="form-group">
+            <label>PreÃ§o</label>
+            <input type="number" id="precoEditar" step="0.01">
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label>Categoria</label>
+            <input type="text" id="categoriaEditar">
+          </div>
+          <div class="form-group">
+            <label>FamÃ­lia (Grupo)</label>
+            <input type="text" id="grupoEditar">
+          </div>
+        </div>
+        <div style="margin-bottom: 15px;">
+          <strong>Atributos</strong>
+          <div id="listaAtributosEditar" style="margin-top: 10px;"></div>
+          <button type="button" class="btn btn-small btn-secondary" onclick="adicionarCampoAtributoEditar()" title="Adicionar atributo">âž• Adicionar Atributo</button>
+        </div>
+        <button type="submit" class="btn btn-primary">ðŸ’¾ Salvar AlteraÃ§Ãµes</button>
+      </form>
+    </div>
+  </div>
+
+  <script>
+    // Verificar autenticaÃ§Ã£o na pÃ¡gina de produtos
+    document.addEventListener('DOMContentLoaded', () => {
+      const token = localStorage.getItem('token');
+      const formSecaoProdutos = document.getElementById('formSecaoProdutos');
+      const tabelaProdutos = document.getElementById('tabelaProdutos');
+      const avisoAuthProdutos = document.getElementById('avisoAuthProdutos');
+      
+      if (!token) {
+        // UsuÃ¡rio nÃ£o autenticado
+        formSecaoProdutos.style.display = 'none';
+        tabelaProdutos.style.display = 'none';
+        avisoAuthProdutos.style.display = 'block';
+      } else {
+        // UsuÃ¡rio autenticado
+        avisoAuthProdutos.style.display = 'none';
+        formSecaoProdutos.style.display = 'block';
+        tabelaProdutos.style.display = 'table';
+      }
+    });
+  </script>
+
+  <script src="../js/sidebar.js"></script>
+  <script src="../js/script.js"></script>
+</body>
+</html>
+

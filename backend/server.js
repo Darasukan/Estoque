@@ -93,8 +93,8 @@ app.get('/api/me', verificarToken, (req, res) => {
 
 // ==================== ROTAS DE PRODUTOS ====================
 
-// GET - Listar todos os produtos
-app.get('/api/produtos', verificarToken, (req, res) => {
+// GET - Listar todos os produtos (PÚBLICO - sem autenticação)
+app.get('/api/produtos', (req, res) => {
   db.getProdutos((err, produtos) => {
     if (err) {
       return res.status(500).json({ error: err.message });
@@ -456,9 +456,51 @@ app.delete('/api/tags/:id', verificarToken, (req, res) => {
   });
 });
 
+// ==================== ROTAS DE PRODUTO-TAGS ====================
+
+// POST - Adicionar tag a um produto
+app.post('/api/produto-tags', verificarToken, (req, res) => {
+  const { produto_id, tag_id } = req.body;
+
+  if (!produto_id || !tag_id) {
+    return res.status(400).json({ error: 'produto_id e tag_id são obrigatórios' });
+  }
+
+  db.addProdutoTag(produto_id, tag_id, (err) => {
+    if (err) {
+      return res.status(500).json({ error: err.message });
+    }
+    res.json({ message: 'Tag adicionada ao produto com sucesso' });
+  });
+});
+
+// GET - Listar tags de um produto
+app.get('/api/produto-tags/:produto_id', verificarToken, (req, res) => {
+  const { produto_id } = req.params;
+
+  db.getProdutoTags(produto_id, (err, tags) => {
+    if (err) {
+      return res.status(500).json({ error: err.message });
+    }
+    res.json(tags);
+  });
+});
+
+// DELETE - Remover tag de um produto
+app.delete('/api/produto-tags/:produto_id/:tag_id', verificarToken, (req, res) => {
+  const { produto_id, tag_id } = req.params;
+
+  db.removeProdutoTag(produto_id, tag_id, (err) => {
+    if (err) {
+      return res.status(500).json({ error: err.message });
+    }
+    res.json({ message: 'Tag removida do produto com sucesso' });
+  });
+});
+
 // Rota padrão
 app.get('/', (req, res) => {
-  res.sendFile(path.join(__dirname, '../frontend/index.html'));
+  res.sendFile(path.join(__dirname, '../frontend/html/index.html'));
 });
 
 // Iniciar servidor

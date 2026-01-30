@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dashboard - Sistema de Estoque</title>
+  <link rel="stylesheet" href="../styles.css">
+  <style>
+    .dashboard-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 20px;
+      margin-bottom: 40px;
+    }
+
+    .card-stat {
+      background: white;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+      border-top: 4px solid #2563eb;
+    }
+
+    .card-stat h4 {
+      color: #666;
+      font-size: 13px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin: 0 0 12px 0;
+      font-weight: 600;
+    }
+
+    .card-stat .valor {
+      font-size: 32px;
+      font-weight: bold;
+      color: #333;
+      margin: 0;
+    }
+
+    .card-stat .subtitulo {
+      font-size: 12px;
+      color: #999;
+      margin-top: 8px;
+    }
+
+    .dashboard-section {
+      background: white;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+      margin-bottom: 30px;
+    }
+
+    .dashboard-section h3 {
+      color: #333;
+      margin-top: 0;
+      margin-bottom: 20px;
+      font-size: 18px;
+    }
+
+    .lista-rapida {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+
+    .lista-rapida li {
+      padding: 12px;
+      border-bottom: 1px solid #eee;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 13px;
+    }
+
+    .lista-rapida li:last-child {
+      border-bottom: none;
+    }
+
+    .lista-rapida .nome {
+      color: #333;
+      font-weight: 500;
+    }
+
+    .lista-rapida .qtd {
+      color: #2563eb;
+      font-weight: bold;
+      min-width: 40px;
+      text-align: right;
+    }
+
+    .alerta-baixo {
+      color: #991b1b;
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <!-- Sidebar será carregada por JavaScript -->
+
+    <!-- Conteúdo Principal -->
+    <main class="main-content">
+      <h2>📊 Dashboard - Sistema de Estoque</h2>
+      <p style="color: #666; margin-bottom: 30px;">Resumo geral do seu estoque</p>
+
+      <!-- Cards de Estatísticas -->
+      <div class="dashboard-grid">
+        <div class="card-stat">
+          <h4>Total de Produtos</h4>
+          <p class="valor" id="totalProdutos">0</p>
+          <p class="subtitulo">Cadastrados no sistema</p>
+        </div>
+
+        <div class="card-stat" style="border-top-color: #10b981;">
+          <h4>Quantidade em Estoque</h4>
+          <p class="valor" id="quantidadeTotal">0</p>
+          <p class="subtitulo">Unidades disponíveis</p>
+        </div>
+
+        <div class="card-stat" style="border-top-color: #8b5cf6;">
+          <h4>Valor Total</h4>
+          <p class="valor" id="valorTotal">R$ 0,00</p>
+          <p class="subtitulo">Investimento em estoque</p>
+        </div>
+
+        <div class="card-stat" style="border-top-color: #f59e0b;">
+          <h4>Produtos com Baixo Estoque</h4>
+          <p class="valor" id="produtosBaixoEstoque">0</p>
+          <p class="subtitulo">Quantidade < 10</p>
+        </div>
+      </div>
+
+      <!-- Produtos Recentes -->
+      <div class="dashboard-section">
+        <h3>🆕 Produtos Recentes</h3>
+        <ul class="lista-rapida" id="listaProdutosRecentes">
+          <li style="text-align: center; color: #999; padding: 20px;">Carregando...</li>
+        </ul>
+      </div>
+
+      <!-- Produtos com Baixo Estoque -->
+      <div class="dashboard-section">
+        <h3>⚠️ Produtos com Baixo Estoque</h3>
+        <ul class="lista-rapida" id="listaBaixoEstoque">
+          <li style="text-align: center; color: #999; padding: 20px;">Carregando...</li>
+        </ul>
+      </div>
+
+      <!-- Famílias Cadastradas -->
+      <div class="dashboard-section">
+        <h3>👥 Grupos/Famílias Cadastradas</h3>
+        <ul class="lista-rapida" id="listaFamilias">
+          <li style="text-align: center; color: #999; padding: 20px;">Carregando...</li>
+        </ul>
+      </div>
+
+      <!-- Botões de Acesso Rápido -->
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin-top: 30px;">
+        <a href="produtos.html" class="btn btn-primary" style="padding: 15px; text-align: center; text-decoration: none;">
+          📦 Gerenciar Produtos
+        </a>
+        <a href="inventario.html" class="btn btn-primary" style="padding: 15px; text-align: center; text-decoration: none; background: #10b981;">
+          🏪 Ver Inventário
+        </a>
+        <a href="cadastro.html" class="btn btn-primary" style="padding: 15px; text-align: center; text-decoration: none; background: #8b5cf6;">
+          📋 Cadastro de Grupos
+        </a>
+        <a href="relatorios.html" class="btn btn-primary" style="padding: 15px; text-align: center; text-decoration: none; background: #f59e0b;">
+          📊 Relatórios Completos
+        </a>
+      </div>
+    </main>
+  </div>
+
+  <script src="../js/sidebar.js"></script>
+  <script src="../js/dashboard.js"></script>
+</body>
+</html>
