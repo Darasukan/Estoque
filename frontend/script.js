@@ -1,4 +1,5 @@
-const API_URL = 'http://localhost:3000/api';
+// API URL dinâmica - funciona tanto em localhost quanto em LAN
+const API_URL = `http://${window.location.hostname}:3000/api`;
 
 // ==================== VERIFICAÇÃO DE AUTENTICAÇÃO ====================
 

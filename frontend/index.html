@@ -129,6 +129,12 @@
                   <input type="text" id="localAplicacao" placeholder="Onde será utilizado">
                 </div>
               </div>
+              <div class="form-row">
+                <div class="form-group">
+                  <label>Motivo/Observação</label>
+                  <input type="text" id="motivoMovimento" placeholder="Ex: Requisição, Devolução, etc">
+                </div>
+              </div>
             </div>
 
             <!-- Campos para ENTRADA -->
@@ -146,13 +152,6 @@
                   <label>Fornecedor (Opcional)</label>
                   <input type="text" id="fornecedor" placeholder="Nome do fornecedor">
                 </div>
-              </div>
-            </div>
-
-            <div class="form-row">
-              <div class="form-group">
-                <label>Motivo/Observação</label>
-                <input type="text" id="motivoMovimento" placeholder="Ex: Compra, Venda, Quebra">
               </div>
             </div>
             <button type="submit" class="btn btn-primary">✅ Registrar Movimentação</button>
@@ -317,6 +316,10 @@
           <label>Local de Aplicação</label>
           <input type="text" id="movLocalAplicacao">
         </div>
+        <div class="form-group">
+          <label>Motivo/Observação</label>
+          <input type="text" id="movMotivo">
+        </div>
       </div>
 
       <!-- Campos para ENTRADA no modal -->
@@ -333,11 +336,6 @@
           <label>Fornecedor</label>
           <input type="text" id="movFornecedor">
         </div>
-      </div>
-
-      <div class="form-group">
-        <label>Motivo/Observação</label>
-        <input type="text" id="movMotivo">
       </div>
 
       <div style="margin-top: 15px;">

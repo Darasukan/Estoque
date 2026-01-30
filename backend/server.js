@@ -3,17 +3,18 @@ const cors = require('cors');
 const bodyParser = require('body-parser');
 const path = require('path');
 const db = require('./database');
+require('dotenv').config();
 
 const app = express();
-const PORT = 3000;
+const PORT = process.env.API_PORT || 3000;
 
 // Servir arquivos estáticos da pasta frontend
 app.use(express.static(path.join(__dirname, '../frontend')));
 
 // Usuários demo (Em produção, isso seria um banco de dados)
 const usuarios = {
-  'admin': { senha: 'admin123', perfil: 'admin' },
-  'user': { senha: 'user123', perfil: 'usuario' }
+  'admin': { senha: process.env.ADMIN_PASSWORD || 'admin123', perfil: 'admin' },
+  'user': { senha: process.env.USER_PASSWORD || 'user123', perfil: 'usuario' }
 };
 
 // Middleware de autenticação
@@ -256,6 +257,22 @@ app.get('/', (req, res) => {
 });
 
 // Iniciar servidor
-app.listen(PORT, () => {
+app.listen(PORT, '0.0.0.0', () => {
+  const os = require('os');
+  const interfaces = os.networkInterfaces();
+  let lanIp = 'localhost';
+  
+  // Encontrar IP local da máquina
+  for (const name of Object.keys(interfaces)) {
+    for (const iface of interfaces[name]) {
+      if (iface.family === 'IPv4' && !iface.internal) {
+        lanIp = iface.address;
+        break;
+      }
+    }
+  }
+  
+  console.log(`✅ Banco de dados inicializado`);
   console.log(`🚀 Servidor rodando em http://localhost:${PORT}`);
+  console.log(`🌐 Acesse pela LAN: http://${lanIp}:${PORT}`);
 });
