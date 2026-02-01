@@ -1,6 +1,18 @@
 ﻿// ==================== CARREGAR NAVBAR COMPARTILHADA ====================
 document.addEventListener('DOMContentLoaded', () => {
-  fetch('html/navbar.html')
+  // Aplicar tema salvo imediatamente
+  aplicarTemaSalvo();
+  
+  // Determinar o caminho correto para navbar.html baseado na URL atual
+  const currentPath = window.location.pathname;
+  let navbarPath = 'navbar.html';
+  
+  // Se estamos na raiz ou em arquivos sem /html/, ajustar o caminho
+  if (!currentPath.includes('/html/')) {
+    navbarPath = 'html/navbar.html';
+  }
+  
+  fetch(navbarPath)
     .then(response => {
       if (!response.ok) {
         throw new Error(`Erro ao carregar navbar.html: ${response.status}`);
@@ -8,10 +20,15 @@ document.addEventListener('DOMContentLoaded', () => {
       return response.text();
     })
     .then(html => {
-      // Encontrar ou criar container para a navbar
-      const body = document.body;
+      // Verificar se a navbar já existe
       if (!document.querySelector('.navbar')) {
-        body.insertAdjacentHTML('afterbegin', html);
+        // Inserir no container ou no início do body
+        const navbarContainer = document.getElementById('navbarContainer');
+        if (navbarContainer) {
+          navbarContainer.innerHTML = html;
+        } else {
+          document.body.insertAdjacentHTML('afterbegin', html);
+        }
         
         // Carregar dados do usuário
         const usuarioLogado = localStorage.getItem('usuario');
@@ -20,10 +37,13 @@ document.addEventListener('DOMContentLoaded', () => {
         // Atualizar interface de autenticação
         atualizarNavbarAuth(usuarioLogado, token);
         
+        // Setup do botão de tema
+        setupBotaoTema();
+        
         // Marcar a página ativa
         const currentPage = window.location.pathname.split('/').pop() || 'index.html';
         
-        if (currentPage === 'index.html' || currentPage === '') {
+        if (currentPage === 'index.html' || currentPage === '' || currentPage === '/') {
           document.querySelector('.index-link')?.classList.add('active');
         } else if (currentPage === 'produtos.html') {
           document.querySelector('.produtos-link')?.classList.add('active');
@@ -35,11 +55,58 @@ document.addEventListener('DOMContentLoaded', () => {
           document.querySelector('.cadastro-link')?.classList.add('active');
         } else if (currentPage === 'relatorios.html') {
           document.querySelector('.relatorios-link')?.classList.add('active');
+        } else if (currentPage === 'itens.html') {
+          document.querySelector('.itens-link')?.classList.add('active');
         }
       }
     })
     .catch(err => console.error('Erro ao carregar navbar:', err));
 });
+
+// ==================== TEMA ESCURO/CLARO ====================
+function aplicarTemaSalvo() {
+  const temaSalvo = localStorage.getItem('almox_tema');
+  if (temaSalvo === 'dark') {
+    document.documentElement.setAttribute('data-theme', 'dark');
+  }
+}
+
+function setupBotaoTema() {
+  const btnTema = document.getElementById('btnTema');
+  const iconeTema = document.getElementById('iconeTema');
+  
+  if (!btnTema) return;
+  
+  // Atualizar ícone baseado no tema atual
+  atualizarIconeTema();
+  
+  btnTema.addEventListener('click', () => {
+    const temaAtual = document.documentElement.getAttribute('data-theme');
+    
+    if (temaAtual === 'dark') {
+      document.documentElement.removeAttribute('data-theme');
+      localStorage.setItem('almox_tema', 'light');
+    } else {
+      document.documentElement.setAttribute('data-theme', 'dark');
+      localStorage.setItem('almox_tema', 'dark');
+    }
+    
+    atualizarIconeTema();
+  });
+}
+
+function atualizarIconeTema() {
+  const iconeTema = document.getElementById('iconeTema');
+  if (!iconeTema) return;
+  
+  const temaAtual = document.documentElement.getAttribute('data-theme');
+  
+  if (temaAtual === 'dark') {
+    iconeTema.className = 'bi bi-sun-fill';
+  } else {
+    iconeTema.className = 'bi bi-moon-fill';
+  }
+}
 
 // Atualizar interface de autenticação na navbar
 function atualizarNavbarAuth(usuario, token) {

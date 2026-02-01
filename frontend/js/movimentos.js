@@ -159,6 +159,7 @@ function setupFormularios() {
       document.getElementById('itemSelecionadoEntrada').style.display = 'none';
       document.getElementById('subcategoriaEntrada').disabled = true;
       document.getElementById('itemEntrada').disabled = true;
+      document.getElementById('buscaItemEntrada').value = '';
       setDataHoje();
     });
   }
@@ -172,9 +173,14 @@ function setupFormularios() {
       document.getElementById('itemSelecionadoSaida').style.display = 'none';
       document.getElementById('subcategoriaSaida').disabled = true;
       document.getElementById('itemSaida').disabled = true;
+      document.getElementById('buscaItemSaida').value = '';
       setDataHoje();
     });
   }
+  
+  // Setup filtros de busca de item
+  setupBuscaItem('buscaItemEntrada', 'itemEntrada');
+  setupBuscaItem('buscaItemSaida', 'itemSaida');
   
   // Filtros do histórico
   document.getElementById('filtroTipo')?.addEventListener('change', carregarHistorico);
@@ -254,6 +260,7 @@ function popularItens(selectId, subcategoriaId) {
   
   if (!subcategoriaId) {
     select.disabled = true;
+    opcoesOriginais[selectId] = [];
     return;
   }
   
@@ -267,6 +274,9 @@ function popularItens(selectId, subcategoriaId) {
   });
   
   select.disabled = itensFiltrados.length === 0;
+  
+  // Guardar opções para filtro de busca
+  guardarOpcoes(selectId);
 }
 
 function selecionarItem(tipo, itemId) {
@@ -327,6 +337,7 @@ function registrarEntrada(e) {
     valorUnitario: getValorMoeda('valorUnitarioEntrada'),
     notaFiscal: document.getElementById('nfEntrada').value || null,
     fornecedor: document.getElementById('fornecedorEntrada').value || null,
+    operador: document.getElementById('operadorEntrada').value,
     data: document.getElementById('dataEntrada').value,
     criadoEm: new Date().toISOString()
   };
@@ -376,6 +387,7 @@ function registrarSaida(e) {
     quemRetirou: document.getElementById('quemRetirouSaida').value,
     localAplicacao: document.getElementById('localAplicacaoSaida').value || null,
     observacoes: document.getElementById('obsSaida').value || null,
+    operador: document.getElementById('operadorSaida').value,
     data: document.getElementById('dataSaida').value,
     criadoEm: new Date().toISOString()
   };
@@ -480,7 +492,7 @@ function carregarHistorico() {
         <td>${mov.itemNome}</td>
         <td>${obsHtml}</td>
         <td><strong>${mov.tipo === 'entrada' ? '+' : '-'}${mov.quantidade}</strong></td>
-        <td>${mov.operador}</td>
+        <td>${mov.operador || '-'}</td>
         <td>${detalhes}</td>
         ${acoesHtml}
       </tr>
@@ -580,4 +592,69 @@ function mostrarMensagem(texto, tipo) {
   setTimeout(() => {
     el.style.display = 'none';
   }, 4000);
+}
+
+// =============================================
+// BUSCA/FILTRO DE ITENS
+// =============================================
+
+// Guarda todas as opções originais do select
+const opcoesOriginais = {};
+
+function setupBuscaItem(inputId, selectId) {
+  const input = document.getElementById(inputId);
+  const select = document.getElementById(selectId);
+  
+  if (!input || !select) return;
+  
+  // Quando o input receber texto, filtra as opções
+  input.addEventListener('input', () => {
+    const termo = input.value.toLowerCase().trim();
+    filtrarOpcoes(selectId, termo);
+  });
+  
+  // Limpar busca quando o select mudar
+  select.addEventListener('change', () => {
+    input.value = '';
+  });
+}
+
+function guardarOpcoes(selectId) {
+  const select = document.getElementById(selectId);
+  if (!select) return;
+  
+  // Guarda todas as opções (exceto a primeira "Selecione...")
+  opcoesOriginais[selectId] = Array.from(select.options).slice(1).map(opt => ({
+    value: opt.value,
+    text: opt.textContent
+  }));
+}
+
+function filtrarOpcoes(selectId, termo) {
+  const select = document.getElementById(selectId);
+  if (!select || !opcoesOriginais[selectId]) return;
+  
+  const opcoes = opcoesOriginais[selectId];
+  const valorAtual = select.value;
+  
+  // Limpa select mantendo primeira opção
+  select.innerHTML = '<option value="">Selecione o item</option>';
+  
+  // Filtra e adiciona opções que contém o termo
+  opcoes.forEach(opt => {
+    if (!termo || opt.text.toLowerCase().includes(termo)) {
+      const option = document.createElement('option');
+      option.value = opt.value;
+      option.textContent = opt.text;
+      if (opt.value === valorAtual) option.selected = true;
+      select.appendChild(option);
+    }
+  });
+  
+  // Atualiza contador no placeholder
+  const qtdFiltrada = select.options.length - 1;
+  const qtdTotal = opcoes.length;
+  if (termo && qtdFiltrada !== qtdTotal) {
+    select.options[0].textContent = `${qtdFiltrada} de ${qtdTotal} itens`;
+  }
 }

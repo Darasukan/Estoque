@@ -9,451 +9,6 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
   <link rel="stylesheet" href="../styles.css">
-  <style>
-    .container {
-      max-width: 1600px;
-      margin: 0 auto;
-      padding: 20px;
-    }
-
-    .main-content {
-      margin-top: 80px;
-    }
-
-    .pagina-titulo {
-      font-size: 28px;
-      color: #333;
-      margin-bottom: 30px;
-      display: flex;
-      align-items: center;
-      gap: 10px;
-    }
-
-    .tab-container {
-      display: flex;
-      gap: 10px;
-      margin-bottom: 30px;
-      border-bottom: 2px solid #eee;
-    }
-
-    .tab-btn {
-      padding: 12px 20px;
-      background: none;
-      border: none;
-      cursor: pointer;
-      font-size: 16px;
-      color: #666;
-      border-bottom: 3px solid transparent;
-      transition: all 0.3s;
-    }
-
-    .tab-btn.ativo {
-      color: #2563eb;
-      border-bottom-color: #2563eb;
-    }
-
-    .tab-btn.tab-entrada.ativo {
-      color: #059669;
-      border-bottom-color: #059669;
-    }
-
-    .tab-btn.tab-saida.ativo {
-      color: #dc2626;
-      border-bottom-color: #dc2626;
-    }
-
-    .tab-btn:hover {
-      color: #2563eb;
-    }
-
-    .tab-content {
-      display: none;
-    }
-
-    .tab-content.ativo {
-      display: block;
-    }
-
-    .painel {
-      background: white;
-      padding: 25px;
-      border-radius: 10px;
-      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-      margin-bottom: 25px;
-    }
-
-    .painel.entrada {
-      border-top: 4px solid #059669;
-    }
-
-    .painel.saida {
-      border-top: 4px solid #dc2626;
-    }
-
-    .painel h2 {
-      font-size: 18px;
-      color: #333;
-      margin-bottom: 20px;
-      display: flex;
-      align-items: center;
-      gap: 10px;
-    }
-
-    .painel.entrada h2 { color: #059669; }
-    .painel.saida h2 { color: #dc2626; }
-
-    .form-grupo {
-      margin-bottom: 18px;
-    }
-
-    .form-grupo label {
-      display: block;
-      margin-bottom: 6px;
-      color: #333;
-      font-weight: 600;
-      font-size: 13px;
-    }
-
-    .form-grupo label .opcional {
-      color: #999;
-      font-weight: normal;
-      font-size: 11px;
-    }
-
-    .form-grupo input,
-    .form-grupo select,
-    .form-grupo textarea {
-      width: 100%;
-      padding: 10px 12px;
-      border: 2px solid #ddd;
-      border-radius: 6px;
-      font-size: 14px;
-      font-family: inherit;
-    }
-
-    .form-grupo input:focus,
-    .form-grupo select:focus {
-      outline: none;
-      border-color: #2563eb;
-      box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
-    }
-
-    .form-grupo input:disabled,
-    .form-grupo select:disabled {
-      background: #f3f4f6;
-      color: #6b7280;
-    }
-
-    .form-row {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 20px;
-    }
-
-    .form-row-tres {
-      display: grid;
-      grid-template-columns: 1fr 1fr 1fr;
-      gap: 15px;
-    }
-
-    .form-row-quatro {
-      display: grid;
-      grid-template-columns: 1fr 1fr 1fr 1fr;
-      gap: 15px;
-    }
-
-    .btn-group {
-      display: flex;
-      gap: 10px;
-      margin-top: 25px;
-    }
-
-    .btn {
-      padding: 12px 24px;
-      border: none;
-      border-radius: 6px;
-      font-size: 14px;
-      cursor: pointer;
-      font-weight: 600;
-      transition: all 0.3s;
-    }
-
-    .btn-entrada {
-      background: #059669;
-      color: white;
-    }
-
-    .btn-entrada:hover {
-      background: #047857;
-      transform: translateY(-2px);
-    }
-
-    .btn-saida {
-      background: #dc2626;
-      color: white;
-    }
-
-    .btn-saida:hover {
-      background: #b91c1c;
-      transform: translateY(-2px);
-    }
-
-    .btn-secondary {
-      background: #f0f0f0;
-      color: #333;
-    }
-
-    .btn-secondary:hover {
-      background: #e0e0e0;
-    }
-
-    .info-box {
-      background: #f0f9ff;
-      border: 1px solid #93c5fd;
-      padding: 12px 15px;
-      border-radius: 6px;
-      margin-bottom: 20px;
-      color: #0c2d6b;
-      font-size: 13px;
-    }
-
-    .item-selecionado {
-      background: linear-gradient(135deg, #2563eb15, #1e40af15);
-      border: 2px solid #3b82f6;
-      padding: 15px;
-      border-radius: 8px;
-      margin: 15px 0;
-    }
-
-    .item-selecionado h4 {
-      margin: 0 0 10px 0;
-      color: #1e40af;
-      font-size: 14px;
-    }
-
-    .item-selecionado .nome {
-      font-weight: 600;
-      color: #333;
-      font-size: 15px;
-    }
-
-    .item-selecionado .detalhes {
-      display: flex;
-      gap: 15px;
-      margin-top: 10px;
-      font-size: 13px;
-      color: #666;
-    }
-
-    .item-selecionado .detalhe {
-      display: flex;
-      align-items: center;
-      gap: 5px;
-    }
-
-    .item-selecionado .detalhe strong {
-      color: #333;
-    }
-
-    /* Tabela histórico */
-    .tabela-container {
-      background: white;
-      border-radius: 10px;
-      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-      overflow: hidden;
-    }
-
-    table {
-      width: 100%;
-      border-collapse: collapse;
-    }
-
-    th {
-      background: #f8f9fa;
-      padding: 12px 15px;
-      text-align: left;
-      font-weight: 600;
-      color: #333;
-      font-size: 12px;
-      text-transform: uppercase;
-      border-bottom: 2px solid #ddd;
-    }
-
-    td {
-      padding: 12px 15px;
-      border-bottom: 1px solid #eee;
-      color: #666;
-      font-size: 13px;
-    }
-
-    tr:hover {
-      background: #f8f9fa;
-    }
-
-    .badge {
-      display: inline-block;
-      padding: 4px 10px;
-      border-radius: 20px;
-      font-size: 11px;
-      font-weight: 600;
-    }
-
-    .badge-entrada {
-      background: #d1fae5;
-      color: #065f46;
-    }
-
-    .badge-saida {
-      background: #fee2e2;
-      color: #991b1b;
-    }
-
-    /* Tooltip para observações */
-    .tooltip-container {
-      position: relative;
-      cursor: help;
-    }
-
-    .tooltip-container:hover .tooltip-text {
-      visibility: visible;
-      opacity: 1;
-    }
-
-    .tooltip-text {
-      visibility: hidden;
-      opacity: 0;
-      position: absolute;
-      bottom: 100%;
-      left: 50%;
-      transform: translateX(-50%);
-      background: #333;
-      color: white;
-      padding: 8px 12px;
-      border-radius: 6px;
-      font-size: 12px;
-      white-space: nowrap;
-      max-width: 300px;
-      white-space: normal;
-      z-index: 100;
-      transition: opacity 0.2s;
-      margin-bottom: 5px;
-    }
-
-    .tooltip-text::after {
-      content: '';
-      position: absolute;
-      top: 100%;
-      left: 50%;
-      transform: translateX(-50%);
-      border: 6px solid transparent;
-      border-top-color: #333;
-    }
-
-    /* Botões de ação admin */
-    .acoes-admin {
-      display: flex;
-      gap: 5px;
-    }
-
-    .btn-acao {
-      padding: 4px 8px;
-      border: none;
-      border-radius: 4px;
-      cursor: pointer;
-      font-size: 12px;
-      transition: all 0.2s;
-    }
-
-    .btn-editar-mov {
-      background: #e0e7ff;
-      color: #3730a3;
-    }
-
-    .btn-editar-mov:hover {
-      background: #c7d2fe;
-    }
-
-    .btn-deletar-mov {
-      background: #fee2e2;
-      color: #991b1b;
-    }
-
-    .btn-deletar-mov:hover {
-      background: #fecaca;
-    }
-
-    .tem-obs {
-      color: #2563eb;
-      text-decoration: underline dotted;
-    }
-
-    .mensagem {
-      padding: 15px;
-      border-radius: 6px;
-      margin-bottom: 20px;
-      display: none;
-    }
-
-    .mensagem.sucesso {
-      background: #d1fae5;
-      color: #065f46;
-    }
-
-    .mensagem.erro {
-      background: #fee2e2;
-      color: #7f1d1d;
-    }
-
-    .vazio {
-      padding: 40px 20px;
-      text-align: center;
-      color: #999;
-      font-size: 14px;
-    }
-
-    .filtros {
-      background: white;
-      padding: 20px;
-      border-radius: 10px;
-      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-      margin-bottom: 20px;
-    }
-
-    .filtros h3 {
-      margin: 0 0 15px 0;
-      color: #333;
-      font-size: 14px;
-    }
-
-    .campo-futuro {
-      position: relative;
-    }
-
-    .campo-futuro::after {
-      content: "Em breve";
-      position: absolute;
-      top: 0;
-      right: 0;
-      background: #fbbf24;
-      color: #78350f;
-      padding: 2px 6px;
-      border-radius: 4px;
-      font-size: 9px;
-      font-weight: 600;
-    }
-
-    @media (max-width: 768px) {
-      .form-row,
-      .form-row-tres,
-      .form-row-quatro {
-        grid-template-columns: 1fr;
-      }
-
-      .tabela-container {
-        overflow-x: auto;
-      }
-    }
-  </style>
 </head>
 <body>
   <div id="navbarContainer"></div>
@@ -498,11 +53,14 @@
                   <option value="">Selecione categoria</option>
                 </select>
               </div>
-              <div class="form-grupo">
+              <div class="form-grupo form-grupo-item">
                 <label for="itemEntrada">Item *</label>
-                <select id="itemEntrada" required disabled>
-                  <option value="">Selecione subcategoria</option>
-                </select>
+                <div class="item-search-wrapper">
+                  <input type="text" id="buscaItemEntrada" class="busca-item-input" placeholder="🔍 Filtrar itens..." autocomplete="off">
+                  <select id="itemEntrada" required disabled>
+                    <option value="">Selecione subcategoria</option>
+                  </select>
+                </div>
               </div>
             </div>
 
@@ -531,8 +89,8 @@
               </div>
             </div>
 
-            <!-- Linha 3: Valor unitário, Nota Fiscal, Fornecedor -->
-            <div class="form-row-tres">
+            <!-- Linha 3: Valor unitário, Nota Fiscal, Fornecedor, Operador -->
+            <div class="form-row-quatro">
               <div class="form-grupo">
                 <label for="valorUnitarioEntrada">Valor Unitário <span class="opcional">(opc)</span></label>
                 <input type="text" id="valorUnitarioEntrada" placeholder="R$ 0,00">
@@ -544,6 +102,10 @@
               <div class="form-grupo">
                 <label for="fornecedorEntrada">Fornecedor <span class="opcional">(opc)</span></label>
                 <input type="text" id="fornecedorEntrada" placeholder="Nome do fornecedor">
+              </div>
+              <div class="form-grupo">
+                <label for="operadorEntrada">Operador *</label>
+                <input type="text" id="operadorEntrada" required placeholder="Quem registrou">
               </div>
             </div>
 
@@ -583,11 +145,14 @@
                   <option value="">Selecione categoria</option>
                 </select>
               </div>
-              <div class="form-grupo">
+              <div class="form-grupo form-grupo-item">
                 <label for="itemSaida">Item *</label>
-                <select id="itemSaida" required disabled>
-                  <option value="">Selecione subcategoria</option>
-                </select>
+                <div class="item-search-wrapper">
+                  <input type="text" id="buscaItemSaida" class="busca-item-input" placeholder="🔍 Filtrar itens..." autocomplete="off">
+                  <select id="itemSaida" required disabled>
+                    <option value="">Selecione subcategoria</option>
+                  </select>
+                </div>
               </div>
             </div>
 
@@ -615,8 +180,8 @@
               </div>
             </div>
 
-            <!-- Linha 3: Quem Retirou, Local de Aplicação -->
-            <div class="form-row">
+            <!-- Linha 3: Quem Retirou, Local de Aplicação, Operador -->
+            <div class="form-row-tres">
               <div class="form-grupo">
                 <label for="quemRetirouSaida">Quem Retirou *</label>
                 <input type="text" id="quemRetirouSaida" required placeholder="Nome de quem retirou">
@@ -624,6 +189,10 @@
               <div class="form-grupo">
                 <label for="localAplicacaoSaida">Local de Aplicação <span class="opcional">(opc)</span></label>
                 <input type="text" id="localAplicacaoSaida" placeholder="Onde será usado">
+              </div>
+              <div class="form-grupo">
+                <label for="operadorSaida">Operador *</label>
+                <input type="text" id="operadorSaida" required placeholder="Quem registrou">
               </div>
             </div>
 
