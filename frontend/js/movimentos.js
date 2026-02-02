@@ -308,19 +308,11 @@ function atualizarFiltroAtributosHist(subId) {
     )].sort();
     
     if (valoresUnicos.length > 0) {
-      html += `
-        <div class="filtro-attr-grupo">
-          <div class="filtro-attr-titulo">${escapeHtml(attr)}</div>
-          <div class="filtro-attr-opcoes">
-            ${valoresUnicos.map(v => `
-              <label class="filtro-checkbox">
-                <input type="checkbox" class="filtro-attr-check-hist" data-attr="${escapeAttr(attr)}" value="${escapeAttr(v)}">
-                <span>${escapeHtml(v)}</span>
-              </label>
-            `).join('')}
-          </div>
-        </div>
-      `;
+      const checkboxesHtml = valoresUnicos.map(v => 
+        `<label class="filtro-checkbox"><input type="checkbox" class="filtro-attr-check-hist" data-attr="${escapeAttr(attr)}" value="${escapeAttr(v)}"><span>${escapeHtml(v)}</span></label>`
+      ).join('');
+      
+      html += `<div class="filtro-attr-grupo"><div class="filtro-attr-titulo">${escapeHtml(attr)}</div><div class="filtro-attr-opcoes">${checkboxesHtml}</div></div>`;
     }
   });
   
