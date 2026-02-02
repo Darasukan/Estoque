@@ -1,4 +1,4 @@
-# 📦 Sistema de Estoque
+# Sistema de Estoque
 
 Sistema de gerenciamento de estoque em tempo real (possui filtro pra tudo)
 
