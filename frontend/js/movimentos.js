@@ -262,10 +262,17 @@ function popularSubcategoriasHist(categoriaId) {
     return;
   }
   
-  const subs = subcategorias.filter(s => s.categoriaId === categoriaId);
+  // Só mostrar subcategorias que têm movimentações
+  const idsItensComMov = [...new Set(movimentacoes.map(m => m.itemId))];
+  const subsComMov = subcategorias.filter(s => {
+    if (s.categoriaId !== categoriaId) return false;
+    // Verificar se tem algum item dessa subcategoria com movimentação
+    return itens.some(i => i.subcategoriaId === s.id && idsItensComMov.includes(i.id));
+  });
+  
   select.innerHTML = '<option value="">Todas</option>' + 
-    subs.map(s => `<option value="${s.id}">${s.nome}</option>`).join('');
-  select.disabled = false;
+    subsComMov.map(s => `<option value="${s.id}">${s.nome}</option>`).join('');
+  select.disabled = subsComMov.length === 0;
 }
 
 function atualizarFiltroAtributosHist(subId) {
@@ -287,22 +294,23 @@ function atualizarFiltroAtributosHist(subId) {
     return;
   }
   
-  // Buscar valores únicos de atributos nos itens dessa subcategoria
-  const itensSubcat = itens.filter(i => i.subcategoriaId === subId);
+  // Só considerar itens que têm movimentações
+  const idsItensComMov = [...new Set(movimentacoes.map(m => m.itemId))];
+  const itensSubcatComMov = itens.filter(i => i.subcategoriaId === subId && idsItensComMov.includes(i.id));
   
   let html = '';
   subcategoria.atributos.forEach(attr => {
-    // Coletar valores únicos desse atributo
+    // Coletar valores únicos desse atributo (só de itens com movimentações)
     const valoresUnicos = [...new Set(
-      itensSubcat
+      itensSubcatComMov
         .map(i => i.atributos?.[attr])
         .filter(v => v)
-    )];
+    )].sort();
     
     if (valoresUnicos.length > 0) {
       html += `
         <div class="filtro-attr-grupo">
-          <label class="filtro-attr-titulo">${escapeHtml(attr)}</label>
+          <div class="filtro-attr-titulo">${escapeHtml(attr)}</div>
           <div class="filtro-attr-opcoes">
             ${valoresUnicos.map(v => `
               <label class="filtro-checkbox">
@@ -690,7 +698,7 @@ function carregarHistorico() {
   // Ordenar por data (mais recente primeiro)
   movsFiltradas.sort((a, b) => new Date(b.criadoEm) - new Date(a.criadoEm));
   
-  const colspan = isAdmin ? 12 : 11;
+  const colspan = isAdmin ? 13 : 12;
   
   if (movsFiltradas.length === 0) {
     tbody.innerHTML = `<tr><td colspan="${colspan}" class="vazio">Nenhuma movimentação encontrada</td></tr>`;
@@ -701,6 +709,15 @@ function carregarHistorico() {
     const tipoClass = mov.tipo === 'entrada' ? 'badge-entrada' : 'badge-saida';
     const tipoIcon = mov.tipo === 'entrada' ? '📥' : '📤';
     const dataFormatada = formatarData(mov.data);
+    
+    // Buscar categoria do item
+    const item = itens.find(i => i.id === mov.itemId);
+    const sub = item ? subcategorias.find(s => s.id === item.subcategoriaId) : null;
+    const cat = sub ? categorias.find(c => c.id === sub.categoriaId) : null;
+    const categoriaNome = cat ? cat.nome : '-';
+    
+    // Nome do item (sem categoria, só subcategoria + atributos)
+    const itemNomeLimpo = mov.itemNome || '-';
     
     // Colunas específicas por tipo
     const fornecedorHtml = mov.tipo === 'entrada' ? escapeHtml(mov.fornecedor || '-') : '-';
@@ -726,7 +743,8 @@ function carregarHistorico() {
         <td class="col-id-mov"><code>${escapeHtml(mov.id)}</code></td>
         <td class="col-id-item"><code>${escapeHtml(mov.itemId || '-')}</code></td>
         <td><span class="badge ${tipoClass}">${tipoIcon} ${mov.tipo === 'entrada' ? 'Entrada' : 'Saída'}</span></td>
-        <td>${escapeHtml(mov.itemNome)}</td>
+        <td>${escapeHtml(categoriaNome)}</td>
+        <td>${escapeHtml(itemNomeLimpo)}</td>
         <td>${escapeHtml(obsHtml)}</td>
         <td><strong>${mov.tipo === 'entrada' ? '+' : '-'}${mov.quantidade}</strong></td>
         <td>${escapeHtml(mov.operador || '-')}</td>
