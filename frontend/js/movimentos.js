@@ -13,6 +13,20 @@ let movimentacoes = [];
 let itemSelecionadoEntrada = null;
 let itemSelecionadoSaida = null;
 
+// Função para escapar HTML (evita quebra com aspas, <, >, etc)
+function escapeHtml(text) {
+  if (!text) return '';
+  const div = document.createElement('div');
+  div.textContent = text;
+  return div.innerHTML;
+}
+
+// Função para escapar atributos HTML (para value="...")
+function escapeAttr(text) {
+  if (!text) return '';
+  return text.replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+}
+
 document.addEventListener('DOMContentLoaded', () => {
   carregarDados();
   setupTabs();
@@ -157,9 +171,9 @@ function setupFormularios() {
     formEntrada.addEventListener('reset', () => {
       itemSelecionadoEntrada = null;
       document.getElementById('itemSelecionadoEntrada').style.display = 'none';
+      document.getElementById('filtroAtributosEntrada').style.display = 'none';
       document.getElementById('subcategoriaEntrada').disabled = true;
       document.getElementById('itemEntrada').disabled = true;
-      document.getElementById('buscaItemEntrada').value = '';
       setDataHoje();
     });
   }
@@ -171,22 +185,172 @@ function setupFormularios() {
     formSaida.addEventListener('reset', () => {
       itemSelecionadoSaida = null;
       document.getElementById('itemSelecionadoSaida').style.display = 'none';
+      document.getElementById('filtroAtributosSaida').style.display = 'none';
       document.getElementById('subcategoriaSaida').disabled = true;
       document.getElementById('itemSaida').disabled = true;
-      document.getElementById('buscaItemSaida').value = '';
       setDataHoje();
     });
   }
   
-  // Setup filtros de busca de item
-  setupBuscaItem('buscaItemEntrada', 'itemEntrada');
-  setupBuscaItem('buscaItemSaida', 'itemSaida');
-  
   // Filtros do histórico
   document.getElementById('filtroTipo')?.addEventListener('change', carregarHistorico);
-  document.getElementById('filtroCategoriaHist')?.addEventListener('change', carregarHistorico);
+  document.getElementById('filtroCategoriaHist')?.addEventListener('change', (e) => {
+    popularSubcategoriasHist(e.target.value);
+    carregarHistorico();
+  });
+  document.getElementById('filtroSubcategoriaHist')?.addEventListener('change', (e) => {
+    atualizarFiltroAtributosHist(e.target.value);
+    carregarHistorico();
+  });
   document.getElementById('filtroDataInicio')?.addEventListener('change', carregarHistorico);
   document.getElementById('filtroDataFim')?.addEventListener('change', carregarHistorico);
+  
+  // Filtro de busca com debounce
+  const filtroBusca = document.getElementById('filtroBuscaHist');
+  if (filtroBusca) {
+    let timeout;
+    filtroBusca.addEventListener('input', () => {
+      clearTimeout(timeout);
+      timeout = setTimeout(carregarHistorico, 300);
+    });
+  }
+  
+  // Botão limpar filtros
+  document.getElementById('btnLimparFiltrosHist')?.addEventListener('click', limparFiltrosHistorico);
+  
+  // Checkboxes de exibição de colunas
+  document.getElementById('mostrarIdMov')?.addEventListener('change', atualizarColunasVisiveis);
+  document.getElementById('mostrarIdItem')?.addEventListener('change', atualizarColunasVisiveis);
+  
+  // Aplicar visibilidade inicial
+  atualizarColunasVisiveis();
+}
+
+function atualizarColunasVisiveis() {
+  const mostrarIdMov = document.getElementById('mostrarIdMov')?.checked ?? true;
+  const mostrarIdItem = document.getElementById('mostrarIdItem')?.checked ?? true;
+  
+  // Colunas do header
+  document.querySelectorAll('.col-id-mov').forEach(el => {
+    el.style.display = mostrarIdMov ? '' : 'none';
+  });
+  document.querySelectorAll('.col-id-item').forEach(el => {
+    el.style.display = mostrarIdItem ? '' : 'none';
+  });
+  
+  // Colunas das linhas (índice 1 = ID Mov, índice 2 = ID Item)
+  document.querySelectorAll('#tabelaHistorico tbody tr').forEach(tr => {
+    const cells = tr.querySelectorAll('td');
+    if (cells.length > 2) {
+      if (cells[1]) cells[1].style.display = mostrarIdMov ? '' : 'none';
+      if (cells[2]) cells[2].style.display = mostrarIdItem ? '' : 'none';
+    }
+  });
+}
+
+function popularSubcategoriasHist(categoriaId) {
+  const select = document.getElementById('filtroSubcategoriaHist');
+  if (!select) return;
+  
+  // Ocultar filtros de atributos
+  const attrContainer = document.getElementById('filtroAtributosContainerHist');
+  if (attrContainer) attrContainer.style.display = 'none';
+  
+  if (!categoriaId) {
+    select.innerHTML = '<option value="">Todas</option>';
+    select.disabled = true;
+    return;
+  }
+  
+  const subs = subcategorias.filter(s => s.categoriaId === categoriaId);
+  select.innerHTML = '<option value="">Todas</option>' + 
+    subs.map(s => `<option value="${s.id}">${s.nome}</option>`).join('');
+  select.disabled = false;
+}
+
+function atualizarFiltroAtributosHist(subId) {
+  const container = document.getElementById('filtroAtributosContainerHist');
+  const atributosDiv = document.getElementById('filtroAtributosHist');
+  
+  if (!container || !atributosDiv) return;
+  
+  if (!subId) {
+    container.style.display = 'none';
+    return;
+  }
+  
+  // Buscar subcategoria para pegar os atributos definidos
+  const subcategoria = subcategorias.find(s => s.id === subId);
+  
+  if (!subcategoria || !subcategoria.atributos || subcategoria.atributos.length === 0) {
+    container.style.display = 'none';
+    return;
+  }
+  
+  // Buscar valores únicos de atributos nos itens dessa subcategoria
+  const itensSubcat = itens.filter(i => i.subcategoriaId === subId);
+  
+  let html = '';
+  subcategoria.atributos.forEach(attr => {
+    // Coletar valores únicos desse atributo
+    const valoresUnicos = [...new Set(
+      itensSubcat
+        .map(i => i.atributos?.[attr])
+        .filter(v => v)
+    )];
+    
+    if (valoresUnicos.length > 0) {
+      html += `
+        <div class="filtro-attr-grupo">
+          <label class="filtro-attr-titulo">${escapeHtml(attr)}</label>
+          <div class="filtro-attr-opcoes">
+            ${valoresUnicos.map(v => `
+              <label class="filtro-checkbox">
+                <input type="checkbox" class="filtro-attr-check-hist" data-attr="${escapeAttr(attr)}" value="${escapeAttr(v)}">
+                <span>${escapeHtml(v)}</span>
+              </label>
+            `).join('')}
+          </div>
+        </div>
+      `;
+    }
+  });
+  
+  if (html) {
+    atributosDiv.innerHTML = html;
+    container.style.display = 'block';
+    
+    // Adicionar listeners nos checkboxes
+    atributosDiv.querySelectorAll('.filtro-attr-check-hist').forEach(check => {
+      check.addEventListener('change', carregarHistorico);
+    });
+  } else {
+    container.style.display = 'none';
+  }
+}
+
+function limparFiltrosHistorico() {
+  const filtroTipo = document.getElementById('filtroTipo');
+  const filtroCategoriaHist = document.getElementById('filtroCategoriaHist');
+  const filtroSubcategoriaHist = document.getElementById('filtroSubcategoriaHist');
+  const filtroBuscaHist = document.getElementById('filtroBuscaHist');
+  const filtroDataInicio = document.getElementById('filtroDataInicio');
+  const filtroDataFim = document.getElementById('filtroDataFim');
+  const filtroAtributosContainerHist = document.getElementById('filtroAtributosContainerHist');
+  
+  if (filtroTipo) filtroTipo.value = '';
+  if (filtroCategoriaHist) filtroCategoriaHist.value = '';
+  if (filtroSubcategoriaHist) {
+    filtroSubcategoriaHist.value = '';
+    filtroSubcategoriaHist.innerHTML = '<option value="">Todas</option>';
+    filtroSubcategoriaHist.disabled = true;
+  }
+  if (filtroAtributosContainerHist) filtroAtributosContainerHist.style.display = 'none';
+  if (filtroBuscaHist) filtroBuscaHist.value = '';
+  if (filtroDataInicio) filtroDataInicio.value = '';
+  if (filtroDataFim) filtroDataFim.value = '';
+  
+  carregarHistorico();
 }
 
 function setupCascatas() {
@@ -196,10 +360,19 @@ function setupCascatas() {
     document.getElementById('itemEntrada').innerHTML = '<option value="">Primeiro selecione subcategoria</option>';
     document.getElementById('itemEntrada').disabled = true;
     document.getElementById('itemSelecionadoEntrada').style.display = 'none';
+    document.getElementById('filtroAtributosEntrada').style.display = 'none';
   });
   
   document.getElementById('subcategoriaEntrada')?.addEventListener('change', (e) => {
-    popularItens('itemEntrada', e.target.value);
+    const subId = e.target.value;
+    if (subId) {
+      montarFiltroAtributos('Entrada', subId);
+      popularItensFiltrados('Entrada', subId);
+    } else {
+      document.getElementById('filtroAtributosEntrada').style.display = 'none';
+      document.getElementById('itemEntrada').innerHTML = '<option value="">Primeiro selecione subcategoria</option>';
+      document.getElementById('itemEntrada').disabled = true;
+    }
     document.getElementById('itemSelecionadoEntrada').style.display = 'none';
   });
   
@@ -213,15 +386,33 @@ function setupCascatas() {
     document.getElementById('itemSaida').innerHTML = '<option value="">Primeiro selecione subcategoria</option>';
     document.getElementById('itemSaida').disabled = true;
     document.getElementById('itemSelecionadoSaida').style.display = 'none';
+    document.getElementById('filtroAtributosSaida').style.display = 'none';
   });
   
   document.getElementById('subcategoriaSaida')?.addEventListener('change', (e) => {
-    popularItens('itemSaida', e.target.value);
+    const subId = e.target.value;
+    if (subId) {
+      montarFiltroAtributos('Saida', subId);
+      popularItensFiltrados('Saida', subId);
+    } else {
+      document.getElementById('filtroAtributosSaida').style.display = 'none';
+      document.getElementById('itemSaida').innerHTML = '<option value="">Primeiro selecione subcategoria</option>';
+      document.getElementById('itemSaida').disabled = true;
+    }
     document.getElementById('itemSelecionadoSaida').style.display = 'none';
   });
   
   document.getElementById('itemSaida')?.addEventListener('change', (e) => {
     selecionarItem('Saida', e.target.value);
+  });
+  
+  // Botões limpar filtros
+  document.getElementById('btnLimparFiltrosEntrada')?.addEventListener('click', () => {
+    limparFiltrosAtributos('Entrada');
+  });
+  
+  document.getElementById('btnLimparFiltrosSaida')?.addEventListener('click', () => {
+    limparFiltrosAtributos('Saida');
   });
 }
 
@@ -431,14 +622,43 @@ function carregarHistorico() {
   // Aplicar filtros
   const filtroTipo = document.getElementById('filtroTipo')?.value;
   const filtroCategoria = document.getElementById('filtroCategoriaHist')?.value;
+  const filtroSubcategoria = document.getElementById('filtroSubcategoriaHist')?.value;
   const filtroDataInicio = document.getElementById('filtroDataInicio')?.value;
   const filtroDataFim = document.getElementById('filtroDataFim')?.value;
+  const filtroBusca = document.getElementById('filtroBuscaHist')?.value?.toLowerCase().trim();
   
   if (filtroTipo) {
     movsFiltradas = movsFiltradas.filter(m => m.tipo === filtroTipo);
   }
   
-  if (filtroCategoria) {
+  if (filtroSubcategoria) {
+    // Filtrar por subcategoria específica
+    let itensSub = itens.filter(i => i.subcategoriaId === filtroSubcategoria);
+    
+    // Aplicar filtros de atributos
+    const attrChecks = document.querySelectorAll('.filtro-attr-check-hist:checked');
+    if (attrChecks.length > 0) {
+      // Agrupar por atributo
+      const filtrosAttr = {};
+      attrChecks.forEach(check => {
+        const attr = check.dataset.attr;
+        const valor = check.value;
+        if (!filtrosAttr[attr]) filtrosAttr[attr] = [];
+        filtrosAttr[attr].push(valor);
+      });
+      
+      // Filtrar itens que tenham pelo menos um dos valores para cada atributo
+      itensSub = itensSub.filter(item => {
+        return Object.entries(filtrosAttr).every(([attr, valores]) => {
+          const valorItem = item.atributos?.[attr];
+          return valorItem && valores.includes(valorItem);
+        });
+      });
+    }
+    
+    const idsItensSub = itensSub.map(i => i.id);
+    movsFiltradas = movsFiltradas.filter(m => idsItensSub.includes(m.itemId));
+  } else if (filtroCategoria) {
     // Filtrar por categoria (via subcategoria do item)
     const subsCategoria = subcategorias.filter(s => s.categoriaId === filtroCategoria).map(s => s.id);
     const itensCategoria = itens.filter(i => subsCategoria.includes(i.subcategoriaId)).map(i => i.id);
@@ -453,10 +673,24 @@ function carregarHistorico() {
     movsFiltradas = movsFiltradas.filter(m => m.data <= filtroDataFim);
   }
   
+  // Filtro de busca (por ID da movimentação, ID do item, nome do item, operador)
+  if (filtroBusca) {
+    movsFiltradas = movsFiltradas.filter(m => {
+      const idMov = (m.id || '').toLowerCase();
+      const idItem = (m.itemId || '').toLowerCase();
+      const nomeItem = (m.itemNome || '').toLowerCase();
+      const operador = (m.operador || '').toLowerCase();
+      const fornecedor = (m.fornecedor || '').toLowerCase();
+      const quemRetirou = (m.quemRetirou || '').toLowerCase();
+      return idMov.includes(filtroBusca) || idItem.includes(filtroBusca) || nomeItem.includes(filtroBusca) ||
+             operador.includes(filtroBusca) || fornecedor.includes(filtroBusca) || quemRetirou.includes(filtroBusca);
+    });
+  }
+  
   // Ordenar por data (mais recente primeiro)
   movsFiltradas.sort((a, b) => new Date(b.criadoEm) - new Date(a.criadoEm));
   
-  const colspan = isAdmin ? 9 : 8;
+  const colspan = isAdmin ? 12 : 11;
   
   if (movsFiltradas.length === 0) {
     tbody.innerHTML = `<tr><td colspan="${colspan}" class="vazio">Nenhuma movimentação encontrada</td></tr>`;
@@ -467,9 +701,11 @@ function carregarHistorico() {
     const tipoClass = mov.tipo === 'entrada' ? 'badge-entrada' : 'badge-saida';
     const tipoIcon = mov.tipo === 'entrada' ? '📥' : '📤';
     const dataFormatada = formatarData(mov.data);
-    const detalhes = mov.tipo === 'entrada' 
-      ? (mov.fornecedor || mov.notaFiscal || '-')
-      : (mov.quemRetirou || '-');
+    
+    // Colunas específicas por tipo
+    const fornecedorHtml = mov.tipo === 'entrada' ? escapeHtml(mov.fornecedor || '-') : '-';
+    const nfHtml = mov.tipo === 'entrada' ? escapeHtml(mov.notaFiscal || '-') : '-';
+    const retiradoPorHtml = mov.tipo === 'saida' ? escapeHtml(mov.quemRetirou || '-') : '-';
     
     // Coluna de observações
     const obsHtml = mov.observacoes || '-';
@@ -478,8 +714,8 @@ function carregarHistorico() {
     const acoesHtml = isAdmin ? `
       <td>
         <div class="acoes-admin">
-          <button class="btn-acao btn-editar-mov" onclick="editarMovimentacao('${mov.id}')" title="Editar">✏️</button>
-          <button class="btn-acao btn-deletar-mov" onclick="deletarMovimentacao('${mov.id}')" title="Excluir">🗑️</button>
+          <button class="btn-acao btn-editar-mov" onclick="editarMovimentacao('${escapeAttr(mov.id)}')" title="Editar">✏️</button>
+          <button class="btn-acao btn-deletar-mov" onclick="deletarMovimentacao('${escapeAttr(mov.id)}')" title="Excluir">🗑️</button>
         </div>
       </td>
     ` : '';
@@ -487,17 +723,32 @@ function carregarHistorico() {
     return `
       <tr>
         <td>${dataFormatada}</td>
-        <td>${mov.id}</td>
+        <td class="col-id-mov"><code>${escapeHtml(mov.id)}</code></td>
+        <td class="col-id-item"><code>${escapeHtml(mov.itemId || '-')}</code></td>
         <td><span class="badge ${tipoClass}">${tipoIcon} ${mov.tipo === 'entrada' ? 'Entrada' : 'Saída'}</span></td>
-        <td>${mov.itemNome}</td>
-        <td>${obsHtml}</td>
+        <td>${escapeHtml(mov.itemNome)}</td>
+        <td>${escapeHtml(obsHtml)}</td>
         <td><strong>${mov.tipo === 'entrada' ? '+' : '-'}${mov.quantidade}</strong></td>
-        <td>${mov.operador || '-'}</td>
-        <td>${detalhes}</td>
+        <td>${escapeHtml(mov.operador || '-')}</td>
+        <td>${fornecedorHtml}</td>
+        <td>${nfHtml}</td>
+        <td>${retiradoPorHtml}</td>
         ${acoesHtml}
       </tr>
     `;
   }).join('');
+  
+  // Atualizar contador
+  const contador = document.getElementById('contadorMovimentacoes');
+  if (contador) {
+    const total = movsFiltradas.length;
+    const entradas = movsFiltradas.filter(m => m.tipo === 'entrada').length;
+    const saidas = movsFiltradas.filter(m => m.tipo === 'saida').length;
+    contador.textContent = `${total} movimentação${total !== 1 ? 'ões' : ''} (${entradas} entrada${entradas !== 1 ? 's' : ''}, ${saidas} saída${saidas !== 1 ? 's' : ''})`;
+  }
+  
+  // Aplicar visibilidade das colunas
+  atualizarColunasVisiveis();
 }
 
 function formatarData(dataStr) {
@@ -656,5 +907,139 @@ function filtrarOpcoes(selectId, termo) {
   const qtdTotal = opcoes.length;
   if (termo && qtdFiltrada !== qtdTotal) {
     select.options[0].textContent = `${qtdFiltrada} de ${qtdTotal} itens`;
+  }
+}
+
+// =============================================
+// FILTRO DE ATRIBUTOS (estilo catálogo)
+// =============================================
+
+// Guarda subcategoria atual para cada tipo
+const subcategoriaSelecionada = { Entrada: null, Saida: null };
+
+function montarFiltroAtributos(tipo, subcategoriaId) {
+  const container = document.getElementById(`filtroAtributos${tipo}`);
+  const listaDiv = document.getElementById(`listaFiltros${tipo}`);
+  
+  if (!container || !listaDiv) return;
+  
+  subcategoriaSelecionada[tipo] = subcategoriaId;
+  
+  // Buscar subcategoria para pegar os atributos definidos
+  const subcategoria = subcategorias.find(s => s.id === subcategoriaId);
+  
+  if (!subcategoria || !subcategoria.atributos || subcategoria.atributos.length === 0) {
+    container.style.display = 'none';
+    return;
+  }
+  
+  // Buscar itens dessa subcategoria
+  const itensSub = itens.filter(i => i.subcategoriaId === subcategoriaId);
+  
+  if (itensSub.length === 0) {
+    container.style.display = 'none';
+    return;
+  }
+  
+  // Montar HTML dos filtros
+  let html = '';
+  
+  subcategoria.atributos.forEach(attrNome => {
+    // Coletar valores únicos desse atributo
+    const valores = [...new Set(
+      itensSub
+        .map(i => i.atributos?.[attrNome])
+        .filter(v => v)
+    )].sort();
+    
+    if (valores.length === 0) return;
+    
+    html += `
+      <div class="filtro-atributo-grupo">
+        <h5>${escapeHtml(attrNome)}</h5>
+        <div class="filtro-atributo-opcoes">
+          ${valores.map(val => `
+            <label class="filtro-checkbox-mov">
+              <input type="checkbox" class="filtro-attr-check-${tipo}" data-attr="${escapeAttr(attrNome)}" value="${escapeAttr(val)}">
+              ${escapeHtml(val)}
+            </label>
+          `).join('')}
+        </div>
+      </div>
+    `;
+  });
+  
+  if (html) {
+    listaDiv.innerHTML = html;
+    container.style.display = 'block';
+    
+    // Adicionar listeners nos checkboxes
+    listaDiv.querySelectorAll(`.filtro-attr-check-${tipo}`).forEach(check => {
+      check.addEventListener('change', () => {
+        popularItensFiltrados(tipo, subcategoriaId);
+      });
+    });
+  } else {
+    container.style.display = 'none';
+  }
+}
+
+function popularItensFiltrados(tipo, subcategoriaId) {
+  const selectId = `item${tipo}`;
+  const select = document.getElementById(selectId);
+  const contadorEl = document.getElementById(`contadorItens${tipo}`);
+  
+  if (!select) return;
+  
+  // Buscar itens dessa subcategoria
+  let itensFiltrados = itens.filter(i => i.subcategoriaId === subcategoriaId);
+  const totalItens = itensFiltrados.length;
+  
+  // Aplicar filtros de atributos
+  const checkboxes = document.querySelectorAll(`.filtro-attr-check-${tipo}:checked`);
+  
+  if (checkboxes.length > 0) {
+    // Agrupar por atributo
+    const filtrosAgrupados = {};
+    checkboxes.forEach(cb => {
+      const attr = cb.dataset.attr;
+      if (!filtrosAgrupados[attr]) filtrosAgrupados[attr] = [];
+      filtrosAgrupados[attr].push(cb.value);
+    });
+    
+    // Para cada atributo com filtros, o item deve ter UM dos valores selecionados
+    Object.entries(filtrosAgrupados).forEach(([attr, valores]) => {
+      itensFiltrados = itensFiltrados.filter(item => {
+        const valorItem = item.atributos?.[attr];
+        return valores.includes(valorItem);
+      });
+    });
+  }
+  
+  // Popular select
+  select.innerHTML = '<option value="">Selecione o item</option>';
+  
+  itensFiltrados.forEach(item => {
+    const option = document.createElement('option');
+    option.value = item.id;
+    option.textContent = `${item.nomeCompleto || item.nome} (Estoque: ${item.estoque || 0})`;
+    select.appendChild(option);
+  });
+  
+  select.disabled = itensFiltrados.length === 0;
+  
+  // Atualizar contador
+  if (contadorEl) {
+    contadorEl.textContent = `${itensFiltrados.length} de ${totalItens} itens`;
+  }
+}
+
+function limparFiltrosAtributos(tipo) {
+  const checkboxes = document.querySelectorAll(`.filtro-attr-check-${tipo}:checked`);
+  checkboxes.forEach(cb => cb.checked = false);
+  
+  const subId = subcategoriaSelecionada[tipo];
+  if (subId) {
+    popularItensFiltrados(tipo, subId);
   }
 }

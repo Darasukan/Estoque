@@ -8,11 +8,33 @@ let categorias = JSON.parse(localStorage.getItem('almox_categorias') || '[]');
 let subcategorias = JSON.parse(localStorage.getItem('almox_subcategorias') || '[]');
 let itens = JSON.parse(localStorage.getItem('almox_itens') || '[]');
 
+// Função para escapar HTML (evita quebra com aspas, <, >, etc)
+function escapeHtml(text) {
+  if (!text) return '';
+  const div = document.createElement('div');
+  div.textContent = text;
+  return div.innerHTML;
+}
+
+// Função para escapar atributos HTML (para value="...")
+function escapeAttr(text) {
+  if (!text) return '';
+  return text.replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+}
+
 document.addEventListener('DOMContentLoaded', () => {
   carregarResumo();
   carregarFiltros();
   carregarItens();
   setupFiltros();
+  
+  // Mostrar ações admin se for admin
+  const usuarioLogado = JSON.parse(localStorage.getItem('almox_usuario') || '{}');
+  const isAdmin = usuarioLogado.papel === 'admin';
+  const acoesAdmin = document.getElementById('acoesAdminCatalogo');
+  if (acoesAdmin && isAdmin) {
+    acoesAdmin.style.display = 'block';
+  }
 });
 
 // =============================================
@@ -153,12 +175,12 @@ function atualizarFiltroAtributos(subId) {
     if (valoresUnicos.length > 0) {
       html += `
         <div class="filtro-attr-grupo">
-          <label class="filtro-attr-titulo">${attr}</label>
+          <label class="filtro-attr-titulo">${escapeHtml(attr)}</label>
           <div class="filtro-checkboxes">
             ${valoresUnicos.map(v => `
               <label class="filtro-checkbox">
-                <input type="checkbox" class="filtro-attr-check" data-attr="${attr}" value="${v}">
-                <span>${v}</span>
+                <input type="checkbox" class="filtro-attr-check" data-attr="${escapeAttr(attr)}" value="${escapeAttr(v)}">
+                <span>${escapeHtml(v)}</span>
               </label>
             `).join('')}
           </div>
@@ -277,26 +299,51 @@ function carregarItens() {
       </tr>
     `;
   } else {
+    // Verificar se é admin
+    const perfilUsuario = localStorage.getItem('perfil');
+    const isAdmin = perfilUsuario === 'admin';
+    
+    // Mostrar/ocultar coluna de ações
+    const colAcoes = document.getElementById('colAcoesCatalogo');
+    if (colAcoes) {
+      colAcoes.style.display = isAdmin ? '' : 'none';
+    }
+    
     container.innerHTML = itensFiltrados.map(item => {
       const statusEstoque = getStatusEstoque(item);
       
-      // Montar badges de atributos
+      // Montar badges de atributos (escapando HTML)
       const atributosHtml = Object.entries(item.atributos || {}).map(([key, val]) => 
-        `<span class="attr-badge">${val}</span>`
+        `<span class="attr-badge">${escapeHtml(val)}</span>`
       ).join('');
       
       // Nome do item: Categoria > Subcategoria
       const nomeItem = `
         <div class="item-nome-completo">
-          <span class="item-categoria">${item.categoriaNome}</span>
+          <span class="item-categoria">${escapeHtml(item.categoriaNome)}</span>
           <i class="bi bi-chevron-right"></i>
-          <span class="item-subcategoria">${item.subcategoriaNome}</span>
+          <span class="item-subcategoria">${escapeHtml(item.subcategoriaNome)}</span>
         </div>
-        ${item.descricao ? `<div class="item-descricao">${item.descricao}</div>` : ''}
+        ${item.descricao ? `<div class="item-descricao">${escapeHtml(item.descricao)}</div>` : ''}
       `;
+      
+      // Ações admin
+      const acoesHtml = isAdmin ? `
+        <td>
+          <div class="acoes-catalogo">
+            <button class="btn-editar-item" onclick="editarItem('${escapeAttr(item.id)}')" title="Editar atributos">
+              <i class="bi bi-pencil"></i>
+            </button>
+            <button class="btn-deletar-item" onclick="deletarItem('${escapeAttr(item.id)}')" title="Excluir item">
+              <i class="bi bi-trash"></i>
+            </button>
+          </div>
+        </td>
+      ` : '';
       
       return `
         <tr>
+          <td class="col-id"><code>${escapeHtml(item.id)}</code></td>
           <td class="col-item">${nomeItem}</td>
           <td class="col-atributos">
             <div class="atributos-inline">${atributosHtml || '-'}</div>
@@ -304,9 +351,10 @@ function carregarItens() {
           <td class="col-estoque">
             <span class="estoque-valor ${statusEstoque.classe}">${item.estoque}</span>
           </td>
-          <td class="col-unidade">${item.unidade}</td>
+          <td class="col-unidade">${escapeHtml(item.unidade)}</td>
           <td class="col-minimo">${item.estoqueMinimo}</td>
           <td><span class="status-badge ${statusEstoque.classe}">${statusEstoque.texto}</span></td>
+          ${acoesHtml}
         </tr>
       `;
     }).join('');
@@ -324,6 +372,168 @@ function getStatusEstoque(item) {
   } else {
     return { classe: 'ok', texto: '🟢 OK' };
   }
+}
+
+// =============================================
+// EDITAR/DELETAR ITENS
+// =============================================
+
+function editarItem(itemId) {
+  const item = itens.find(i => i.id === itemId);
+  if (!item) {
+    mostrarMensagem('Item não encontrado', 'erro');
+    return;
+  }
+  
+  // Buscar subcategoria para saber os atributos
+  const subcategoria = subcategorias.find(s => s.id === item.subcategoriaId);
+  const atributosDefinidos = subcategoria?.atributos || [];
+  
+  // Montar formulário de edição
+  let formHtml = `
+    <div class="edit-form-grupo">
+      <label class="edit-label">ID do Item:</label>
+      <input type="text" id="editItemId" value="${escapeAttr(item.id)}" class="edit-input">
+      <small class="edit-hint">⚠️ Alterar o ID pode afetar movimentações existentes</small>
+    </div>
+    <div class="edit-form-grupo">
+      <label class="edit-label">Descrição:</label>
+      <input type="text" id="editDescricao" value="${escapeAttr(item.descricao || '')}" class="edit-input" placeholder="Descrição adicional...">
+    </div>
+    <div class="edit-form-grupo">
+      <label class="edit-label">Atributos:</label>
+  `;
+  
+  atributosDefinidos.forEach(attr => {
+    const valorAtual = item.atributos?.[attr] || '';
+    formHtml += `
+      <div class="edit-attr-item">
+        <span class="edit-attr-nome">${escapeHtml(attr)}:</span>
+        <input type="text" id="editAttr_${escapeAttr(attr)}" data-attr="${escapeAttr(attr)}" 
+               value="${escapeAttr(valorAtual)}" class="edit-input">
+      </div>
+    `;
+  });
+  
+  formHtml += '</div>';
+  
+  // Criar modal
+  const modal = document.createElement('div');
+  modal.className = 'modal-overlay';
+  modal.innerHTML = `
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3><i class="bi bi-pencil"></i> Editar Item</h3>
+        <button class="modal-close" onclick="fecharModal()">&times;</button>
+      </div>
+      <div class="modal-body">
+        <div class="edit-item-nome">${escapeHtml(item.nomeCompleto || item.nome)}</div>
+        ${formHtml}
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary" onclick="fecharModal()">Cancelar</button>
+        <button class="btn btn-primary" onclick="salvarEdicaoItem('${itemId}')">Salvar</button>
+      </div>
+    </div>
+  `;
+  
+  document.body.appendChild(modal);
+}
+
+function salvarEdicaoItem(itemId) {
+  const itemIdx = itens.findIndex(i => i.id === itemId);
+  if (itemIdx === -1) {
+    mostrarMensagem('Item não encontrado', 'erro');
+    fecharModal();
+    return;
+  }
+  
+  // Verificar novo ID
+  const novoIdInput = document.getElementById('editItemId');
+  const novoId = novoIdInput?.value.trim();
+  
+  if (!novoId) {
+    mostrarMensagem('ID não pode estar vazio', 'erro');
+    return;
+  }
+  
+  // Verificar se o novo ID já existe (se mudou)
+  if (novoId !== itemId) {
+    const idExiste = itens.some(i => i.id === novoId);
+    if (idExiste) {
+      mostrarMensagem('Este ID já está em uso por outro item', 'erro');
+      return;
+    }
+    
+    // Atualizar movimentações que referenciam este item
+    let movimentacoes = JSON.parse(localStorage.getItem('almox_movimentacoes') || '[]');
+    movimentacoes = movimentacoes.map(mov => {
+      if (mov.itemId === itemId) {
+        mov.itemId = novoId;
+      }
+      return mov;
+    });
+    localStorage.setItem('almox_movimentacoes', JSON.stringify(movimentacoes));
+    
+    // Atualizar o ID do item
+    itens[itemIdx].id = novoId;
+  }
+  
+  // Atualizar descrição
+  const descricaoInput = document.getElementById('editDescricao');
+  if (descricaoInput) {
+    itens[itemIdx].descricao = descricaoInput.value.trim();
+  }
+  
+  // Atualizar atributos
+  const inputsAttr = document.querySelectorAll('[id^="editAttr_"]');
+  inputsAttr.forEach(input => {
+    const attrNome = input.dataset.attr;
+    const novoValor = input.value.trim();
+    if (attrNome && novoValor) {
+      if (!itens[itemIdx].atributos) itens[itemIdx].atributos = {};
+      itens[itemIdx].atributos[attrNome] = novoValor;
+    }
+  });
+  
+  // Reconstruir nome completo
+  const subcategoria = subcategorias.find(s => s.id === itens[itemIdx].subcategoriaId);
+  const categoria = categorias.find(c => c.id === subcategoria?.categoriaId);
+  
+  let nomeCompleto = `${categoria?.nome || ''} - ${subcategoria?.nome || ''}`;
+  const atributosArr = Object.values(itens[itemIdx].atributos || {});
+  if (atributosArr.length > 0) {
+    nomeCompleto += ' - ' + atributosArr.join(' - ');
+  }
+  itens[itemIdx].nomeCompleto = nomeCompleto;
+  itens[itemIdx].nome = nomeCompleto;
+  
+  // Salvar
+  localStorage.setItem('almox_itens', JSON.stringify(itens));
+  
+  fecharModal();
+  carregarItens();
+  mostrarMensagem('✅ Item atualizado com sucesso!', 'sucesso');
+}
+
+function deletarItem(itemId) {
+  const item = itens.find(i => i.id === itemId);
+  if (!item) return;
+  
+  if (!confirm(`Tem certeza que deseja excluir o item?\n\n${item.nomeCompleto || item.nome}\n\nEsta ação não pode ser desfeita.`)) {
+    return;
+  }
+  
+  itens = itens.filter(i => i.id !== itemId);
+  localStorage.setItem('almox_itens', JSON.stringify(itens));
+  
+  carregarItens();
+  mostrarMensagem('🗑️ Item excluído', 'sucesso');
+}
+
+function fecharModal() {
+  const modal = document.querySelector('.modal-overlay');
+  if (modal) modal.remove();
 }
 
 // =============================================
@@ -349,4 +559,54 @@ function mostrarMensagem(texto, tipo) {
   setTimeout(() => {
     el.style.display = 'none';
   }, 3000);
+}
+
+// =============================================
+// REDEFINIR IDs
+// =============================================
+
+function redefinirTodosIds() {
+  if (!confirm('Isso vai redefinir os IDs de TODOS os itens para o formato AUTO1, AUTO2, etc.\n\nOs históricos de movimentação serão atualizados automaticamente.\n\nDeseja continuar?')) {
+    return;
+  }
+  
+  // Carregar dados
+  let itens = JSON.parse(localStorage.getItem('almox_itens') || '[]');
+  let movimentacoes = JSON.parse(localStorage.getItem('almox_movimentacoes') || '[]');
+  
+  if (itens.length === 0) {
+    mostrarMensagem('Nenhum item para redefinir', 'erro');
+    return;
+  }
+  
+  // Criar mapeamento de IDs antigos -> novos
+  const mapeamento = {};
+  
+  // Ordenar itens por data de criação (mais antigo primeiro)
+  itens.sort((a, b) => new Date(a.criadoEm || 0) - new Date(b.criadoEm || 0));
+  
+  // Atribuir novos IDs
+  itens.forEach((item, index) => {
+    const novoId = 'AUTO' + (index + 1);
+    mapeamento[item.id] = novoId;
+    item.id = novoId;
+  });
+  
+  // Atualizar movimentações
+  movimentacoes.forEach(mov => {
+    if (mapeamento[mov.itemId]) {
+      mov.itemId = mapeamento[mov.itemId];
+    }
+  });
+  
+  // Salvar
+  localStorage.setItem('almox_itens', JSON.stringify(itens));
+  localStorage.setItem('almox_movimentacoes', JSON.stringify(movimentacoes));
+  
+  mostrarMensagem(`${itens.length} IDs redefinidos com sucesso!`, 'sucesso');
+  
+  // Recarregar página
+  setTimeout(() => {
+    location.reload();
+  }, 1500);
 }

@@ -8,6 +8,21 @@ let categorias = JSON.parse(localStorage.getItem('almox_categorias') || '[]');
 let subcategorias = JSON.parse(localStorage.getItem('almox_subcategorias') || '[]');
 let itens = JSON.parse(localStorage.getItem('almox_itens') || '[]');
 
+// Gerar próximo ID no padrão AUTO1, AUTO2, AUTO10, AUTO100...
+function gerarProximoId() {
+  // Buscar todos os IDs que seguem o padrão AUTO + número
+  const idsAuto = itens
+    .map(i => i.id)
+    .filter(id => /^AUTO\d+$/.test(id))
+    .map(id => parseInt(id.replace('AUTO', ''), 10));
+  
+  // Encontrar o maior número
+  const maiorNum = idsAuto.length > 0 ? Math.max(...idsAuto) : 0;
+  
+  // Retornar próximo
+  return 'AUTO' + (maiorNum + 1);
+}
+
 document.addEventListener('DOMContentLoaded', () => {
   carregarCategorias();
   setupCascata();
@@ -259,7 +274,7 @@ function criarItem(e) {
 
   // Criar item
   const novoItem = {
-    id: 'item_' + Date.now(),
+    id: gerarProximoId(),
     categoriaId: catId,
     categoriaNome: categoria.nome,
     subcategoriaId: subId,

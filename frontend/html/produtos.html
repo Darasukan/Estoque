@@ -96,6 +96,15 @@
           <div class="filtro-resultado">
             <span id="contadorResultados">0 itens encontrados</span>
           </div>
+
+          <!-- Ações Admin -->
+          <div id="acoesAdminCatalogo" class="admin-acoes-sidebar" style="display: none;">
+            <hr>
+            <label><i class="bi bi-gear"></i> Ações Admin</label>
+            <button type="button" class="btn-admin-acao" onclick="redefinirTodosIds()">
+              <i class="bi bi-arrow-repeat"></i> Redefinir IDs (AUTO1, AUTO2...)
+            </button>
+          </div>
         </aside>
 
         <!-- Área Principal -->
@@ -104,17 +113,19 @@
             <table id="tabelaItens">
               <thead>
                 <tr>
+                  <th>ID</th>
                   <th>Item</th>
                   <th>Atributos</th>
                   <th>Estoque</th>
                   <th>Unid.</th>
                   <th>Mín.</th>
                   <th>Status</th>
+                  <th id="colAcoesCatalogo" style="display: none;">Ações</th>
                 </tr>
               </thead>
               <tbody id="listaItens">
                 <tr>
-                  <td colspan="6" class="vazio">
+                  <td colspan="8" class="vazio">
                     <div class="vazio-icon"><i class="bi bi-box"></i></div>
                     <p>Nenhum item cadastrado ainda.</p>
                     <p>Vá em <strong>Novo Item</strong> para criar itens.</p>

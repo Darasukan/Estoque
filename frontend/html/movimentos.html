@@ -35,8 +35,8 @@
           </div>
 
           <form id="formEntrada">
-            <!-- Linha 1: ID (skip tab), Categoria, Subcategoria, Item -->
-            <div class="form-row-quatro">
+            <!-- Linha 1: ID, Categoria, Subcategoria -->
+            <div class="form-row-tres">
               <div class="form-grupo">
                 <label for="idEntrada">ID <span class="opcional">(auto)</span></label>
                 <input type="text" id="idEntrada" placeholder="Automático" tabindex="-1">
@@ -53,15 +53,30 @@
                   <option value="">Selecione categoria</option>
                 </select>
               </div>
-              <div class="form-grupo form-grupo-item">
-                <label for="itemEntrada">Item *</label>
-                <div class="item-search-wrapper">
-                  <input type="text" id="buscaItemEntrada" class="busca-item-input" placeholder="🔍 Filtrar itens..." autocomplete="off">
-                  <select id="itemEntrada" required disabled>
-                    <option value="">Selecione subcategoria</option>
-                  </select>
-                </div>
+            </div>
+
+            <!-- Filtro de Atributos (aparece após selecionar subcategoria) -->
+            <div id="filtroAtributosEntrada" class="filtro-atributos-mov" style="display: none;">
+              <div class="filtro-atributos-header">
+                <h4><i class="bi bi-funnel"></i> Filtrar por Atributos</h4>
+                <button type="button" class="btn-limpar-filtros" id="btnLimparFiltrosEntrada">
+                  <i class="bi bi-x-circle"></i> Limpar
+                </button>
               </div>
+              <div id="listaFiltrosEntrada" class="filtro-atributos-grid">
+                <!-- Preenchido via JS -->
+              </div>
+              <div class="filtro-resultado-mov">
+                <span id="contadorItensEntrada">0 itens encontrados</span>
+              </div>
+            </div>
+
+            <!-- Seleção do Item -->
+            <div class="form-grupo form-grupo-item-full">
+              <label for="itemEntrada">Item *</label>
+              <select id="itemEntrada" required disabled>
+                <option value="">Primeiro selecione categoria e subcategoria</option>
+              </select>
             </div>
 
             <!-- Info do item selecionado -->
@@ -127,8 +142,8 @@
           </div>
 
           <form id="formSaida">
-            <!-- Linha 1: ID (skip tab), Categoria, Subcategoria, Item -->
-            <div class="form-row-quatro">
+            <!-- Linha 1: ID, Categoria, Subcategoria -->
+            <div class="form-row-tres">
               <div class="form-grupo">
                 <label for="idSaida">ID <span class="opcional">(auto)</span></label>
                 <input type="text" id="idSaida" placeholder="Automático" tabindex="-1">
@@ -145,15 +160,30 @@
                   <option value="">Selecione categoria</option>
                 </select>
               </div>
-              <div class="form-grupo form-grupo-item">
-                <label for="itemSaida">Item *</label>
-                <div class="item-search-wrapper">
-                  <input type="text" id="buscaItemSaida" class="busca-item-input" placeholder="🔍 Filtrar itens..." autocomplete="off">
-                  <select id="itemSaida" required disabled>
-                    <option value="">Selecione subcategoria</option>
-                  </select>
-                </div>
+            </div>
+
+            <!-- Filtro de Atributos (aparece após selecionar subcategoria) -->
+            <div id="filtroAtributosSaida" class="filtro-atributos-mov" style="display: none;">
+              <div class="filtro-atributos-header">
+                <h4><i class="bi bi-funnel"></i> Filtrar por Atributos</h4>
+                <button type="button" class="btn-limpar-filtros" id="btnLimparFiltrosSaida">
+                  <i class="bi bi-x-circle"></i> Limpar
+                </button>
               </div>
+              <div id="listaFiltrosSaida" class="filtro-atributos-grid">
+                <!-- Preenchido via JS -->
+              </div>
+              <div class="filtro-resultado-mov">
+                <span id="contadorItensSaida">0 itens encontrados</span>
+              </div>
+            </div>
+
+            <!-- Seleção do Item -->
+            <div class="form-grupo form-grupo-item-full">
+              <label for="itemSaida">Item *</label>
+              <select id="itemSaida" required disabled>
+                <option value="">Primeiro selecione categoria e subcategoria</option>
+              </select>
             </div>
 
             <!-- Info do item selecionado -->
@@ -212,55 +242,118 @@
 
       <!-- ================== ABA HISTÓRICO ================== -->
       <div id="tab-historico" class="tab-content">
-        <div class="filtros">
-          <h3><i class="bi bi-funnel"></i> Filtros</h3>
-          <div class="form-row-quatro">
-            <div class="form-grupo">
-              <label for="filtroTipo">Tipo</label>
+        <!-- Layout com Sidebar igual ao Catálogo -->
+        <div class="historico-layout">
+          <!-- Sidebar de Filtros -->
+          <aside class="historico-sidebar">
+            <div class="sidebar-header">
+              <h3><i class="bi bi-funnel"></i> Filtros</h3>
+              <button type="button" class="btn-limpar-filtros" id="btnLimparFiltrosHist">
+                <i class="bi bi-x-circle"></i> Limpar
+              </button>
+            </div>
+
+            <!-- Busca -->
+            <div class="filtro-grupo">
+              <label for="filtroBuscaHist"><i class="bi bi-search"></i> Busca</label>
+              <input type="text" id="filtroBuscaHist" placeholder="ID, item, operador...">
+              <small class="filtro-hint">Busca em todos os campos</small>
+            </div>
+
+            <!-- Tipo -->
+            <div class="filtro-grupo">
+              <label for="filtroTipo"><i class="bi bi-arrow-left-right"></i> Tipo</label>
               <select id="filtroTipo">
                 <option value="">Todos</option>
                 <option value="entrada">📥 Entradas</option>
                 <option value="saida">📤 Saídas</option>
               </select>
             </div>
-            <div class="form-grupo">
-              <label for="filtroCategoriaHist">Categoria</label>
+
+            <!-- Categoria -->
+            <div class="filtro-grupo">
+              <label for="filtroCategoriaHist"><i class="bi bi-folder"></i> Categoria</label>
               <select id="filtroCategoriaHist">
                 <option value="">Todas</option>
               </select>
             </div>
-            <div class="form-grupo">
-              <label for="filtroDataInicio">Data Inicial</label>
-              <input type="date" id="filtroDataInicio">
+
+            <!-- Subcategoria -->
+            <div class="filtro-grupo">
+              <label for="filtroSubcategoriaHist"><i class="bi bi-folder2"></i> Subcategoria</label>
+              <select id="filtroSubcategoriaHist" disabled>
+                <option value="">Todas</option>
+              </select>
             </div>
-            <div class="form-grupo">
-              <label for="filtroDataFim">Data Final</label>
-              <input type="date" id="filtroDataFim">
+
+            <!-- Atributos (dinâmico baseado na subcategoria) -->
+            <div class="filtro-grupo" id="filtroAtributosContainerHist" style="display: none;">
+              <label><i class="bi bi-tags"></i> Atributos</label>
+              <div id="filtroAtributosHist" class="filtro-atributos">
+                <!-- Preenchido via JS -->
+              </div>
+            </div>
+
+            <!-- Intervalo de Datas -->
+            <div class="filtro-grupo">
+              <label><i class="bi bi-calendar-range"></i> Período</label>
+              <div class="filtro-datas">
+                <input type="date" id="filtroDataInicio" title="Data inicial">
+                <span class="filtro-datas-separador">até</span>
+                <input type="date" id="filtroDataFim" title="Data final">
+              </div>
+              <small class="filtro-hint">Deixe vazio para ver todos</small>
+            </div>
+
+            <!-- Exibição -->
+            <div class="filtro-grupo">
+              <label><i class="bi bi-eye"></i> Exibição</label>
+              <div class="filtro-checkboxes">
+                <label class="checkbox-label">
+                  <input type="checkbox" id="mostrarIdMov" checked>
+                  <span>Mostrar ID Mov.</span>
+                </label>
+                <label class="checkbox-label">
+                  <input type="checkbox" id="mostrarIdItem" checked>
+                  <span>Mostrar ID Item</span>
+                </label>
+              </div>
+            </div>
+
+            <!-- Contador -->
+            <div class="filtro-resultado">
+              <span id="contadorMovimentacoes">0 movimentações</span>
+            </div>
+          </aside>
+
+          <!-- Área Principal -->
+          <div class="historico-content">
+            <div class="tabela-container">
+              <table id="tabelaHistorico">
+                <thead>
+                  <tr>
+                    <th>Data</th>
+                    <th class="col-id-mov">ID Mov.</th>
+                    <th class="col-id-item">ID Item</th>
+                    <th>Tipo</th>
+                    <th>Item</th>
+                    <th>Obs</th>
+                    <th>Qtd</th>
+                    <th>Operador</th>
+                    <th>Fornecedor</th>
+                    <th>NF</th>
+                    <th>Retirado Por</th>
+                    <th id="colAcoes" style="display: none;">Ações</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td colspan="12" class="vazio">Nenhuma movimentação registrada</td>
+                  </tr>
+                </tbody>
+              </table>
             </div>
           </div>
-        </div>
-
-        <div class="tabela-container">
-          <table id="tabelaHistorico">
-            <thead>
-              <tr>
-                <th>Data</th>
-                <th>ID</th>
-                <th>Tipo</th>
-                <th>Item</th>
-                <th>Obs</th>
-                <th>Qtd</th>
-                <th>Operador</th>
-                <th>Detalhes</th>
-                <th id="colAcoes" style="display: none;">Ações</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td colspan="9" class="vazio">Nenhuma movimentação registrada</td>
-              </tr>
-            </tbody>
-          </table>
         </div>
       </div>
     </main>
