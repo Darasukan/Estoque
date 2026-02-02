@@ -552,7 +552,7 @@ app.listen(PORT, '0.0.0.0', () => {
     }
   }
   
-  console.log(`✅ Banco de dados inicializado`);
-  console.log(`🚀 Servidor rodando em http://localhost:${PORT}`);
-  console.log(`🌐 Acesse pela LAN: http://${lanIp}:${PORT}`);
+  console.log(`[OK] Banco de dados inicializado`);
+  console.log(`[>>] Servidor rodando em http://localhost:${PORT}`);
+  console.log(`[LAN] Acesse pela LAN: http://${lanIp}:${PORT}`);
 });

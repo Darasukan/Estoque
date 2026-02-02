@@ -366,11 +366,11 @@ function carregarItens() {
 
 function getStatusEstoque(item) {
   if (item.estoque <= 0) {
-    return { classe: 'critico', texto: '🔴 Zerado' };
+    return { classe: 'critico', texto: 'Zerado' };
   } else if (item.estoque < item.estoqueMinimo) {
-    return { classe: 'alerta', texto: '🟡 Baixo' };
+    return { classe: 'alerta', texto: 'Baixo' };
   } else {
-    return { classe: 'ok', texto: '🟢 OK' };
+    return { classe: 'ok', texto: 'OK' };
   }
 }
 
@@ -394,7 +394,7 @@ function editarItem(itemId) {
     <div class="edit-form-grupo">
       <label class="edit-label">ID do Item:</label>
       <input type="text" id="editItemId" value="${escapeAttr(item.id)}" class="edit-input">
-      <small class="edit-hint">⚠️ Alterar o ID pode afetar movimentações existentes</small>
+      <small class="edit-hint">Alterar o ID pode afetar movimentações existentes</small>
     </div>
     <div class="edit-form-grupo">
       <label class="edit-label">Descrição:</label>
@@ -513,7 +513,7 @@ function salvarEdicaoItem(itemId) {
   
   fecharModal();
   carregarItens();
-  mostrarMensagem('✅ Item atualizado com sucesso!', 'sucesso');
+  mostrarMensagem('Item atualizado com sucesso!', 'sucesso');
 }
 
 function deletarItem(itemId) {

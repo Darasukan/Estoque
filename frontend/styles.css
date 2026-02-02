@@ -61,14 +61,14 @@
 
 /* ==================== TEMA ESCURO ==================== */
 [data-theme="dark"] {
-  --primary: #818cf8;
-  --primary-hover: #a5b4fc;
-  --primary-light: #6366f1;
-  --primary-bg: rgba(99, 102, 241, 0.15);
+  --primary: #3b82f6;
+  --primary-hover: #60a5fa;
+  --primary-light: #2563eb;
+  --primary-bg: rgba(37, 99, 235, 0.2);
   
   --success: #34d399;
   --success-hover: #6ee7b7;
-  --success-bg: rgba(16, 185, 129, 0.15);
+  --success-bg: rgba(16, 185, 129, 0.25);
   
   --danger: #f87171;
   --danger-hover: #fca5a5;
@@ -76,7 +76,7 @@
   
   --warning: #fbbf24;
   --warning-hover: #fcd34d;
-  --warning-bg: rgba(245, 158, 11, 0.15);
+  --warning-bg: rgba(245, 158, 11, 0.25);
   
   --info: #60a5fa;
   --info-bg: rgba(59, 130, 246, 0.15);
@@ -390,6 +390,19 @@
   color: var(--text-primary);
 }
 
+[data-theme="dark"] .preview-item {
+  background: linear-gradient(135deg, rgba(99, 102, 241, 0.1), var(--bg-card));
+  border-color: var(--primary);
+}
+
+[data-theme="dark"] .preview-item h4 {
+  color: var(--text-muted);
+}
+
+[data-theme="dark"] .preview-item .nome-completo {
+  color: var(--text-primary);
+}
+
 [data-theme="dark"] .opcional {
   color: var(--text-muted) !important;
 }
@@ -614,7 +627,7 @@
 
 /* Dark mode - Navbar mais escura sem gradiente */
 [data-theme="dark"] .navbar {
-  background: #1e1b4b;
+  background: #0f172a;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
 }
 
@@ -828,6 +841,16 @@ body {
   padding: 0.5rem;
   cursor: pointer;
   opacity: 0.7;
+}
+
+[data-theme="dark"] .login-form input {
+  background: var(--bg-input);
+  color: var(--text-primary);
+  border: 1px solid var(--border-color);
+}
+
+[data-theme="dark"] .login-form input::placeholder {
+  color: var(--text-muted);
 }
 
 /* ==================== CONTAINER ==================== */
@@ -1246,6 +1269,27 @@ body {
 }
 
 .btn-secondary:hover:not(:disabled) { background: var(--gray-200); }
+
+.btn-warning {
+  background: linear-gradient(135deg, var(--warning) 0%, var(--warning-hover) 100%);
+  color: var(--white);
+  box-shadow: 0 2px 4px rgba(245, 158, 11, 0.3);
+}
+
+.btn-warning:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(245, 158, 11, 0.4);
+}
+
+/* Dark mode - Botões com tons mais escuros */
+[data-theme="dark"] .btn-success, 
+[data-theme="dark"] .btn-entrada {
+  background: linear-gradient(135deg, #059669 0%, #10b981 100%);
+}
+
+[data-theme="dark"] .btn-warning {
+  background: linear-gradient(135deg, #b45309 0%, #d97706 100%);
+}
 
 .btn-group { display: flex; gap: 0.75rem; margin-top: 1.5rem; }
 
@@ -2402,7 +2446,7 @@ tbody tr:last-child td { border-bottom: none; }
 }
 
 .stat-box {
-  background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%);
+  background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
   color: white;
   padding: 1.25rem;
   border-radius: var(--radius);
@@ -2614,6 +2658,108 @@ tbody tr:last-child td { border-bottom: none; }
 
 .btn-voltar:hover {
   background: var(--gray-200);
+  color: var(--gray-800);
+}
+
+/* ==================== INFO SUBCATEGORIA (CRIAR ITEM) ==================== */
+.info-subcategoria {
+  background: var(--gray-50);
+  border: 1px solid var(--gray-200);
+  border-radius: var(--radius);
+  padding: 1rem 1.25rem;
+  margin: 1rem 0;
+}
+
+.info-subcategoria h3 {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--gray-700);
+  margin: 0 0 0.75rem 0;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.info-subcategoria h3 i {
+  color: var(--primary);
+}
+
+.info-subcategoria .badges {
+  margin-top: 0;
+}
+
+/* ==================== CAMPOS DE ATRIBUTOS (CRIAR ITEM) ==================== */
+.campos-atributos {
+  background: var(--gray-50);
+  border: 1px solid var(--gray-200);
+  border-radius: var(--radius);
+  padding: 1.25rem;
+  margin: 1rem 0;
+}
+
+.campos-atributos h3 {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--gray-700);
+  margin: 0 0 1rem 0;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.campos-atributos h3 i {
+  color: var(--primary);
+}
+
+.campo-atributo {
+  margin-bottom: 0.75rem;
+}
+
+.campo-atributo label {
+  display: block;
+  font-size: 0.8125rem;
+  font-weight: 500;
+  color: var(--gray-600);
+  margin-bottom: 0.375rem;
+}
+
+.campo-atributo input {
+  width: 100%;
+  padding: 0.625rem 0.875rem;
+  border: 1px solid var(--gray-300);
+  border-radius: var(--radius-sm);
+  font-size: 0.875rem;
+  background: var(--white);
+  transition: var(--transition);
+}
+
+.campo-atributo input:focus {
+  outline: none;
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px var(--primary-bg);
+}
+
+/* ==================== PREVIEW DO ITEM ==================== */
+.preview-item {
+  background: linear-gradient(135deg, var(--primary-bg), var(--gray-50));
+  border: 1px solid var(--primary-light);
+  border-radius: var(--radius);
+  padding: 1rem 1.25rem;
+  margin: 1.5rem 0;
+}
+
+.preview-item h4 {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--gray-500);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin: 0 0 0.5rem 0;
+}
+
+.preview-item .nome-completo {
+  font-size: 1rem;
+  font-weight: 600;
   color: var(--gray-800);
 }
 

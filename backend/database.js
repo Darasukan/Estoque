@@ -94,7 +94,7 @@ function initialize() {
       )
     `);
 
-    console.log('✅ Banco de dados inicializado');
+    console.log('[OK] Banco de dados inicializado');
   });
 }
 

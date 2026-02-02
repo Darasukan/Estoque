@@ -126,22 +126,22 @@ document.getElementById('formProduto').addEventListener('submit', async (e) => {
   const preco = parseFloat(document.getElementById('precoProduto').value) || 0;
 
   if (!nome) {
-    mostrarNotificacao('⚠️ Nome do produto é obrigatório!', 'warning');
+    mostrarNotificacao('Nome do produto é obrigatório!', 'warning');
     return;
   }
 
   if (!sku) {
-    mostrarNotificacao('⚠️ SKU é obrigatório!', 'warning');
+    mostrarNotificacao('SKU é obrigatório!', 'warning');
     return;
   }
 
   if (isNaN(quantidade) || quantidade < 0) {
-    mostrarNotificacao('⚠️ Quantidade deve ser um número maior ou igual a 0!', 'warning');
+    mostrarNotificacao('Quantidade deve ser um número maior ou igual a 0!', 'warning');
     return;
   }
 
   if (preco < 0) {
-    mostrarNotificacao('⚠️ Preço não pode ser negativo!', 'warning');
+    mostrarNotificacao('Preço não pode ser negativo!', 'warning');
     return;
   }
 
@@ -323,22 +323,22 @@ document.getElementById('formEditarProduto').addEventListener('submit', async (e
   const preco = parseFloat(document.getElementById('precoEditar').value) || 0;
 
   if (!nome) {
-    mostrarNotificacao('⚠️ Nome do produto é obrigatório!', 'warning');
+    mostrarNotificacao('Nome do produto é obrigatório!', 'warning');
     return;
   }
 
   if (!sku) {
-    mostrarNotificacao('⚠️ SKU é obrigatório!', 'warning');
+    mostrarNotificacao('SKU é obrigatório!', 'warning');
     return;
   }
 
   if (isNaN(quantidade) || quantidade < 0) {
-    mostrarNotificacao('⚠️ Quantidade deve ser um número maior ou igual a 0!', 'warning');
+    mostrarNotificacao('Quantidade deve ser um número maior ou igual a 0!', 'warning');
     return;
   }
 
   if (preco < 0) {
-    mostrarNotificacao('⚠️ Preço não pode ser negativo!', 'warning');
+    mostrarNotificacao('Preço não pode ser negativo!', 'warning');
     return;
   }
 
@@ -475,8 +475,8 @@ async function carregarMovimentos() {
 
     tbody.innerHTML = movimentos.map(m => {
       const tipoVisual = m.tipo === 'entrada' 
-        ? '<span style="color: var(--success);">📥 Entrada</span>' 
-        : '<span style="color: var(--danger);">📤 Saída</span>';
+        ? '<span style="color: var(--success);"><i class="bi bi-box-arrow-in-down"></i> Entrada</span>' 
+        : '<span style="color: var(--danger);"><i class="bi bi-box-arrow-up"></i> Saída</span>';
   
       const dataFormatada = new Date(m.data_movimento).toLocaleString('pt-BR');
       

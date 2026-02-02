@@ -9,49 +9,50 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
   <link rel="stylesheet" href="../styles.css">
+  <script>if(localStorage.getItem('almox_tema')==='dark')document.documentElement.setAttribute('data-theme','dark');</script>
 </head>
 <body>
   <div id="navbarContainer"></div>
 
   <div class="container">
     <main class="main-content">
-      <h1 class="pagina-titulo">📊 Relatórios</h1>
+      <h1 class="pagina-titulo"><i class="bi bi-bar-chart-line"></i> Relatórios</h1>
 
       <!-- VISUALIZAÇÃO: MENU PRINCIPAL -->
       <div id="menuRelatorios">
         <div class="relatorios-grid">
           <div class="card-relatorio" onclick="abrirRelatorio('estoque')">
-            <h3>📦 Relatório de Estoque</h3>
+            <h3><i class="bi bi-box"></i> Relatório de Estoque</h3>
             <p>Visualize a quantidade atual de todos os materiais em estoque, localização e itens com baixa quantidade.</p>
             <button class="btn">Abrir Relatório</button>
           </div>
 
           <div class="card-relatorio" onclick="abrirRelatorio('movimentacoes')">
-            <h3>📝 Relatório de Requisições</h3>
+            <h3><i class="bi bi-file-text"></i> Relatório de Requisições</h3>
             <p>Histórico completo de entradas, saídas e devoluções de materiais com departamento e solicitante.</p>
             <button class="btn">Abrir Relatório</button>
           </div>
 
           <div class="card-relatorio" onclick="abrirRelatorio('consumo')">
-            <h3>🏢 Consumo por Departamento</h3>
+            <h3><i class="bi bi-building"></i> Consumo por Departamento</h3>
             <p>Análise de consumo de materiais por departamento, com ranking e totais por período.</p>
             <button class="btn">Abrir Relatório</button>
           </div>
 
           <div class="card-relatorio" onclick="abrirRelatorio('criticidade')">
-            <h3>⚠️ Materiais Críticos</h3>
+            <h3><i class="bi bi-exclamation-triangle"></i> Materiais Críticos</h3>
             <p>Materiais com estoque abaixo do mínimo, materiais zerados e alertas de reposição urgente.</p>
             <button class="btn">Abrir Relatório</button>
           </div>
 
           <div class="card-relatorio" onclick="abrirRelatorio('familias')">
-            <h3>📂 Relatório por Grupos</h3>
+            <h3><i class="bi bi-folder"></i> Relatório por Grupos</h3>
             <p>Análise de materiais agrupados por família/grupo com quantidades e localizações.</p>
             <button class="btn">Abrir Relatório</button>
           </div>
 
           <div class="card-relatorio" onclick="abrirRelatorio('fornecedores')">
-            <h3>🚚 Relatório de Fornecedores</h3>
+            <h3><i class="bi bi-truck"></i> Relatório de Fornecedores</h3>
             <p>Lista de fornecedores, materiais fornecidos e histórico de entradas por fornecedor.</p>
             <button class="btn">Abrir Relatório</button>
           </div>
@@ -60,12 +61,12 @@
 
       <!-- RELATÓRIO: ESTOQUE -->
       <div id="relEstoque" class="painel-relatorio">
-        <button class="btn-voltar" onclick="voltarAoMenu()">← Voltar ao Menu</button>
+        <button class="btn-voltar" onclick="voltarAoMenu()"><i class="bi bi-arrow-left"></i> Voltar ao Menu</button>
 
-        <h2>📦 Relatório de Estoque</h2>
+        <h2><i class="bi bi-box"></i> Relatório de Estoque</h2>
 
         <div class="info-box">
-          ℹ️ Visualize todos os materiais em estoque com suas quantidades, localizações e status.
+          <i class="bi bi-info-circle"></i> Visualize todos os materiais em estoque com suas quantidades, localizações e status.
         </div>
 
         <div class="filtros-relatorio">
@@ -85,14 +86,14 @@
               <label for="filtroStatusEstoque">Status</label>
               <select id="filtroStatusEstoque">
                 <option value="">Todos os materiais</option>
-                <option value="normal">✅ Estoque Normal</option>
-                <option value="baixo">⚠️ Estoque Baixo</option>
-                <option value="zerado">❌ Sem Estoque</option>
+                <option value="normal">Estoque Normal</option>
+                <option value="baixo">Estoque Baixo</option>
+                <option value="zerado">Sem Estoque</option>
               </select>
             </div>
             <div style="display: flex; align-items: flex-end; gap: 10px;">
-              <button class="btn-gerar">🔍 Gerar Relatório</button>
-              <button class="btn-exportar">💾 Exportar PDF</button>
+              <button class="btn-gerar"><i class="bi bi-search"></i> Gerar Relatório</button>
+              <button class="btn-exportar"><i class="bi bi-file-earmark-pdf"></i> Exportar PDF</button>
             </div>
           </div>
         </div>
@@ -142,12 +143,12 @@
 
       <!-- RELATÓRIO: MOVIMENTAÇÕES -->
       <div id="relMovimentacoes" class="painel-relatorio">
-        <button class="btn-voltar" onclick="voltarAoMenu()">← Voltar ao Menu</button>
+        <button class="btn-voltar" onclick="voltarAoMenu()"><i class="bi bi-arrow-left"></i> Voltar ao Menu</button>
 
-        <h2>� Relatório de Requisições</h2>
+        <h2><i class="bi bi-file-text"></i> Relatório de Requisições</h2>
 
         <div class="info-box">
-          ℹ️ Histórico completo de todas as requisições de materiais com departamento e solicitante.
+          <i class="bi bi-info-circle"></i> Histórico completo de todas as requisições de materiais com departamento e solicitante.
         </div>
 
         <div class="filtros-relatorio">
@@ -162,8 +163,8 @@
               <input type="date" id="filtroDataMovFim">
             </div>
             <div style="display: flex; align-items: flex-end; gap: 10px;">
-              <button class="btn-gerar">🔍 Gerar Relatório</button>
-              <button class="btn-exportar">💾 Exportar PDF</button>
+              <button class="btn-gerar"><i class="bi bi-search"></i> Gerar Relatório</button>
+              <button class="btn-exportar"><i class="bi bi-file-earmark-pdf"></i> Exportar PDF</button>
             </div>
           </div>
         </div>
@@ -194,27 +195,27 @@
 
       <!-- OUTROS RELATÓRIOS (placeholders) -->
       <div id="relConsumo" class="painel-relatorio">
-        <button class="btn-voltar" onclick="voltarAoMenu()">← Voltar ao Menu</button>
-        <h2>🏢 Consumo por Departamento</h2>
-        <div class="info-box">ℹ️ Análise de consumo de materiais por departamento em desenvolvimento...</div>
+        <button class="btn-voltar" onclick="voltarAoMenu()"><i class="bi bi-arrow-left"></i> Voltar ao Menu</button>
+        <h2><i class="bi bi-building"></i> Consumo por Departamento</h2>
+        <div class="info-box"><i class="bi bi-info-circle"></i> Análise de consumo de materiais por departamento em desenvolvimento...</div>
       </div>
 
       <div id="relCriticidade" class="painel-relatorio">
-        <button class="btn-voltar" onclick="voltarAoMenu()">← Voltar ao Menu</button>
-        <h2>⚠️ Materiais Críticos</h2>
-        <div class="info-box">ℹ️ Materiais com baixo estoque em desenvolvimento...</div>
+        <button class="btn-voltar" onclick="voltarAoMenu()"><i class="bi bi-arrow-left"></i> Voltar ao Menu</button>
+        <h2><i class="bi bi-exclamation-triangle"></i> Materiais Críticos</h2>
+        <div class="info-box"><i class="bi bi-info-circle"></i> Materiais com baixo estoque em desenvolvimento...</div>
       </div>
 
       <div id="relFamilias" class="painel-relatorio">
-        <button class="btn-voltar" onclick="voltarAoMenu()">← Voltar ao Menu</button>
-        <h2>📂 Relatório por Grupos</h2>
-        <div class="info-box">ℹ️ Análise por grupos em desenvolvimento...</div>
+        <button class="btn-voltar" onclick="voltarAoMenu()"><i class="bi bi-arrow-left"></i> Voltar ao Menu</button>
+        <h2><i class="bi bi-folder"></i> Relatório por Grupos</h2>
+        <div class="info-box"><i class="bi bi-info-circle"></i> Análise por grupos em desenvolvimento...</div>
       </div>
 
       <div id="relFornecedores" class="painel-relatorio">
-        <button class="btn-voltar" onclick="voltarAoMenu()">← Voltar ao Menu</button>
-        <h2>🚚 Relatório de Fornecedores</h2>
-        <div class="info-box">ℹ️ Análise de fornecedores em desenvolvimento...</div>
+        <button class="btn-voltar" onclick="voltarAoMenu()"><i class="bi bi-arrow-left"></i> Voltar ao Menu</button>
+        <h2><i class="bi bi-truck"></i> Relatório de Fornecedores</h2>
+        <div class="info-box"><i class="bi bi-info-circle"></i> Análise de fornecedores em desenvolvimento...</div>
       </div>
     </main>
   </div>

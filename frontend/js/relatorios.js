@@ -19,7 +19,7 @@ document.addEventListener('DOMContentLoaded', () => {
 function mostrarAvisoProtecaoRelatorios() {
   const container = document.querySelector('main') || document.body;
   const aviso = document.createElement('div');
-  aviso.innerHTML = '<p><strong>⚠️ Recurso Protegido</strong></p><p>Você precisa estar logado para acessar os relatórios. Faça login na barra lateral.</p>';
+  aviso.innerHTML = '<p><strong>Recurso Protegido</strong></p><p>Você precisa estar logado para acessar os relatórios. Faça login na barra lateral.</p>';
   aviso.style.cssText = 'padding: 15px; background: #fff3cd; border: 1px solid #ffc107; border-radius: 4px; margin: 15px; color: #856404;';
   
   // Ocultar seções de relatório
@@ -133,11 +133,11 @@ function selecionarRelatorio(tipo) {
 }
 
 function exportarCSV() {
-  alert('📥 Função de exportar CSV em desenvolvimento');
+  alert('Função de exportar CSV em desenvolvimento');
 }
 
 function exportarPDF() {
-  alert('📄 Função de exportar PDF em desenvolvimento');
+  alert('Função de exportar PDF em desenvolvimento');
 }
 
 function logout() {

@@ -9,6 +9,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
   <link rel="stylesheet" href="../styles.css">
+  <script>if(localStorage.getItem('almox_tema')==='dark')document.documentElement.setAttribute('data-theme','dark');</script>
 </head>
 <body>
   <div id="navbarContainer"></div>
@@ -86,9 +87,9 @@
             <label for="filtroEstoque"><i class="bi bi-box-seam"></i> Situação</label>
             <select id="filtroEstoque">
               <option value="">Todos</option>
-              <option value="critico">🔴 Crítico (zerado)</option>
-              <option value="baixo">🟡 Abaixo do mínimo</option>
-              <option value="ok">🟢 Estoque OK</option>
+              <option value="critico">Crítico</option>
+              <option value="baixo">Abaixo do mínimo</option>
+              <option value="ok">Estoque OK</option>
             </select>
           </div>
 

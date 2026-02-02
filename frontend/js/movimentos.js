@@ -33,6 +33,7 @@ document.addEventListener('DOMContentLoaded', () => {
   setupFormularios();
   setupCascatas();
   setupMascaraMoeda();
+  setupBuscaPorId();
   carregarHistorico();
   setDataHoje();
 });
@@ -78,6 +79,102 @@ function setDataHoje() {
   
   if (dataEntrada) dataEntrada.value = hoje;
   if (dataSaida) dataSaida.value = hoje;
+}
+
+function gerarIdsAutomaticos() {
+  const timestamp = Date.now();
+  const idEntrada = document.getElementById('idEntrada');
+  const idSaida = document.getElementById('idSaida');
+  
+  if (idEntrada) idEntrada.value = 'ENT_' + timestamp;
+  if (idSaida) idSaida.value = 'SAI_' + timestamp;
+}
+
+// =============================================
+// BUSCA POR ID DO ITEM
+// =============================================
+
+function setupBuscaPorId() {
+  const idEntrada = document.getElementById('idEntrada');
+  const idSaida = document.getElementById('idSaida');
+  
+  // Remover tabindex negativo para permitir digitação
+  if (idEntrada) {
+    idEntrada.removeAttribute('tabindex');
+    idEntrada.placeholder = 'Digite ID ou selecione abaixo';
+    idEntrada.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') {
+        e.preventDefault();
+        buscarItemPorId('Entrada', idEntrada.value.trim());
+      }
+    });
+    idEntrada.addEventListener('blur', () => {
+      if (idEntrada.value.trim()) {
+        buscarItemPorId('Entrada', idEntrada.value.trim());
+      }
+    });
+  }
+  
+  if (idSaida) {
+    idSaida.removeAttribute('tabindex');
+    idSaida.placeholder = 'Digite ID ou selecione abaixo';
+    idSaida.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') {
+        e.preventDefault();
+        buscarItemPorId('Saida', idSaida.value.trim());
+      }
+    });
+    idSaida.addEventListener('blur', () => {
+      if (idSaida.value.trim()) {
+        buscarItemPorId('Saida', idSaida.value.trim());
+      }
+    });
+  }
+}
+
+function buscarItemPorId(tipo, idBuscado) {
+  if (!idBuscado) return;
+  
+  // Buscar item pelo ID (case insensitive)
+  const item = itens.find(i => i.id.toLowerCase() === idBuscado.toLowerCase());
+  
+  if (!item) {
+    mostrarMensagem(`Item com ID "${idBuscado}" não encontrado`, 'erro');
+    return;
+  }
+  
+  // Encontrar categoria e subcategoria do item
+  const subcategoria = subcategorias.find(s => s.id === item.subcategoriaId);
+  if (!subcategoria) {
+    mostrarMensagem('Subcategoria do item não encontrada', 'erro');
+    return;
+  }
+  
+  const categoria = categorias.find(c => c.id === subcategoria.categoriaId);
+  if (!categoria) {
+    mostrarMensagem('Categoria do item não encontrada', 'erro');
+    return;
+  }
+  
+  // Preencher os selects automaticamente
+  const selectCategoria = document.getElementById(`categoria${tipo}`);
+  const selectSubcategoria = document.getElementById(`subcategoria${tipo}`);
+  const selectItem = document.getElementById(`item${tipo}`);
+  
+  // Selecionar categoria
+  selectCategoria.value = categoria.id;
+  popularSubcategorias(`subcategoria${tipo}`, categoria.id);
+  
+  // Selecionar subcategoria
+  selectSubcategoria.value = subcategoria.id;
+  montarFiltroAtributos(tipo, subcategoria.id);
+  popularItensFiltrados(tipo, subcategoria.id);
+  
+  // Selecionar item
+  selectItem.value = item.id;
+  selecionarItem(tipo, item.id);
+  
+  mostrarMensagem(`Item encontrado: ${item.nomeCompleto || item.nome}`, 'sucesso');
 }
 
 // =============================================
@@ -218,12 +315,42 @@ function setupFormularios() {
   // Botão limpar filtros
   document.getElementById('btnLimparFiltrosHist')?.addEventListener('click', limparFiltrosHistorico);
   
-  // Checkboxes de exibição de colunas
-  document.getElementById('mostrarIdMov')?.addEventListener('change', atualizarColunasVisiveis);
-  document.getElementById('mostrarIdItem')?.addEventListener('change', atualizarColunasVisiveis);
+  // Checkboxes de exibição de colunas - carregar preferências salvas
+  carregarPreferenciasColunasHist();
+  
+  document.getElementById('mostrarIdMov')?.addEventListener('change', () => {
+    salvarPreferenciasColunasHist();
+    atualizarColunasVisiveis();
+  });
+  document.getElementById('mostrarIdItem')?.addEventListener('change', () => {
+    salvarPreferenciasColunasHist();
+    atualizarColunasVisiveis();
+  });
   
   // Aplicar visibilidade inicial
   atualizarColunasVisiveis();
+}
+
+function carregarPreferenciasColunasHist() {
+  const prefs = JSON.parse(localStorage.getItem('almox_prefs_hist_colunas') || '{}');
+  
+  const checkIdMov = document.getElementById('mostrarIdMov');
+  const checkIdItem = document.getElementById('mostrarIdItem');
+  
+  if (checkIdMov && prefs.mostrarIdMov !== undefined) {
+    checkIdMov.checked = prefs.mostrarIdMov;
+  }
+  if (checkIdItem && prefs.mostrarIdItem !== undefined) {
+    checkIdItem.checked = prefs.mostrarIdItem;
+  }
+}
+
+function salvarPreferenciasColunasHist() {
+  const prefs = {
+    mostrarIdMov: document.getElementById('mostrarIdMov')?.checked ?? true,
+    mostrarIdItem: document.getElementById('mostrarIdItem')?.checked ?? true
+  };
+  localStorage.setItem('almox_prefs_hist_colunas', JSON.stringify(prefs));
 }
 
 function atualizarColunasVisiveis() {
@@ -473,13 +600,18 @@ function popularItens(selectId, subcategoriaId) {
 function selecionarItem(tipo, itemId) {
   const item = itens.find(i => i.id === itemId);
   const container = document.getElementById(`itemSelecionado${tipo}`);
+  const campoId = document.getElementById(`id${tipo}`);
   
   if (!item || !container) {
     if (container) container.style.display = 'none';
+    if (campoId) campoId.value = '';
     if (tipo === 'Entrada') itemSelecionadoEntrada = null;
     else itemSelecionadoSaida = null;
     return;
   }
+  
+  // Preencher campo ID com o ID do item
+  if (campoId) campoId.value = item.id;
   
   // Buscar subcategoria para pegar a unidade
   const subcategoria = subcategorias.find(s => s.id === item.subcategoriaId);
@@ -528,6 +660,7 @@ function registrarEntrada(e) {
     valorUnitario: getValorMoeda('valorUnitarioEntrada'),
     notaFiscal: document.getElementById('nfEntrada').value || null,
     fornecedor: document.getElementById('fornecedorEntrada').value || null,
+    observacoes: document.getElementById('obsEntrada').value || null,
     operador: document.getElementById('operadorEntrada').value,
     data: document.getElementById('dataEntrada').value,
     criadoEm: new Date().toISOString()
@@ -544,7 +677,7 @@ function registrarEntrada(e) {
   movimentacoes.push(movimentacao);
   localStorage.setItem('almox_movimentacoes', JSON.stringify(movimentacoes));
   
-  mostrarMensagem(`✅ Entrada registrada! +${quantidade} unidades`, 'sucesso');
+  mostrarMensagem(`Entrada registrada! +${quantidade} unidades`, 'sucesso');
   e.target.reset();
   carregarHistorico();
 }
@@ -594,7 +727,7 @@ function registrarSaida(e) {
   movimentacoes.push(movimentacao);
   localStorage.setItem('almox_movimentacoes', JSON.stringify(movimentacoes));
   
-  mostrarMensagem(`✅ Saída registrada! -${quantidade} unidades`, 'sucesso');
+  mostrarMensagem(`Saída registrada! -${quantidade} unidades`, 'sucesso');
   e.target.reset();
   carregarHistorico();
 }
@@ -699,7 +832,7 @@ function carregarHistorico() {
   
   tbody.innerHTML = movsFiltradas.map(mov => {
     const tipoClass = mov.tipo === 'entrada' ? 'badge-entrada' : 'badge-saida';
-    const tipoIcon = mov.tipo === 'entrada' ? '📥' : '📤';
+    const tipoIcon = mov.tipo === 'entrada' ? '<i class="bi bi-box-arrow-in-down"></i>' : '<i class="bi bi-box-arrow-up"></i>';
     const dataFormatada = formatarData(mov.data);
     
     // Buscar categoria do item
@@ -723,8 +856,8 @@ function carregarHistorico() {
     const acoesHtml = isAdmin ? `
       <td>
         <div class="acoes-admin">
-          <button class="btn-acao btn-editar-mov" onclick="editarMovimentacao('${escapeAttr(mov.id)}')" title="Editar">✏️</button>
-          <button class="btn-acao btn-deletar-mov" onclick="deletarMovimentacao('${escapeAttr(mov.id)}')" title="Excluir">🗑️</button>
+          <button class="btn-acao btn-editar-mov" onclick="editarMovimentacao('${escapeAttr(mov.id)}')" title="Editar"><i class="bi bi-pencil"></i></button>
+          <button class="btn-acao btn-deletar-mov" onclick="deletarMovimentacao('${escapeAttr(mov.id)}')" title="Excluir"><i class="bi bi-trash"></i></button>
         </div>
       </td>
     ` : '';
@@ -814,7 +947,7 @@ function deletarMovimentacao(movId) {
   const mov = movimentacoes.find(m => m.id === movId);
   if (!mov) return;
   
-  const confirmar = confirm(`Excluir movimentação ${movId}?\n\nTipo: ${mov.tipo === 'entrada' ? 'Entrada' : 'Saída'}\nItem: ${mov.itemNome}\nQuantidade: ${mov.quantidade}\n\n⚠️ O estoque será ajustado automaticamente.`);
+  const confirmar = confirm(`Excluir movimentação ${movId}?\n\nTipo: ${mov.tipo === 'entrada' ? 'Entrada' : 'Saída'}\nItem: ${mov.itemNome}\nQuantidade: ${mov.quantidade}\n\nATENÇÃO: O estoque será ajustado automaticamente.`);
   
   if (!confirmar) return;
   

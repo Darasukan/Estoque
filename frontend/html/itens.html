@@ -9,22 +9,23 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
   <link rel="stylesheet" href="../styles.css">
+  <script>if(localStorage.getItem('almox_tema')==='dark')document.documentElement.setAttribute('data-theme','dark');</script>
 </head>
 <body>
   <div id="navbarContainer"></div>
 
   <div class="container">
     <main class="main-content">
-      <h1 class="pagina-titulo">➕ Novo Item</h1>
+      <h1 class="pagina-titulo">Novo Item</h1>
 
       <div id="mensagem" class="mensagem"></div>
 
       <div class="info-box">
-        ℹ️ Selecione a categoria e subcategoria, depois preencha os atributos para criar um novo item no estoque.
+        <i class="bi bi-info-circle"></i> Selecione a categoria e subcategoria, depois preencha os atributos para criar um novo item no estoque.
       </div>
 
       <div class="painel">
-        <h2>📋 Criar Novo Item</h2>
+        <h2><i class="bi bi-file-earmark-plus"></i> Criar Novo Item</h2>
 
         <form id="formNovoItem">
           <!-- Seleção em Cascata -->
@@ -45,7 +46,7 @@
 
           <!-- Info da subcategoria selecionada -->
           <div id="infoSubcategoria" class="info-subcategoria" style="display: none;">
-            <h3>📌 Subcategoria selecionada:</h3>
+            <h3><i class="bi bi-pin-angle-fill"></i> Subcategoria selecionada:</h3>
             <div class="badges">
               <span class="badge badge-unidade" id="badgeUnidade">UN</span>
               <span class="badge badge-minimo" id="badgeMinimo">Mín: 10</span>
@@ -55,7 +56,7 @@
 
           <!-- Campos de Atributos (gerados dinamicamente) -->
           <div id="camposAtributos" class="campos-atributos" style="display: none;">
-            <h3>🏷️ Preencha os Atributos</h3>
+            <h3><i class="bi bi-tag"></i> Preencha os Atributos</h3>
             <div id="listaCamposAtributos">
               <div class="vazio">Selecione uma subcategoria com atributos</div>
             </div>
@@ -74,8 +75,8 @@
           </div>
 
           <div class="btn-group">
-            <button type="submit" class="btn btn-primary">✅ Criar Item</button>
-            <button type="reset" class="btn btn-secondary">🔄 Limpar</button>
+            <button type="submit" class="btn btn-primary"><i class="bi bi-check-lg"></i> Criar Item</button>
+            <button type="reset" class="btn btn-secondary"><i class="bi bi-arrow-clockwise"></i> Limpar</button>
           </div>
         </form>
       </div>

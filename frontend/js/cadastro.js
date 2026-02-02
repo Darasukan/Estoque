@@ -214,7 +214,7 @@ function deletarCategoria(id) {
   
   let msg = `Excluir a categoria "${cat.nome}"?`;
   if (subsVinculadas.length > 0) {
-    msg += `\n\n⚠️ ${subsVinculadas.length} subcategoria(s) serão excluídas!`;
+    msg += `\n\nATENÇÃO: ${subsVinculadas.length} subcategoria(s) serão excluídas!`;
   }
 
   if (confirm(msg)) {
@@ -362,7 +362,7 @@ function deletarSubcategoria(id) {
 
   let msg = `Excluir a subcategoria "${sub.nome}"?`;
   if (itensVinculados.length > 0) {
-    msg += `\n\n⚠️ ${itensVinculados.length} item(s) serão excluídos!`;
+    msg += `\n\nATENÇÃO: ${itensVinculados.length} item(s) serão excluídos!`;
   }
 
   if (confirm(msg)) {
