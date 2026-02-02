@@ -740,6 +740,12 @@ function carregarHistorico() {
   const tbody = document.querySelector('#tabelaHistorico tbody');
   if (!tbody) return;
   
+  // Recarregar dados do localStorage para refletir alterações feitas em outras páginas
+  categorias = JSON.parse(localStorage.getItem('almox_categorias') || '[]');
+  subcategorias = JSON.parse(localStorage.getItem('almox_subcategorias') || '[]');
+  itens = JSON.parse(localStorage.getItem('almox_itens') || '[]');
+  movimentacoes = JSON.parse(localStorage.getItem('almox_movimentacoes') || '[]');
+  
   // Verificar se é admin
   const perfilUsuario = localStorage.getItem('perfil');
   const isAdmin = perfilUsuario === 'admin';
@@ -823,7 +829,7 @@ function carregarHistorico() {
   // Ordenar por data (mais recente primeiro)
   movsFiltradas.sort((a, b) => new Date(b.criadoEm) - new Date(a.criadoEm));
   
-  const colspan = isAdmin ? 13 : 12;
+  const colspan = isAdmin ? 14 : 13;
   
   if (movsFiltradas.length === 0) {
     tbody.innerHTML = `<tr><td colspan="${colspan}" class="vazio">Nenhuma movimentação encontrada</td></tr>`;
@@ -840,9 +846,15 @@ function carregarHistorico() {
     const sub = item ? subcategorias.find(s => s.id === item.subcategoriaId) : null;
     const cat = sub ? categorias.find(c => c.id === sub.categoriaId) : null;
     const categoriaNome = cat ? cat.nome : '-';
+    const subcategoriaNome = sub ? sub.nome : '-';
     
-    // Nome do item (sem categoria, só subcategoria + atributos)
-    const itemNomeLimpo = mov.itemNome || '-';
+    // Atributos do item (em badges com nome: valor)
+    let atributosHtml = '-';
+    if (item && item.atributos && Object.keys(item.atributos).length > 0) {
+      atributosHtml = Object.entries(item.atributos)
+        .map(([key, val]) => `<span class="badge badge-atributo"><strong>${escapeHtml(key)}:</strong> ${escapeHtml(val)}</span>`)
+        .join(' ');
+    }
     
     // Colunas específicas por tipo
     const fornecedorHtml = mov.tipo === 'entrada' ? escapeHtml(mov.fornecedor || '-') : '-';
@@ -869,7 +881,8 @@ function carregarHistorico() {
         <td class="col-id-item"><code>${escapeHtml(mov.itemId || '-')}</code></td>
         <td><span class="badge ${tipoClass}">${tipoIcon} ${mov.tipo === 'entrada' ? 'Entrada' : 'Saída'}</span></td>
         <td>${escapeHtml(categoriaNome)}</td>
-        <td>${escapeHtml(itemNomeLimpo)}</td>
+        <td>${escapeHtml(subcategoriaNome)}</td>
+        <td class="col-atributos">${atributosHtml}</td>
         <td>${escapeHtml(obsHtml)}</td>
         <td><strong>${mov.tipo === 'entrada' ? '+' : '-'}${mov.quantidade}</strong></td>
         <td>${escapeHtml(mov.operador || '-')}</td>

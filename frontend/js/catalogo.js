@@ -210,7 +210,9 @@ function carregarItens() {
   const container = document.getElementById('listaItens');
   if (!container) return;
 
-  // Recarregar dados
+  // Recarregar todos os dados para refletir alterações feitas em outras páginas
+  categorias = JSON.parse(localStorage.getItem('almox_categorias') || '[]');
+  subcategorias = JSON.parse(localStorage.getItem('almox_subcategorias') || '[]');
   itens = JSON.parse(localStorage.getItem('almox_itens') || '[]');
 
   const filtroCat = document.getElementById('filtroCategoria')?.value || '';
@@ -312,9 +314,9 @@ function carregarItens() {
     container.innerHTML = itensFiltrados.map(item => {
       const statusEstoque = getStatusEstoque(item);
       
-      // Montar badges de atributos (escapando HTML)
+      // Montar badges de atributos (escapando HTML) com nome: valor
       const atributosHtml = Object.entries(item.atributos || {}).map(([key, val]) => 
-        `<span class="attr-badge">${escapeHtml(val)}</span>`
+        `<span class="attr-badge"><strong>${escapeHtml(key)}:</strong> ${escapeHtml(val)}</span>`
       ).join('');
       
       // Nome do item: Categoria > Subcategoria

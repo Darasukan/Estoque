@@ -21,85 +21,184 @@
         <i class="bi bi-info-circle"></i>
         <div><strong>Estrutura:</strong> Categoria → Subcategoria (com atributos). Depois vá em <strong>Novo Item</strong> para criar itens preenchendo os valores dos atributos.</div>
       </div>
-      <div class="layout-dois-paineis">
-        <div class="painel">
-          <h2><i class="bi bi-box-seam"></i> Categorias</h2>
-          <form id="formCategoria">
-            <div class="form-grupo">
-              <label for="nomeCategoria">Nome da Categoria *</label>
-              <input type="text" id="nomeCategoria" required placeholder="Ex: Ferramentas, EPIs, Fixação">
-            </div>
-            <div class="btn-group">
-              <button type="submit" class="btn btn-primary"><i class="bi bi-floppy"></i> Salvar</button>
-              <button type="reset" class="btn btn-secondary"><i class="bi bi-arrow-clockwise"></i></button>
-            </div>
-          </form>
-          <div id="listaCategorias" class="lista-itens">
-            <div class="vazio"><i class="bi bi-inbox"></i> Nenhuma categoria cadastrada</div>
+      
+      <!-- Layout com Sidebar tipo Catálogo -->
+      <div class="catalogo-layout">
+        <!-- Sidebar de Filtros -->
+        <aside class="catalogo-sidebar">
+          <div class="sidebar-header">
+            <h3><i class="bi bi-funnel"></i> Filtros</h3>
+            <button type="button" class="btn-limpar-filtros" id="btnLimparFiltros">
+              <i class="bi bi-x-circle"></i> Limpar
+            </button>
           </div>
-          <div class="contador">
-            <strong id="totalCategorias">0</strong> categoria(s)
+
+          <!-- Busca Global -->
+          <div class="filtro-grupo">
+            <label for="buscaGeral"><i class="bi bi-search"></i> Busca</label>
+            <input type="text" id="buscaGeral" placeholder="Nome, atributos...">
           </div>
-        </div>
-        <div class="painel">
-          <h2><i class="bi bi-folder"></i> Subcategorias</h2>
-          <form id="formSubcategoria">
-            <div class="form-grupo">
-              <label for="categoriaParente">Categoria *</label>
-              <select id="categoriaParente" required>
-                <option value="">Selecione uma categoria</option>
-              </select>
-            </div>
-            <div class="form-grupo">
-              <label for="nomeSubcategoria">Nome da Subcategoria *</label>
-              <input type="text" id="nomeSubcategoria" required placeholder="Ex: Chaves, Parafusos, Luvas">
-            </div>
-            <div class="form-row">
-              <div class="form-grupo">
-                <label for="unidadeSubcategoria">Unidade *</label>
-                <select id="unidadeSubcategoria" required>
-                  <option value="UN">Unidade (UN)</option>
-                  <option value="PC">Peça (PC)</option>
-                  <option value="CX">Caixa (CX)</option>
-                  <option value="MT">Metro (MT)</option>
-                  <option value="KG">Quilo (KG)</option>
-                  <option value="LT">Litro (LT)</option>
-                  <option value="PAR">Par (PAR)</option>
-                  <option value="JG">Jogo (JG)</option>
-                  <option value="RL">Rolo (RL)</option>
-                  <option value="PCT">Pacote (PCT)</option>
-                </select>
+
+          <!-- Categoria -->
+          <div class="filtro-grupo">
+            <label for="filtroCategoria"><i class="bi bi-folder"></i> Categoria</label>
+            <select id="filtroCategoria">
+              <option value="">Todas</option>
+            </select>
+          </div>
+
+          <!-- Subcategoria -->
+          <div class="filtro-grupo">
+            <label for="filtroSubcategoria"><i class="bi bi-folder2"></i> Subcategoria</label>
+            <select id="filtroSubcategoria" disabled>
+              <option value="">Todas</option>
+            </select>
+          </div>
+
+          <!-- Contador de resultados -->
+          <div class="filtro-resultado">
+            <span id="contadorResultados">-</span>
+          </div>
+        </aside>
+
+        <!-- Conteúdo Principal -->
+        <div class="catalogo-conteudo">
+          <!-- Abas -->
+          <div class="cadastro-tabs">
+            <button class="tab-btn active" data-tab="cadastro">
+              <i class="bi bi-plus-circle"></i> Cadastrar
+            </button>
+            <button class="tab-btn" data-tab="categorias">
+              <i class="bi bi-box-seam"></i> Categorias
+            </button>
+            <button class="tab-btn" data-tab="subcategorias">
+              <i class="bi bi-folder"></i> Subcategorias
+            </button>
+          </div>
+
+          <!-- Tab Cadastro (Categoria + Subcategoria) -->
+          <div class="tab-content active" id="tab-cadastro">
+            <div class="layout-dois-paineis">
+              <!-- Coluna Esquerda: Nova Categoria + Últimas Subcategorias -->
+              <div class="coluna-esquerda">
+                <div class="painel painel-categoria">
+                  <h2><i class="bi bi-box-seam"></i> Nova Categoria</h2>
+                  <form id="formCategoria">
+                    <div class="form-grupo">
+                      <label for="nomeCategoria">Nome da Categoria *</label>
+                      <input type="text" id="nomeCategoria" required placeholder="Ex: Ferramentas, EPIs, Fixação">
+                    </div>
+                    <div class="btn-group">
+                      <button type="submit" class="btn btn-primary"><i class="bi bi-floppy"></i> Salvar</button>
+                      <button type="reset" class="btn btn-secondary"><i class="bi bi-arrow-clockwise"></i></button>
+                    </div>
+                  </form>
+                </div>
+                
+                <!-- Últimas Subcategorias -->
+                <div class="painel painel-ultimas">
+                  <h4><i class="bi bi-clock-history"></i> Últimas Subcategorias</h4>
+                  <div id="listaUltimasSubcats" class="ultimas-lista">
+                    <div class="vazio-mini"><i class="bi bi-inbox"></i> Nenhuma ainda</div>
+                  </div>
+                </div>
               </div>
-              <div class="form-grupo">
-                <label for="estoqueMinimo">Estoque Mínimo *</label>
-                <input type="number" id="estoqueMinimo" required min="0" value="10" placeholder="10">
+              
+              <!-- Coluna Direita: Nova Subcategoria -->
+              <div class="painel">
+                <h2><i class="bi bi-folder"></i> Nova Subcategoria</h2>
+                <form id="formSubcategoria">
+                  <div class="form-grupo">
+                    <label for="categoriaParente">Categoria *</label>
+                    <select id="categoriaParente" required>
+                      <option value="">Selecione uma categoria</option>
+                    </select>
+                  </div>
+                  <div class="form-grupo autocomplete-wrapper">
+                    <label for="nomeSubcategoria">Nome da Subcategoria *</label>
+                    <input type="text" id="nomeSubcategoria" required placeholder="Ex: Chaves, Parafusos, Luvas" autocomplete="off">
+                    <div id="sugestoesSubcat" class="sugestoes-dropdown"></div>
+                  </div>
+                  <div class="form-row">
+                    <div class="form-grupo">
+                      <label for="unidadeSubcategoria">Unidade *</label>
+                      <select id="unidadeSubcategoria" required>
+                        <option value="UN">Unidade (UN)</option>
+                        <option value="PC">Peça (PC)</option>
+                        <option value="CX">Caixa (CX)</option>
+                        <option value="MT">Metro (MT)</option>
+                        <option value="KG">Quilo (KG)</option>
+                        <option value="LT">Litro (LT)</option>
+                        <option value="PAR">Par (PAR)</option>
+                        <option value="JG">Jogo (JG)</option>
+                        <option value="RL">Rolo (RL)</option>
+                        <option value="PCT">Pacote (PCT)</option>
+                      </select>
+                    </div>
+                    <div class="form-grupo">
+                      <label for="estoqueMinimo">Estoque Mínimo *</label>
+                      <input type="number" id="estoqueMinimo" required min="0" value="10" placeholder="10">
+                    </div>
+                  </div>
+                  <div class="form-grupo">
+                    <label>Atributos <span class="opcional">(campos que o item terá)</span></label>
+                    <div class="atributos-container" id="atributosContainer">
+                      <input type="text" id="atributoInput" placeholder="Digite e pressione Enter">
+                    </div>
+                    <small>Enter para adicionar, Backspace para remover a última</small>
+                  </div>
+                  <div class="btn-group">
+                    <button type="submit" class="btn btn-primary"><i class="bi bi-floppy"></i> Salvar Subcategoria</button>
+                    <button type="reset" class="btn btn-secondary"><i class="bi bi-arrow-clockwise"></i></button>
+                  </div>
+                </form>
               </div>
             </div>
-            <div class="form-grupo">
-              <label>Atributos <span class="opcional">(campos que o item terá)</span></label>
-              <div class="atributos-container" id="atributosContainer">
-                <input type="text" id="atributoInput" placeholder="Digite e pressione Enter">
+          </div>
+
+          <!-- Tab Consultar Categorias -->
+          <div class="tab-content" id="tab-categorias">
+            <div class="lista-header">
+              <h3 class="lista-titulo"><i class="bi bi-list-ul"></i> Categorias Cadastradas <span class="contador-inline">(<strong id="totalCategorias">0</strong>)</span></h3>
+              <div class="ordenacao-btns">
+                <button type="button" class="btn-ordenar active" data-ordem="az" data-lista="categorias" title="A → Z">
+                  <i class="bi bi-sort-alpha-down"></i>
+                </button>
+                <button type="button" class="btn-ordenar" data-ordem="za" data-lista="categorias" title="Z → A">
+                  <i class="bi bi-sort-alpha-up"></i>
+                </button>
+                <button type="button" class="btn-ordenar" data-ordem="recente" data-lista="categorias" title="Mais recentes">
+                  <i class="bi bi-clock"></i>
+                </button>
               </div>
-              <small>Enter para adicionar, Backspace para remover a última</small>
             </div>
-            <div class="btn-group">
-              <button type="submit" class="btn btn-primary"><i class="bi bi-floppy"></i> Salvar Subcategoria</button>
-              <button type="reset" class="btn btn-secondary"><i class="bi bi-arrow-clockwise"></i></button>
-            </div>
-          </form>
-          <div class="secao-separador">
-            <div class="form-grupo">
-              <label for="filtroSubcategorias">Filtrar por Categoria</label>
-              <select id="filtroSubcategorias">
-                <option value="">Todas as categorias</option>
-              </select>
+            <div id="listaCategorias" class="lista-itens lista-livre">
+              <div class="vazio"><i class="bi bi-inbox"></i> Nenhuma categoria cadastrada</div>
             </div>
           </div>
-          <div id="listaSubcategorias" class="lista-itens">
-            <div class="vazio"><i class="bi bi-inbox"></i> Nenhuma subcategoria cadastrada</div>
-          </div>
-          <div class="contador">
-            <strong id="totalSubcategorias">0</strong> subcategoria(s)
+
+          <!-- Tab Consultar Subcategorias -->
+          <div class="tab-content" id="tab-subcategorias">
+            <div class="lista-header">
+              <h3 class="lista-titulo"><i class="bi bi-list-ul"></i> Subcategorias Cadastradas <span class="contador-inline">(<strong id="totalSubcategorias">0</strong>)</span></h3>
+              <div class="ordenacao-btns">
+                <button type="button" class="btn-ordenar active" data-ordem="az" data-lista="subcategorias" title="A → Z">
+                  <i class="bi bi-sort-alpha-down"></i>
+                </button>
+                <button type="button" class="btn-ordenar" data-ordem="za" data-lista="subcategorias" title="Z → A">
+                  <i class="bi bi-sort-alpha-up"></i>
+                </button>
+                <button type="button" class="btn-ordenar" data-ordem="recente" data-lista="subcategorias" title="Mais recentes">
+                  <i class="bi bi-clock"></i>
+                </button>
+                <button type="button" class="btn-ordenar" data-ordem="categoria" data-lista="subcategorias" title="Por categoria">
+                  <i class="bi bi-folder"></i>
+                </button>
+              </div>
+            </div>
+            <div id="listaSubcategorias" class="lista-itens lista-livre">
+              <div class="vazio"><i class="bi bi-inbox"></i> Nenhuma subcategoria cadastrada</div>
+            </div>
           </div>
         </div>
       </div>
