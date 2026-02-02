@@ -1,6 +1,6 @@
 # 📦 Sistema de Estoque
 
-Sistema de gerenciamento de estoque em tempo real com autenticação opcional, filtros avançados e movimentações de produtos.
+Sistema de gerenciamento de estoque em tempo real (possui filtro pra tudo)
 
 ## 🗂️ Estrutura do Projeto
 
@@ -44,7 +44,7 @@ Estoque/
 └── iniciar.bat             # Script de inicialização (Windows)
 ```
 
-## 🚀 Como Usar
+## Como usar
 
 ### Instalação
 ```bash
@@ -67,8 +67,8 @@ Acesso via LAN: `http://<seu-ip>:3000` (mostrado no console)
 ## 🔐 Autenticação
 
 - **Inventário**: Público, sem autenticação
-- **Outros recursos**: Requerem login
-- **Login**: Integrado na sidebar (botão 🔐)
+- **Outros recursos**: Requer login
+- **Login**: Na sidebar
 
 **Usuários demo:**
 - `admin` / `admin123`
@@ -79,7 +79,7 @@ Acesso via LAN: `http://<seu-ip>:3000` (mostrado no console)
 | Página | Acesso | Descrição |
 |--------|--------|-----------|
 | Dashboard | Público | Resumo com estatísticas |
-| Inventário | Público | Filtros avançados, sem modificação |
+| Inventário | Público | Filtros avançados, (não-admin não pode editar) |
 | Produtos | Autenticado | Adicionar/editar/deletar produtos |
 | Cadastro de Grupos | Autenticado | Definir categorias, subfamilias, tags |
 | Movimentações | Autenticado | Registrar entrada/saída de produtos |
@@ -91,7 +91,6 @@ Acesso via LAN: `http://<seu-ip>:3000` (mostrado no console)
 - **Banco de dados**: SQLite3
 - **Frontend**: HTML5 + Vanilla JavaScript + CSS3
 - **Autenticação**: Bearer Token (Base64)
-- **Rede**: LAN-ready (0.0.0.0:3000)
 
 ## 📝 Notas
 
