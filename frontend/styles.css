@@ -2027,9 +2027,19 @@ tbody tr:last-child td { border-bottom: none; }
   transition: var(--transition);
 }
 
+.ultima-subcat-acoes {
+  display: flex;
+  gap: 0.25rem;
+}
+
 .ultima-subcat-btn:hover {
   background: var(--primary-bg);
   color: var(--primary);
+}
+
+.ultima-subcat-btn.btn-deletar:hover {
+  background: rgba(220, 38, 38, 0.1);
+  color: #dc2626;
 }
 
 .vazio-mini {

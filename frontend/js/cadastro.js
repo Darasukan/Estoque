@@ -158,9 +158,14 @@ function carregarUltimasSubcategorias() {
           <span class="ultima-subcat-nome">${sub.nome}</span>
           <span class="ultima-subcat-cat">${cat?.nome || 'Sem categoria'}</span>
         </div>
-        <button class="ultima-subcat-btn" onclick="editarSubcategoria('${sub.id}')" title="Editar">
-          <i class="bi bi-pencil"></i>
-        </button>
+        <div class="ultima-subcat-acoes">
+          <button class="ultima-subcat-btn" onclick="editarSubcategoria('${sub.id}')" title="Editar">
+            <i class="bi bi-pencil"></i>
+          </button>
+          <button class="ultima-subcat-btn btn-deletar" onclick="deletarSubcategoria('${sub.id}')" title="Excluir">
+            <i class="bi bi-trash"></i>
+          </button>
+        </div>
       </div>
     `;
   }).join('');
